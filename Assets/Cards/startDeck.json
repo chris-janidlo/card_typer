@@ -1,0 +1,89 @@
+{
+	"Cards": [
+		{
+			"Name": "Calculate",
+			"Damage": 10,
+			"Burn": 2
+		},
+		{
+			"Name": "Mount",
+			"Damage": 5,
+			"Burn": 2
+		},
+		{
+			"Name": "Mount",
+			"Damage": 5,
+			"Burn": 2
+		},
+		{
+			"Name": "Mount",
+			"Damage": 5,
+			"Burn": 2
+		},
+		{
+			"Name": "Mix",
+			"Damage": 2,
+			"Burn": 10
+		},
+		{
+			"Name": "Mix",
+			"Damage": 2,
+			"Burn": 10
+		},
+		{
+			"Name": "Mix",
+			"Damage": 2,
+			"Burn": 10
+		},
+		{
+			"Name": "Mix",
+			"Damage": 2,
+			"Burn": 10
+		},
+		{
+			"Name": "Burn",
+			"Damage": 20,
+			"Burn": 20
+		},
+		{
+			"Name": "Burn",
+			"Damage": 20,
+			"Burn": 20
+		},
+		{
+			"Name": "Hate",
+			"Damage": 5,
+			"Burn": 10
+		},
+		{
+			"Name": "Hate",
+			"Damage": 5,
+			"Burn": 10
+		},
+		{
+			"Name": "Hate",
+			"Damage": 5,
+			"Burn": 10
+		},
+		{
+			"Name": "Expel",
+			"Damage": 12,
+			"Burn": 7
+		},
+		{
+			"Name": "Contaminate",
+			"Damage": 7,
+			"Burn": 4
+		},
+		{
+			"Name": "Synthesize",
+			"Damage": 20,
+			"Burn": 10
+		},
+		{
+			"Name": "Crystalize",
+			"Damage": 15,
+			"Burn": 3
+		}
+	]
+}
