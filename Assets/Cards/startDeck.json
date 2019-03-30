@@ -1,89 +1,72 @@
 {
-	"Cards": [
+	"title": "Keats",
+	"author": "Henry Wadsworth Longfellow",
+	"fullText": "The young Endymion sleeps Endymion's sleep;\tThe shepherd-boy whose tale was left half told!\n\tThe solemn grove uplifts its shield of gold\n\tTo the red rising moon, and loud and deep\nThe nightingale is singing from the steep;\n\tIt is midsummer, but the air is cold;\n\tCan it be death? Alas, beside the fold\n\tA shepherd's pipe lies shattered near his sheep.\nLo! in the moonlight gleams a marble white,\n\tOn which I read: \"Here lieth one whose name\n\tWas writ in water.\" And was this the meed\nOf his sweet singing? Rather let me write:\n\t\"The smoking flax before it burst to flame\n\tWas quenched by death, and broken the bruised reed.\"",
+	"cardData": [
 		{
-			"Name": "Calculate",
+			"Name": "Endymion",
+			"Damage": 20,
+			"Burn": 10
+		},
+		{
+			"Name": "sleep",
 			"Damage": 10,
-			"Burn": 2
-		},
-		{
-			"Name": "Mount",
-			"Damage": 5,
-			"Burn": 2
-		},
-		{
-			"Name": "Mount",
-			"Damage": 5,
-			"Burn": 2
-		},
-		{
-			"Name": "Mount",
-			"Damage": 5,
-			"Burn": 2
-		},
-		{
-			"Name": "Mix",
-			"Damage": 2,
 			"Burn": 10
 		},
 		{
-			"Name": "Mix",
-			"Damage": 2,
+			"Name": "sleeps",
+			"Damage": 10,
 			"Burn": 10
 		},
 		{
-			"Name": "Mix",
-			"Damage": 2,
-			"Burn": 10
-		},
-		{
-			"Name": "Mix",
-			"Damage": 2,
-			"Burn": 10
-		},
-		{
-			"Name": "Burn",
+			"Name": "shepherd",
 			"Damage": 20,
-			"Burn": 20
-		},
-		{
-			"Name": "Burn",
-			"Damage": 20,
-			"Burn": 20
-		},
-		{
-			"Name": "Hate",
-			"Damage": 5,
 			"Burn": 10
 		},
 		{
-			"Name": "Hate",
+			"Name": "tale",
 			"Damage": 5,
-			"Burn": 10
-		},
-		{
-			"Name": "Hate",
-			"Damage": 5,
-			"Burn": 10
-		},
-		{
-			"Name": "Expel",
-			"Damage": 12,
-			"Burn": 7
-		},
-		{
-			"Name": "Contaminate",
-			"Damage": 7,
 			"Burn": 4
 		},
 		{
-			"Name": "Synthesize",
-			"Damage": 20,
+			"Name": "told",
+			"Damage": 3,
+			"Burn": 0
+		},
+		{
+			"Name": "solemn",
+			"Damage": 10,
 			"Burn": 10
 		},
 		{
-			"Name": "Crystalize",
-			"Damage": 15,
-			"Burn": 3
+			"Name": "grove",
+			"Damage": 20,
+			"Burn": 50
+		},
+		{
+			"Name": "shield",
+			"Damage": 10,
+			"Burn": 0
+		},
+		{
+			"Name": "gold",
+			"Damage": 5,
+			"Burn": 1
+		},
+		{
+			"Name": "red",
+			"Damage": 5,
+			"Burn": 80
+		},
+		{
+			"Name": "moon",
+			"Damage": 5,
+			"Burn": 5
+		},
+		{
+			"Name": "deep",
+			"Damage": 10,
+			"Burn": 10
 		}
 	]
 }

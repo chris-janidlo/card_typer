@@ -29,9 +29,14 @@ public class Deck
             Status = status;
             Card = card;
         }
+
+        public string ToTagString ()
+        {
+            return $"'{Word}': {Status}";
+        }
     }
 
-    public event Action<Deck> TaggedTextChanged;
+    public event Action TaggedTextChanged;
 
     List<TaggedWord> taggedText;
     public ReadOnlyCollection<TaggedWord> TaggedText => taggedText.AsReadOnly();
@@ -47,6 +52,16 @@ public class Deck
         Deck deck = JsonUtility.FromJson<Deck>(source.text);
         deck.tagText();
         return deck;
+    }
+
+    public override string ToString ()
+    {
+        string output = "";
+        foreach (var tt in taggedText)
+        {
+            output += tt.ToTagString() + "\n";
+        }
+        return output;
     }
 
     public void DrawNewHand (int drawSize)
@@ -97,17 +112,19 @@ public class Deck
         }
         
         var temp = TaggedTextChanged;
-        if (temp != null) temp(this);
+        if (temp != null) temp();
     }
 
     void tagText ()
     {
+        taggedText = new List<TaggedWord>();
+        
         string currentWord = "";
-        bool scanningPunctuation = Char.IsLetter(currentWord[0]);
+        bool scanningPunctuation = !Char.IsLetter(fullText[0]);
 
         foreach (char c in fullText)
         {
-            if (scanningPunctuation != Char.IsLetter(c))
+            if (scanningPunctuation == Char.IsLetter(c))
             {
                 WordStatus status;
                 Card card = cardData.SingleOrDefault(cd => cd.Name == currentWord);

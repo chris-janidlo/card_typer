@@ -10,7 +10,7 @@ public class Typer : MonoBehaviour
 
     [Header("UI References")]
     public UICard CardPreviewObject;
-    public DeckDriver DeckDriver;
+    public Drawer DeckDriver;
     public Image TimeBar;
     public RectTransform PreviewLane, CurrentCardLocation;
     public TextMeshProUGUI ProgressIndicator, CountdownText;

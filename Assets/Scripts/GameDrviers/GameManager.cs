@@ -6,6 +6,6 @@ public class GameManager : MonoBehaviour
 {
     void Start ()
     {
-        GetComponent<DeckDriver>().StartDrawPhase();
+        GetComponent<Drawer>().StartDrawPhase();
     }
 }
