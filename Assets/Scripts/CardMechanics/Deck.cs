@@ -22,6 +22,13 @@ public class Deck
         public string Word;
         public WordStatus Status;
         public Card Card;
+
+        public TaggedWord (string word, WordStatus status, Card card)
+        {
+            Word = word;
+            Status = status;
+            Card = card;
+        }
     }
 
     public event Action<Deck> TaggedTextChanged;
@@ -44,21 +51,49 @@ public class Deck
 
     public void DrawNewHand (int drawSize)
     {
-        List<Card> draw = new List<Card>();
+		for (int i = 0; i < taggedText.Count; i++)
+        {
+            if (taggedText[i].Status == WordStatus.Drawn)
+            {
+                var tt = taggedText[i];
+                tt.Status = WordStatus.Discarded;
+                taggedText[i] = tt;
+            }
+        }
+        
         int remainder = drawSize;
 
-        if (library.Count < drawSize)
+        var library = taggedText.Where(t => t.Status == WordStatus.OtherCard);
+
+        if (library.Count() < drawSize)
         {
-            draw = new List<Card>(library);
-            remainder -= library.Count;
-            library = new List<Card>(deck.Except(library));
+            for (int i = 0; i < taggedText.Count; i++)
+            {
+                var tt = taggedText[i];
+                WordStatus newStatus = tt.Status;
+                if (tt.Status == WordStatus.Discarded)
+                {
+                    newStatus = WordStatus.OtherCard;
+                }
+                else if (tt.Status == WordStatus.OtherCard)
+                {
+                    newStatus = WordStatus.Drawn;
+                }
+                taggedText[i] = new TaggedWord(tt.Word, newStatus, tt.Card);
+            }
+            remainder -= library.Count();
         }
 
         for (int i = 0; i < remainder; i++)
         {
-            var nextCard = library[Random.Range(0, library.Count)];
-            library.Remove(nextCard);
-            draw.Add(nextCard);
+            // get list of indices on taggedText of words that are not drawn or discarded
+            var indices = taggedText.Select((val, ind) => new { val, ind })
+                                    .Where(x => x.val.Status == WordStatus.OtherCard)
+                                    .Select(x => x.ind).ToList();
+            var index = indices[UnityEngine.Random.Range(0, indices.Count)];
+            
+            var tt = taggedText[index];
+            taggedText[index] = new TaggedWord(tt.Word, WordStatus.Drawn, tt.Card);
         }
         
         var temp = TaggedTextChanged;
