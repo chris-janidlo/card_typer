@@ -7,18 +7,22 @@ using TMPro;
 
 public class Tooltip : Singleton<Tooltip>
 {
+    public Color DamageColor;
     public int TitleSize, PartOfSpeechBurnSize, DefinitionSize;
     public TextMeshProUGUI ContentMirror;
 
     TextMeshProUGUI content;
     RectTransform rectTransform;
     string alignment;
+
+    TagPair damageTag;
     
     void Awake ()
     {
         SingletonSetInstance(this, true);
         content = GetComponent<TextMeshProUGUI>();
         rectTransform = GetComponent<RectTransform>();
+        damageTag = new TagPair{ Start = $"<#{ColorUtility.ToHtmlStringRGB(DamageColor)}>", End = "</color>" };
     }
 
     void Update ()
@@ -44,8 +48,8 @@ public class Tooltip : Singleton<Tooltip>
         content.enabled = true;
         content.text =
 $@"<align=""{alignment}""><b><size={TitleSize}>{card.Name}</size></b>
-<i><size={PartOfSpeechBurnSize}>verb, burns for {card.Burn}</size></i>
-<size={DefinitionSize}>do {card.Damage} damage to one's opponent.</size></align>";
+<i><size={PartOfSpeechBurnSize}>verb; burns for {damageTag.Wrap(card.Burn.ToString())}</size></i>
+<size={DefinitionSize}>do {damageTag.Wrap(card.Damage.ToString())} damage to one's opponent.</size></align>";
 
         ContentMirror.text = content.text;
     }

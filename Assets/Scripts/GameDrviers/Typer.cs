@@ -84,6 +84,7 @@ public class Typer : MonoBehaviour
 
     public void StartTypingPhase (List<Card> cards)
     {
+        EventBox.Log("\n\nThe typing phase has started.");
         StartCoroutine(countDownRoutine(cards));
     }
 
@@ -117,6 +118,7 @@ public class Typer : MonoBehaviour
 
     void endTypingPhase ()
     {
+        EventBox.Log("\n\n");
         foreach (var card in Cards)
         {
             Player.Instance.Health.IncrementValue(-card.Burn, "The word " + card.Name, "burnt");
@@ -148,7 +150,7 @@ public class Typer : MonoBehaviour
     {
         EventBox.Log($"\nYou casted {CurrentCard.Name}.");
 
-        Enemy.Instance.Health.IncrementValue(-CurrentCard.Damage, "You", "hurt");
+        Enemy.Instance.Health.IncrementValue(-CurrentCard.Damage, " You", "hurt");
         
         Progress = "";
 

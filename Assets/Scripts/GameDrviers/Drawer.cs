@@ -32,28 +32,6 @@ public class Drawer : MonoBehaviour
 
     int orderIndex;
 
-    [Serializable]
-    public struct TagPair
-    {
-        public string Start, End;
-
-        public string Wrap (string target)
-        {
-            return Start + target + End;
-        }
-    }
-
-    [Serializable]
-    public struct LinkTag
-    {
-        public string ID;
-
-        public string Wrap (string target, int index)
-        {
-            return $"<link=\"{ID}:{target}:{index}\">{target}</link>";
-        }
-    }
-
     void Awake ()
     {
         deck = Deck.FromJson(DeckJson);
@@ -95,7 +73,15 @@ public class Drawer : MonoBehaviour
 
     public void StartDrawPhase ()
     {
+        EventBox.Log("\n");
+        
+        Player.Instance.Health.LogStatus();
+        Enemy.Instance.Health.LogStatus();
+
         EventBox.Log("\n\nThe draw phase has started.");
+
+        Enemy.Instance.DeviseDamagePlan();
+        EventBox.Log($"\nThe demon plans on hurting you for {Enemy.Instance.GetDamagePlan()}.\n");
 
         deck.DrawNewHand(DrawSize);
     }

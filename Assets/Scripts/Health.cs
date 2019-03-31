@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class Health : MonoBehaviour
 {
     public int Max;
-    public string ReceivingName;
+    public string ReceivingName, StatusName, StatusVerb = "has";
 
     [SerializeField]
     int value;
@@ -25,10 +25,22 @@ public class Health : MonoBehaviour
         EventBox.Log($"{sender} {verb} {ReceivingName} for {Mathf.Abs(newValue - value)} health.");
 
         value = newValue;
+
+        if (value <= 0)
+        {
+            var temp = Death;
+            if (temp != null) temp(this);
+            Destroy(this);
+        }
     }
 
     public void IncrementValue (int delta, string sender, string verb)
     {
         SetValue(value + delta, sender, verb);
+    }
+
+    public void LogStatus ()
+    {
+        EventBox.Log($"\n{StatusName} {StatusVerb} {value} health out of {Max}.");
     }
 }
