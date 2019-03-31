@@ -14,8 +14,8 @@ public class EventBox : Singleton<EventBox>
         SingletonSetInstance(this, true);
     }
 
-    public void AddText (string text)
+    public static void Log (string text)
     {
-        contents.text += text;
+        Instance.contents.text += text;
     }
 }

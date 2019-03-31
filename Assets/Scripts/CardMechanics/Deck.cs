@@ -47,9 +47,12 @@ public class Deck
     [SerializeField]
     List<Card> cardData;
 
+    Dictionary<string, Card> cardDataLookup;
+
     public static Deck FromJson (TextAsset source)
     {
         Deck deck = JsonUtility.FromJson<Deck>(source.text);
+        deck.cardDataLookup = deck.cardData.ToDictionary(cd => cd.Name, cd => cd);
         deck.tagText();
         return deck;
     }
@@ -115,6 +118,20 @@ public class Deck
         if (temp != null) temp();
     }
 
+    public List<Card> GetCurrentDraw ()
+    {
+        return taggedText
+            .Where(t => t.Status == WordStatus.Drawn)
+            .Select(t => t.Card)
+            .ToList();
+    }
+
+    public Card GetCard (string name)
+    {
+        Card value;
+        return cardDataLookup.TryGetValue(name, out value) ? value : null;
+    }
+
     void tagText ()
     {
         taggedText = new List<TaggedWord>();
@@ -127,7 +144,9 @@ public class Deck
             if (scanningPunctuation == Char.IsLetter(c))
             {
                 WordStatus status;
-                Card card = cardData.SingleOrDefault(cd => cd.Name == currentWord);
+                
+                Card card;
+                cardDataLookup.TryGetValue(currentWord, out card);
 
                 if (scanningPunctuation)
                 {
@@ -157,33 +176,3 @@ public class Deck
         }
     }
 }
-// struct TagPair
-// {
-//     string start, end;
-
-//     public TagPair (string start, string end)
-//     {
-//         this.start = start;
-//         this.end = end; 
-//     }
-
-//     public string Wrap (string target)
-//     {
-//         return start + target + end;
-//     }
-// }
-
-// struct LinkTag
-// {
-//     TagPair tags;
-
-//     public LinkTag (string id)
-//     {
-//         this.tags = new TagPair($"<link=\"{id}\">", "</link>");
-//     }
-
-//     public string Wrap (string target)
-//     {
-//         return tags.Wrap(target);
-//     }
-// }
