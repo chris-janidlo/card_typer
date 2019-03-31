@@ -6,29 +6,29 @@ using UnityEngine.UI;
 public class Health : MonoBehaviour
 {
     public int Max;
-    public Image Bar;
+    public string ReceivingName;
 
     [SerializeField]
-    int _value;
-    public int Value
-    {
-        get => _value;
-        set
-        {
-            _value = Mathf.Clamp(value, 0, Max);
-            Bar.fillAmount = (float) _value / Max;
-            if (_value == 0)
-            {
-                var temp = Death;
-                if (temp != null) temp(this);
-            }
-        }
-    }
+    int value;
 
     public event System.Action<Health> Death;
 
     void Awake ()
     {
-        Value = Max;
+        value = Max;
+    }
+
+    public void SetValue (int newValue, string sender, string verb)
+    {
+        if (newValue == value) return;
+
+        EventBox.Log($"{sender} {verb} {ReceivingName} for {Mathf.Abs(newValue - value)} health.");
+
+        value = newValue;
+    }
+
+    public void IncrementValue (int delta, string sender, string verb)
+    {
+        SetValue(value + delta, sender, verb);
     }
 }

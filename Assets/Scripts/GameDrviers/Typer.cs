@@ -122,9 +122,9 @@ public class Typer : MonoBehaviour
     {
         foreach (var card in Cards)
         {
-            Player.Instance.Health.Value -= card.Burn;
+            Player.Instance.Health.IncrementValue(-card.Burn, "The word " + card.Name, "burnt");
         }
-        Player.Instance.Health.Value -= Enemy.Instance.GetDamagePlan();
+        Player.Instance.Health.IncrementValue(-Enemy.Instance.GetDamagePlan(), "The enemy", "hurt");
 
         foreach (var card in previews)
         {
@@ -141,7 +141,7 @@ public class Typer : MonoBehaviour
 
     void popCard ()
     {
-        Enemy.Instance.Health.Value -= CurrentCard.Damage;
+        Enemy.Instance.Health.IncrementValue(-CurrentCard.Damage, "You", "hurt");
         
         Progress = "";
 
