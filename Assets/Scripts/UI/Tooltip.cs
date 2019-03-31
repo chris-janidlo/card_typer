@@ -45,7 +45,7 @@ public class Tooltip : Singleton<Tooltip>
         content.text =
 $@"<align=""{alignment}""><b><size={TitleSize}>{card.Name}</size></b>
 <i><size={PartOfSpeechBurnSize}>verb, burns for {card.Burn}</size></i>
-<size={DefinitionSize}>do {card.Damage} damage to ones opponent.</size></align>";
+<size={DefinitionSize}>do {card.Damage} damage to one's opponent.</size></align>";
 
         ContentMirror.text = content.text;
     }

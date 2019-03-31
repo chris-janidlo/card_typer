@@ -15,18 +15,21 @@ public class Drawer : MonoBehaviour
 
     [Header("Deck Tags")]
     public TagPair PunctuationTag;
-    public TagPair NonCardWordTag, DiscardedTag, DrawnTag, OtherCardTag;
-    public LinkTag DrawnCardLink, RegularCardLink;
+    public TagPair NonCardWordTag, DiscardedTag, DrawnTag, OtherCardTag, SelectedCardTag;
+    public LinkTag CardLinkTag;
 
     [Header("UI References")]
     public UICard CardObject;
     public Typer Typer;
-    public RectTransform DrawContainer, ButtonContainer;
+    public RectTransform ButtonContainer;
     public Button ResetOrder, StartTyping;
     public TextMeshProUGUI DeckText;
 
     [SerializeField]
     Deck deck;
+
+    List<Card> handSelection;
+    List<int> selectedIndices;
 
     int orderIndex;
 
@@ -52,26 +55,38 @@ public class Drawer : MonoBehaviour
         }
     }
 
-    bool go = false;
-
     void Awake ()
     {
         deck = Deck.FromJson(DeckJson);
+
+        handSelection = new List<Card>();
+        selectedIndices = new List<int>();
 
         ResetOrder.onClick.AddListener(onClickReset);
         StartTyping.onClick.AddListener(onClickStart);
         deck.TaggedTextChanged += onDeckChange;
     }
 
-    IEnumerator Start ()
-    {
-        yield return new WaitForSeconds(1);
-        go = true;
-    }
-
     void Update ()
     {
-        Tooltip.Instance.SetCard(getHoveredCard());
+        var hover = getHoveredCard();
+
+        // TODO: delay
+        Tooltip.Instance.SetCard(hover);
+
+        if (hover != null && deck.GetCurrentDraw().Contains(hover) && Input.GetMouseButtonDown(0))
+        {
+            handSelection.Add(hover);
+            selectedIndices.Add(getHoveredIndex());
+
+            constructDeckString();
+
+            string handText = listToCommaSeparated("Your current hand is ", handSelection.Select(h => h.Name).ToList());
+
+            EventBox.Log($"\nYou selected {hover.Name}. {handText}");
+
+            ButtonContainer.gameObject.SetActive(true);
+        }
     }
 
     void OnDestroy ()
@@ -82,38 +97,35 @@ public class Drawer : MonoBehaviour
     public void StartDrawPhase ()
     {
         EventBox.Log("\n\nThe draw phase has started.");
+
         deck.DrawNewHand(DrawSize);
-    }
-
-    void onClickCard (UICard sender)
-    {
-
     }
 
     void onClickReset ()
     {
+        handSelection = new List<Card>();
+        selectedIndices = new List<int>();
+        ButtonContainer.gameObject.SetActive(false);
 
+        constructDeckString();
     }
 
     void onClickStart ()
     {
         DeckText.text = "";
+        ButtonContainer.gameObject.SetActive(false);
     }
 
     void onDeckChange ()
     {
         var draw = deck.GetCurrentDraw();
-        string drawString = $"\nYou drew {draw[0].Name}";
-        for (int i = 1; i < draw.Count - 1; i++)
-        {
-            drawString += $", {draw[i].Name}";
-        }
-        EventBox.Log(drawString + $", and {draw[draw.Count - 1].Name}.");
+        
+        EventBox.Log(listToCommaSeparated("\nYou drew ", draw.Select(d => d.Name).ToList()));
 
-        DeckText.text = constructDeckString();
+        constructDeckString();
     }
 
-    string constructDeckString ()
+    void constructDeckString ()
     {
         string richText = "";
         
@@ -122,36 +134,43 @@ public class Drawer : MonoBehaviour
             var tt = deck.TaggedText[i];
             string toAdd;
 
-            switch (tt.Status)
+            if (selectedIndices.Contains(i))
             {
-                case Deck.WordStatus.Punctuation:
-                    toAdd = PunctuationTag.Wrap(tt.Word);
-                    break;
+                toAdd = SelectedCardTag.Wrap(CardLinkTag.Wrap(tt.Word, i));
+            }
+            else
+            {
+                switch (tt.Status)
+                {
+                    case Deck.WordStatus.Punctuation:
+                        toAdd = PunctuationTag.Wrap(tt.Word);
+                        break;
 
-                case Deck.WordStatus.NonCardWord:
-                    toAdd = NonCardWordTag.Wrap(tt.Word);
-                    break;
+                    case Deck.WordStatus.NonCardWord:
+                        toAdd = NonCardWordTag.Wrap(tt.Word);
+                        break;
 
-                case Deck.WordStatus.Discarded:
-                    toAdd = DiscardedTag.Wrap(RegularCardLink.Wrap(tt.Word, i));
-                    break;
+                    case Deck.WordStatus.Discarded:
+                        toAdd = DiscardedTag.Wrap(CardLinkTag.Wrap(tt.Word, i));
+                        break;
 
-                case Deck.WordStatus.OtherCard:
-                    toAdd = OtherCardTag.Wrap(RegularCardLink.Wrap(tt.Word, i));
-                    break;
+                    case Deck.WordStatus.OtherCard:
+                        toAdd = OtherCardTag.Wrap(CardLinkTag.Wrap(tt.Word, i));
+                        break;
 
-                case Deck.WordStatus.Drawn:
-                    toAdd = DrawnTag.Wrap(DrawnCardLink.Wrap(tt.Word, i));
-                    break;
-                
-                default:
-                    throw new Exception("Unexpected default when switching on " + tt.Status);
+                    case Deck.WordStatus.Drawn:
+                        toAdd = DrawnTag.Wrap(CardLinkTag.Wrap(tt.Word, i));
+                        break;
+                    
+                    default:
+                        throw new Exception("Unexpected default when switching on " + tt.Status);
+                }                
             }
 
             richText += toAdd;
         }
 
-        return richText;
+        DeckText.text = richText;
     }
 
     Card getHoveredCard ()
@@ -162,5 +181,30 @@ public class Drawer : MonoBehaviour
 
         string hoveredWord = DeckText.textInfo.linkInfo[linkIndex].GetLinkText();
         return deck.GetCard(hoveredWord);
+    }
+
+    int getHoveredIndex ()
+    {
+        int linkIndex = TMP_TextUtilities.FindIntersectingLink(DeckText, Input.mousePosition, null);
+
+        if (linkIndex == -1) return -1;
+
+        string tag = DeckText.textInfo.linkInfo[linkIndex].GetLinkID();
+        string id = tag.Substring(tag.LastIndexOf(":") + 1);
+        return Int32.Parse(id);
+    }
+
+    string listToCommaSeparated (string prelude, List<string> list)
+    {
+        string output = prelude + list[0];
+        
+        if (list.Count == 1) return output + ".";
+
+        for (int i = 1; i < list.Count - 1; i++)
+        {
+            output += $", {list[i]}";
+        }
+        
+        return output + $", and {list[list.Count - 1]}.";
     }
 }
