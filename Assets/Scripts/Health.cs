@@ -30,7 +30,6 @@ public class Health : MonoBehaviour
         {
             var temp = Death;
             if (temp != null) temp(this);
-            Destroy(this);
         }
     }
 

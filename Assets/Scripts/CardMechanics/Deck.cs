@@ -67,6 +67,7 @@ public class Deck
         return output;
     }
 
+    // FIXME: doesn't properly loop graveyard back into library when library is too small for a full hand
     public void DrawNewHand (int drawSize)
     {
 		for (int i = 0; i < taggedText.Count; i++)
