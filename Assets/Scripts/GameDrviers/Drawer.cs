@@ -51,7 +51,7 @@ public class Drawer : MonoBehaviour
         // TODO: delay
         Tooltip.Instance.SetCard(hover);
 
-        if (hover != null && deck.GetCurrentDraw().Contains(hover) && Input.GetMouseButtonDown(0))
+        if (hover != null && deck.GetCurrentDraw().Contains(hover) && !handSelection.Contains(hover) && Input.GetMouseButtonDown(0))
         {
             handSelection.Add(hover);
             selectedIndices.Add(getHoveredIndex());
@@ -93,6 +93,8 @@ public class Drawer : MonoBehaviour
         ButtonContainer.gameObject.SetActive(false);
 
         constructDeckString();
+
+        EventBox.Log("\nYou cleared your hand.");
     }
 
     void onClickStart ()

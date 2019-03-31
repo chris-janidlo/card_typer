@@ -1160,7 +1160,7 @@ MonoBehaviour:
     from those you fail to cast.
 
 
-    Across you is a faceless demon. Its hate for you is consuming.'
+    Across you is a faceless demon. It is consumed by its hatred for you.'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1229,10 +1229,10 @@ MonoBehaviour:
   m_margin: {x: 10, y: 5, z: 20, w: 5}
   m_textInfo:
     textComponent: {fileID: 335435253}
-    characterCount: 327
+    characterCount: 334
     spriteCount: 0
-    spaceCount: 64
-    wordCount: 64
+    spaceCount: 66
+    wordCount: 66
     linkCount: 0
     lineCount: 6
     pageCount: 1
