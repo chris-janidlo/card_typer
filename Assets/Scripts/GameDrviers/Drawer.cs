@@ -19,7 +19,6 @@ public class Drawer : MonoBehaviour
     public LinkTag CardLinkTag;
 
     [Header("UI References")]
-    public UICard CardObject;
     public Typer Typer;
     public RectTransform ButtonContainer;
     public Button ResetOrder, StartTyping;
@@ -114,6 +113,11 @@ public class Drawer : MonoBehaviour
     {
         DeckText.text = "";
         ButtonContainer.gameObject.SetActive(false);
+
+        Typer.StartTypingPhase(handSelection);
+
+        handSelection = new List<Card>();
+        selectedIndices = new List<int>();
     }
 
     void onDeckChange ()

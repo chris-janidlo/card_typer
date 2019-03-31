@@ -9,11 +9,13 @@ public class Typer : MonoBehaviour
     public float TypingTime;
 
     [Header("UI References")]
-    public UICard CardPreviewObject;
-    public Drawer DeckDriver;
-    public Image TimeBar;
-    public RectTransform PreviewLane, CurrentCardLocation;
-    public TextMeshProUGUI ProgressIndicator, CountdownText;
+    public Drawer Drawer;
+    public Image TyperBar;
+    public TextMeshProUGUI ProgressIndicator, CurrentCardText, TimerText;
+    [Tooltip("Lower index => closer to the left/center")]
+    public List<TextMeshProUGUI> UpcomingWords;
+    [Tooltip("Lower index => closer to the right/center")]
+    public List<TextMeshProUGUI> CompletedWords;
 
     [SerializeField]
     string _progress;
@@ -32,7 +34,6 @@ public class Typer : MonoBehaviour
 
     public Card CurrentCard => Cards[0];
 
-    List<UICard> previews;
     bool inTypingPhase = false;
 
     void Update ()
@@ -40,7 +41,7 @@ public class Typer : MonoBehaviour
         if (!inTypingPhase) return;
 
         Timer -= Time.deltaTime;
-        TimeBar.fillAmount = Mathf.Clamp(Timer / TypingTime, 0, 1);
+        TimerText.text = Mathf.Ceil(Timer).ToString();
         if (Timer <= 0)
         {
             endTypingPhase();
@@ -49,6 +50,8 @@ public class Typer : MonoBehaviour
 
     void OnGUI ()
     {
+        if (!inTypingPhase) return;
+
         Event e = Event.current;
 
         if (e.type != EventType.KeyDown) return;
@@ -74,6 +77,7 @@ public class Typer : MonoBehaviour
 
         if (System.Char.IsLetter(e.character))
         {
+            // TODO: highlight bad characters in red
             Progress += e.character;
         }
     }
@@ -87,15 +91,11 @@ public class Typer : MonoBehaviour
     {
         for (int i = 3; i > 0; i--)
         {
-            CountdownText.text = i.ToString();
+            TimerText.text = i.ToString();
             yield return new WaitForSeconds(1);
         }
 
         initializePhase(cards);
-
-        CountdownText.text = "Go";
-        yield return new WaitForSeconds(1);
-        CountdownText.text = "";
     }
 
     void initializePhase (List<Card> cards)
@@ -104,16 +104,13 @@ public class Typer : MonoBehaviour
         Progress = "";
         Timer = TypingTime;
 
-        previews = new List<UICard>();
-        foreach (var card in cards)
+        CurrentCardText.text = CurrentCard.Name;
+        for (int i = 1; i < cards.Count; i++)
         {
-            var uiCard = Instantiate(CardPreviewObject, PreviewLane);
-            uiCard.Button.interactable = false;
-            uiCard.Card = card;
-            previews.Add(uiCard);
+            UpcomingWords[i - 1].text = cards[i].Name;
         }
 
-        previews[0].transform.SetParent(CurrentCardLocation, false);
+        TyperBar.enabled = true;
 
         inTypingPhase = true;
     }
@@ -126,24 +123,46 @@ public class Typer : MonoBehaviour
         }
         Player.Instance.Health.IncrementValue(-Enemy.Instance.GetDamagePlan(), "The enemy", "hurt");
 
-        foreach (var card in previews)
+        foreach (var text in UpcomingWords)
         {
-            Destroy(card.gameObject);
+            text.text = "";
         }
 
-        TimeBar.fillAmount = 0;
-        Progress = "";
+        foreach (var text in CompletedWords)
+        {
+            text.text = "";
+        }
 
-        DeckDriver.StartDrawPhase();
+        CurrentCardText.text = "";
+        Progress = "";
+        TimerText.text = "";
+
+        TyperBar.enabled = false;
+
+        Drawer.StartDrawPhase();
 
         inTypingPhase = false;
     }
 
     void popCard ()
     {
+        EventBox.Log($"\nYou casted {CurrentCard.Name}.");
+
         Enemy.Instance.Health.IncrementValue(-CurrentCard.Damage, "You", "hurt");
         
         Progress = "";
+
+        for (int i = 0; i < UpcomingWords.Count - 1; i++)
+        {
+            UpcomingWords[i].text = UpcomingWords[i + 1].text;
+        }
+        
+        for (int i = CompletedWords.Count - 1; i > 0; i--)
+        {
+            CompletedWords[i].text = CompletedWords[i - 1].text;
+        }
+
+        CompletedWords[0].text = CurrentCard.Name;
 
         Cards.RemoveAt(0);
 
@@ -157,8 +176,6 @@ public class Typer : MonoBehaviour
             return;
         }
 
-        Destroy(previews[0].gameObject);
-        previews.RemoveAt(0);
-        previews[0].transform.SetParent(CurrentCardLocation, false);
+        CurrentCardText.text = CurrentCard.Name;
     }
 }
