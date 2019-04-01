@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: cb134b969a633cc4d9efba728d44d760
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Playfair Display Black
+  fontNames:
+  - Playfair Display Black
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 22e388110148ee94d9c87aa60affcfbc, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
