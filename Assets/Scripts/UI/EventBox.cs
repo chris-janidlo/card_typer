@@ -7,11 +7,13 @@ using crass;
 public class EventBox : Singleton<EventBox>
 {
     public float WordsPerMinute;
+    [Tooltip("The text goes faster as a function of how far off it is; change this to change how much faster or slower it goes.")]
+    public float LagWeight;
 
     [SerializeField]
     TextMeshProUGUI contents;
 
-    float charactersPerSecond => WordsPerMinute * 5 / 60;
+    float charactersPerSecond => WordsPerMinute * 5 / 60 + (targetText.Length - contents.text.Length) * LagWeight;
 
     string targetText;
     float characterIndex;

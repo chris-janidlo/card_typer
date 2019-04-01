@@ -6007,5 +6007,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3270c7e4f2bf43649af0c886fed0c6ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  WordsPerMinute: 800
+  WordsPerMinute: 300
+  LagWeight: 0.3
   contents: {fileID: 335435253}
