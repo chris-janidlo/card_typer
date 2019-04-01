@@ -7,6 +7,7 @@ using TMPro;
 public class Typer : MonoBehaviour
 {
     public float TypingTime;
+    public int CountdownTime;
 
     [Header("UI References")]
     public Drawer Drawer;
@@ -85,12 +86,13 @@ public class Typer : MonoBehaviour
     public void StartTypingPhase (List<Card> cards)
     {
         EventBox.Log("\n\nThe typing phase has started.");
+        StartCoroutine(lineScaler());
         StartCoroutine(countDownRoutine(cards));
     }
 
     IEnumerator countDownRoutine (List<Card> cards)
     {
-        for (int i = 3; i > 0; i--)
+        for (int i = CountdownTime; i > 0; i--)
         {
             TimerText.text = i.ToString();
             yield return new WaitForSeconds(1);
@@ -110,8 +112,6 @@ public class Typer : MonoBehaviour
         {
             UpcomingWords[i - 1].text = cards[i].Name;
         }
-
-        TyperBar.enabled = true;
 
         inTypingPhase = true;
     }
@@ -179,5 +179,22 @@ public class Typer : MonoBehaviour
         }
 
         CurrentCardText.text = CurrentCard.Name;
+    }
+
+    IEnumerator lineScaler ()
+    {
+        TyperBar.enabled = true;
+
+        TyperBar.rectTransform.sizeDelta = new Vector2
+        (
+            0,
+            TyperBar.rectTransform.sizeDelta.y
+        );
+
+        while (transform.localEulerAngles.x <= 9000)
+        {
+            TyperBar.rectTransform.sizeDelta += Vector2.right * ((float) Screen.width / CountdownTime) * Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
     }
 }

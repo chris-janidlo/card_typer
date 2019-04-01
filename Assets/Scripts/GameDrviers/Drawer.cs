@@ -18,8 +18,9 @@ public class Drawer : MonoBehaviour
     public TagPair NonCardWordTag, DiscardedTag, DrawnTag, OtherCardTag, SelectedCardTag;
     public LinkTag CardLinkTag;
 
-    [Header("UI References")]
+    [Header("UI")]
     public Typer Typer;
+    public float FadeInTime, FadeOutTime;
     public RectTransform ButtonContainer;
     public Button ResetOrder, StartTyping;
     public TextMeshProUGUI DeckText;
@@ -42,6 +43,8 @@ public class Drawer : MonoBehaviour
         ResetOrder.onClick.AddListener(onClickReset);
         StartTyping.onClick.AddListener(onClickStart);
         deck.TaggedTextChanged += onDeckChange;
+
+        DeckText.CrossFadeAlpha(0, 0, false);
     }
 
     void Update ()
@@ -85,6 +88,8 @@ public class Drawer : MonoBehaviour
         EventBox.Log($"\nThe demon plans on hurting you for {Enemy.Instance.GetDamagePlan()}.\n");
 
         deck.DrawNewHand(DrawSize);
+
+        DeckText.CrossFadeAlpha(1, FadeInTime, true);
     }
 
     void onClickReset ()
@@ -100,13 +105,14 @@ public class Drawer : MonoBehaviour
 
     void onClickStart ()
     {
-        DeckText.text = "";
         ButtonContainer.gameObject.SetActive(false);
 
         Typer.StartTypingPhase(handSelection);
 
         handSelection = new List<Card>();
         selectedIndices = new List<int>();
+
+        DeckText.CrossFadeAlpha(0, FadeOutTime, true);
     }
 
     void onDeckChange ()
