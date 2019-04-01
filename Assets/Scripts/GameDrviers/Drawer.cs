@@ -47,14 +47,15 @@ public class Drawer : MonoBehaviour
     void Update ()
     {
         var hover = getHoveredCard();
+        var hoverI = getHoveredIndex();
 
         // TODO: delay
         Tooltip.Instance.SetCard(hover);
 
-        if (hover != null && deck.GetCurrentDraw().Contains(hover) && !handSelection.Contains(hover) && Input.GetMouseButtonDown(0))
+        if (hover != null && deck.GetCurrentDraw().Contains(hover) && !selectedIndices.Contains(hoverI) && Input.GetMouseButtonDown(0))
         {
             handSelection.Add(hover);
-            selectedIndices.Add(getHoveredIndex());
+            selectedIndices.Add(hoverI);
 
             constructDeckString();
 
