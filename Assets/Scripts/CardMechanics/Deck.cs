@@ -140,40 +140,46 @@ public class Deck
         string currentWord = "";
         bool scanningPunctuation = !Char.IsLetter(fullText[0]);
 
+        Action addWord = () => {
+            WordStatus status;
+            
+            Card card;
+            cardDataLookup.TryGetValue(currentWord, out card);
+
+            if (scanningPunctuation)
+            {
+                status = WordStatus.Punctuation;
+            }
+            else if (card != null)
+            {
+                status = WordStatus.OtherCard;
+            }
+            else
+            {
+                status = WordStatus.NonCardWord;
+            }
+
+            TaggedWord next = new TaggedWord
+            {
+                Word = currentWord,
+                Status = status,
+                Card = card
+            };
+            taggedText.Add(next);
+
+            currentWord = "";
+        };
+
         foreach (char c in fullText)
         {
             if (scanningPunctuation == Char.IsLetter(c))
             {
-                WordStatus status;
-                
-                Card card;
-                cardDataLookup.TryGetValue(currentWord, out card);
-
-                if (scanningPunctuation)
-                {
-                    status = WordStatus.Punctuation;
-                }
-                else if (card != null)
-                {
-                    status = WordStatus.OtherCard;
-                }
-                else
-                {
-                    status = WordStatus.NonCardWord;
-                }
-
-                TaggedWord next = new TaggedWord
-                {
-                    Word = currentWord,
-                    Status = status,
-                    Card = card
-                };
-                taggedText.Add(next);
-
-                currentWord = "";
+                addWord();
                 scanningPunctuation = !scanningPunctuation;
             }
             currentWord += c;
         }
+
+        addWord();
     }
 }
