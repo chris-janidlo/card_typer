@@ -191,7 +191,7 @@ public class Typer : MonoBehaviour
             TyperBar.rectTransform.sizeDelta.y
         );
 
-        while (transform.localEulerAngles.x <= 9000)
+        while (TyperBar.rectTransform.sizeDelta.x < Screen.width)
         {
             TyperBar.rectTransform.sizeDelta += Vector2.right * ((float) Screen.width / CountdownTime) * Time.deltaTime;
             yield return new WaitForEndOfFrame();
