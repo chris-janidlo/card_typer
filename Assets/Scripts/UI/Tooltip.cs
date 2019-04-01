@@ -13,7 +13,6 @@ public class Tooltip : Singleton<Tooltip>
 
     TextMeshProUGUI content;
     RectTransform rectTransform;
-    string alignment;
 
     TagPair damageTag;
     
@@ -33,8 +32,6 @@ public class Tooltip : Singleton<Tooltip>
             rectTransform.anchoredPosition.x > 0 ? 1 : 0,
             rectTransform.anchoredPosition.y > 0 ? 1 : 0            
         );
-
-        alignment = rectTransform.anchoredPosition.x > 0 ? "left" : "right";
     }
 
     public void SetCard (Card card)
@@ -47,9 +44,9 @@ public class Tooltip : Singleton<Tooltip>
         }
         content.enabled = true;
         content.text =
-$@"<align=""{alignment}""><b><size={TitleSize}>{card.Name}</size></b>
-<i><size={PartOfSpeechBurnSize}>verb; burns for {damageTag.Wrap(card.Burn.ToString())}</size></i>
-<size={DefinitionSize}>do {damageTag.Wrap(card.Damage.ToString())} damage to one's opponent.</size></align>";
+$@"<align=""center""><b><size={TitleSize}>{card.Word}</size></b>
+<i><size={PartOfSpeechBurnSize}>{card.PartOfSpeech}; burns for {damageTag.Wrap(card.Burn.ToString())}</size></i></align>
+<align=""left""><size={DefinitionSize}>{card.Definition}</size></align>";
 
         ContentMirror.text = content.text;
     }

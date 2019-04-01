@@ -52,7 +52,7 @@ public class Deck
     public static Deck FromJson (TextAsset source)
     {
         Deck deck = JsonUtility.FromJson<Deck>(source.text);
-        deck.cardDataLookup = deck.cardData.ToDictionary(cd => cd.Name, cd => cd);
+        deck.cardDataLookup = deck.cardData.ToDictionary(cd => cd.Word, cd => cd);
         deck.tagText();
         return deck;
     }

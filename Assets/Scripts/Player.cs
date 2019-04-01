@@ -4,15 +4,10 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using crass;
 
-[RequireComponent(typeof(Health))]
-public class Player : Singleton<Player>
+public class Player : Agent
 {
-    public Health Health { get; private set; }
-
-    void Awake ()
+    void Start ()
     {
-        SingletonSetInstance(this, true);
-        Health = GetComponent<Health>();
-        Health.Death += h => SceneManager.LoadScene("Loss");
+        Death += a => SceneManager.LoadScene("Loss");
     }
 }

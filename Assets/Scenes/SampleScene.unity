@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311947, g: 0.38074005, b: 0.35872722, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -558,6 +558,8 @@ MonoBehaviour:
   CardLinkTag:
     ID: card
   Typer: {fileID: 66934698}
+  Player: {fileID: 535493213}
+  Enemy: {fileID: 843238103}
   FadeInTime: 0.2
   FadeOutTime: 0.1
   ButtonContainer: {fileID: 1656878681}
@@ -582,6 +584,8 @@ MonoBehaviour:
   TypingTime: 5
   CountdownTime: 3
   Drawer: {fileID: 66934697}
+  Player: {fileID: 535493213}
+  Enemy: {fileID: 843238103}
   TyperBar: {fileID: 306965348}
   ProgressIndicator: {fileID: 1320779410}
   CurrentCardText: {fileID: 66292817}
@@ -1314,11 +1318,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2c02fc8d828df144a81c2df40827f2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Max: 100
-  ReceivingName: you
-  StatusName: You
-  StatusVerb: have
-  value: 0
 --- !u!114 &535493213
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1331,6 +1330,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08ebff4367658f64ea2f64b264e3b3bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MaxHealth: 30
+  ReceivingName: you
+  StatusName: You
+  StatusVerb: have
+  health: 0
 --- !u!4 &535493214
 Transform:
   m_ObjectHideFlags: 0
@@ -2279,11 +2283,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2c02fc8d828df144a81c2df40827f2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Max: 100
-  ReceivingName: the demon
-  StatusName: The demon
-  StatusVerb: has
-  value: 0
 --- !u!114 &843238103
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2296,6 +2295,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9adb23310f024424f9905b044f57b1ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MaxHealth: 30
+  ReceivingName: the demon
+  StatusName: The demon
+  StatusVerb: has
+  health: 0
   DamageRange: {x: 5, y: 20}
 --- !u!4 &843238104
 Transform:
@@ -3063,7 +3067,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1118811734}
-  - component: {fileID: 1118811739}
   - component: {fileID: 1118811738}
   - component: {fileID: 1118811737}
   - component: {fileID: 1118811736}
@@ -3095,7 +3098,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 417.1, y: -65}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 317, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1118811735
 MonoBehaviour:
@@ -3126,7 +3129,7 @@ MonoBehaviour:
   m_Script: {fileID: 1741964061, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_HorizontalFit: 2
+  m_HorizontalFit: 0
   m_VerticalFit: 2
 --- !u!114 &1118811737
 MonoBehaviour:
@@ -3256,20 +3259,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1118811733}
   m_CullTransparentMesh: 0
---- !u!114 &1118811739
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1118811733}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 1741964061, guid: f70555f144d8491a825f0804e09c671c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_HorizontalFit: 0
-  m_VerticalFit: 0
 --- !u!21 &1142771552
 Material:
   serializedVersion: 6

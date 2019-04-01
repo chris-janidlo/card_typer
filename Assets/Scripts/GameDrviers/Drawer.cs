@@ -20,6 +20,8 @@ public class Drawer : MonoBehaviour
 
     [Header("UI")]
     public Typer Typer;
+    public Player Player;
+    public Enemy Enemy;
     public float FadeInTime, FadeOutTime;
     public RectTransform ButtonContainer;
     public Button ResetOrder, StartTyping;
@@ -62,9 +64,9 @@ public class Drawer : MonoBehaviour
 
             constructDeckString();
 
-            string handText = listToCommaSeparated("Your current hand is ", handSelection.Select(h => h.Name).ToList());
+            string handText = listToCommaSeparated("Your current hand is ", handSelection.Select(h => h.Word).ToList());
 
-            EventBox.Log($"\nYou selected {hover.Name}. {handText}");
+            EventBox.Log($"\nYou selected {hover.Word}. {handText}");
 
             ButtonContainer.gameObject.SetActive(true);
         }
@@ -79,13 +81,12 @@ public class Drawer : MonoBehaviour
     {
         EventBox.Log("\n");
         
-        Player.Instance.Health.LogStatus();
-        Enemy.Instance.Health.LogStatus();
+        Player.LogStatus();
+        Enemy.LogStatus();
 
         EventBox.Log("\n\nThe draw phase has started.");
 
-        Enemy.Instance.DeviseDamagePlan();
-        EventBox.Log($"\nThe demon plans on hurting you for {Enemy.Instance.GetDamagePlan()}.\n");
+        EventBox.Log($"\nThe demon plans on hurting you for {Enemy.DeviseDamagePlan()}.\n");
 
         deck.DrawNewHand(DrawSize);
 
@@ -119,7 +120,7 @@ public class Drawer : MonoBehaviour
     {
         var draw = deck.GetCurrentDraw();
         
-        EventBox.Log(listToCommaSeparated("\nYou drew ", draw.Select(d => d.Name).ToList()));
+        EventBox.Log(listToCommaSeparated("\nYou drew ", draw.Select(d => d.Word).ToList()));
 
         constructDeckString();
     }

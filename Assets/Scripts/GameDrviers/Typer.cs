@@ -11,6 +11,8 @@ public class Typer : MonoBehaviour
 
     [Header("UI References")]
     public Drawer Drawer;
+    public Player Player;
+    public Enemy Enemy;
     public Image TyperBar;
     public TextMeshProUGUI ProgressIndicator, CurrentCardText, TimerText;
     [Tooltip("Lower index => closer to the left/center")]
@@ -59,7 +61,7 @@ public class Typer : MonoBehaviour
 
         if (e.keyCode == KeyCode.Space || e.keyCode == KeyCode.Return)
         {
-            if (Progress.Equals(CurrentCard.Name))
+            if (Progress.Equals(CurrentCard.Word))
             {
                 popCard();
             }
@@ -107,10 +109,10 @@ public class Typer : MonoBehaviour
         Progress = "";
         Timer = TypingTime;
 
-        CurrentCardText.text = CurrentCard.Name;
+        CurrentCardText.text = CurrentCard.Word;
         for (int i = 1; i < cards.Count; i++)
         {
-            UpcomingWords[i - 1].text = cards[i].Name;
+            UpcomingWords[i - 1].text = cards[i].Word;
         }
 
         inTypingPhase = true;
@@ -121,9 +123,9 @@ public class Typer : MonoBehaviour
         EventBox.Log("\n\n");
         foreach (var card in Cards)
         {
-            Player.Instance.Health.IncrementValue(-card.Burn, "The word " + card.Name, "burnt");
+            Player.IncrementHealth(-card.Burn, "The word " + card.Word, "burnt");
         }
-        Player.Instance.Health.IncrementValue(-Enemy.Instance.GetDamagePlan(), "The enemy", "hurt");
+        Player.IncrementHealth(-Enemy.GetDamagePlan(), "The enemy", "hurt");
 
         foreach (var text in UpcomingWords)
         {
@@ -148,9 +150,7 @@ public class Typer : MonoBehaviour
 
     void popCard ()
     {
-        EventBox.Log($"\nYou casted {CurrentCard.Name}.");
-
-        Enemy.Instance.Health.IncrementValue(-CurrentCard.Damage, " You", "hurt");
+        CurrentCard.DoBehavior(Player, Enemy);
         
         Progress = "";
 
@@ -164,7 +164,7 @@ public class Typer : MonoBehaviour
             CompletedWords[i].text = CompletedWords[i - 1].text;
         }
 
-        CompletedWords[0].text = CurrentCard.Name;
+        CompletedWords[0].text = CurrentCard.Word;
 
         Cards.RemoveAt(0);
 
@@ -178,7 +178,7 @@ public class Typer : MonoBehaviour
             return;
         }
 
-        CurrentCardText.text = CurrentCard.Name;
+        CurrentCardText.text = CurrentCard.Word;
     }
 
     IEnumerator lineScaler ()

@@ -5,20 +5,15 @@ using UnityEngine.SceneManagement;
 using TMPro;
 using crass;
 
-[RequireComponent(typeof(Health))]
-public class Enemy : Singleton<Enemy>
+public class Enemy : Agent
 {
     public Vector2Int DamageRange;
 
-    public Health Health { get; private set; }
-    
     int damagePlan;
 
-    void Awake ()
+    void Start ()
     {
-        SingletonSetInstance(this, true);
-        Health = GetComponent<Health>();
-        Health.Death += h => SceneManager.LoadScene("Victory");
+        Death += a => SceneManager.LoadScene("Victory");
     }
 
     public int DeviseDamagePlan ()
