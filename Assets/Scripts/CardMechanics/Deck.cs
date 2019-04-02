@@ -81,10 +81,11 @@ public class Deck
         }
         
         int remainder = drawSize;
+        Debug.Log(remainder);
 
-        var library = taggedText.Where(t => t.Status == WordStatus.OtherCard);
+        int librarySize = taggedText.Where(t => t.Status == WordStatus.OtherCard).Count();
 
-        if (library.Count() < drawSize)
+        if (librarySize < drawSize)
         {
             for (int i = 0; i < taggedText.Count; i++)
             {
@@ -100,7 +101,7 @@ public class Deck
                 }
                 taggedText[i] = new TaggedWord(tt.Word, newStatus, tt.Card);
             }
-            remainder -= library.Count();
+            remainder -= librarySize;
         }
 
         for (int i = 0; i < remainder; i++)
