@@ -1,0 +1,152 @@
+{
+	"title": "1492",
+	"author": "Emma Lazarus",
+	"fullText": "Thou two-faced year, Mother of Change and Fate,\nDidst weep when Spain cast forth with flaming sword,\nThe children of the prophets of the Lord,\nPrince, priest, and people, spurned by zealot hate.\nHounded from sea to sea, from state to state,\nThe West refused them, and the East abhorred.\nNo anchorage the known world could afford,\nClose-locked was every port, barred every gate.\nThen smiling, thou unveil’dst, O two-faced year,\nA virgin world where doors of sunset part,\nSaying, \"Ho, all who weary, enter here!\nThere falls each ancient barrier that the art\nOf race or creed or rank devised, to rear\nGrim bulwarked hatred between heart and heart!\"",
+	"cardData": [
+		{
+			"Word": "two",
+			"PartOfSpeech": "adverb",
+			"Definition": "one more than one, three less than five, six more than negative eight",
+			"EffectText": "if this precedes an adjective, apply the effects of that adjective to both you and your opponent",
+			"Burn": 1
+		},
+		{
+			"Word": "faced",
+			"PartOfSpeech": "adjective",
+			"Definition": "having a particular face",
+			"EffectText": "balance your lux and nox",
+			"Burn": 3
+		},
+		{
+			"Word": "year",
+			"PartOfSpeech": "noun",
+			"Definition": "a period of approximately the same length in other calendars",
+			"EffectText": "",
+			"ClassName": "WordLengthDamager",
+			"Burn": 4
+		},
+		{
+			"Word": "flaming",
+			"PartOfSpeech": "adjective",
+			"Definition": "passionate, violent, used as an intensifier",
+			"EffectText": "if this precedes another attack, deal an extra half damage per lux",
+			"Burn": 0
+		},
+		{
+			"Word": "sword",
+			"PartOfSpeech": "noun",
+			"Definition": "military power, violence, destruction, one of the tarot suits",
+			"EffectText": "deal three damage",
+			"Burn": 0
+		},
+		{
+			"Word": "prophets",
+			"PartOfSpeech": "noun",
+			"Definition": "spokespeople",
+			"EffectText": "draw an extra card next turn",
+			"Burn": 5
+		},
+		{
+			"Word": "Prince",
+			"PartOfSpeech": "noun",
+			"Definition": "of a royal family, a nonreigning male member",
+			"EffectText": "",
+			"Burn": 0
+		},
+		{
+			"Word": "priest",
+			"PartOfSpeech": "noun",
+			"Definition": "one especially consecrated to the service of a divinity",
+			"EffectText": "heal two health for every lux; remove half of your lux",
+			"Burn": 0
+		},
+		{
+			"Word": "zealot",
+			"PartOfSpeech": "noun",
+			"Definition": "one marked by fervent partisanship",
+			"EffectText": "convert all lux to nox",
+			"Burn": 0
+		},
+		{
+			"Word": "abhorred",
+			"PartOfSpeech": "verb",
+			"Definition": "detest; loathe; abominate; despise; hate",
+			"EffectText": "deal one damage for every nox",
+			"Burn": 0
+		},
+		{
+			"Word": "anchorage",
+			"PartOfSpeech": "noun",
+			"Definition": "a port; a source of assurance; a dwelling place of a religious recluse",
+			"EffectText": "for the rest of the turn, do not gain or lose any lux or nox",
+			"Burn": 0
+		},
+		{
+			"Word": "locked",
+			"PartOfSpeech": "adjective",
+			"Definition": "fastened by a key or combination",
+			"EffectText": "the next spell has no effect on your lux or nox",
+			"Burn": 0
+		},
+		{
+			"Word": "unveil",
+			"PartOfSpeech": "verb",
+			"Definition": "to make something secret known",
+			"EffectText": "",
+			"ClassName": "WordLengthDamager",
+			"Burn": 0
+		},
+		{
+			"Word": "Hounded",
+			"PartOfSpeech": "verb",
+			"Definition": "pursued tenaciously, doglike",
+			"EffectText": "",
+			"ClassName": "WordLengthDamager",
+			"Burn": 0
+		},
+		{
+			"Word": "weary",
+			"PartOfSpeech": "adjective",
+			"Definition": "tired",
+			"EffectText": "",
+			"ClassName": "WordLengthDamager",
+			"Burn": 0
+		},
+		{
+			"Word": "ancient",
+			"PartOfSpeech": "adjective",
+			"Definition": "having the qualities of age, such as OLD-FASHIONED, ANTIQUE",
+			"EffectText": "",
+			"ClassName": "WordLengthDamager",
+			"Burn": 0
+		},
+		{
+			"Word": "barrier",
+			"PartOfSpeech": "noun",
+			"Definition": "a circumstance or obstacle that keeps people apart or prevents progress",
+			"EffectText": "prevents half a damage per nox",
+			"Burn": 0
+		},
+		{
+			"Word": "Grim",
+			"PartOfSpeech": "adjective",
+			"Definition": "lacking genuine levity",
+			"EffectText": "gain ten nox",
+			"Burn": 0
+		},
+		{
+			"Word": "bulwarked",
+			"PartOfSpeech": "adjective",
+			"Definition": "like a defensive wall",
+			"EffectText": "prevents one damage per lux",
+			"Burn": 0
+		},
+		{
+			"Word": "devised",
+			"PartOfSpeech": "verb",
+			"Definition": "planned or contrived in the mind",
+			"EffectText": "deal one damage for every spell cast so far on this turn",
+			"Burn": 0
+		}
+	]
+}

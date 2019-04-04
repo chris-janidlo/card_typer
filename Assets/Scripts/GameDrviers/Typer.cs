@@ -88,6 +88,7 @@ public class Typer : MonoBehaviour
     public void StartTypingPhase (List<Card> cards)
     {
         EventBox.Log("\n\nThe typing phase has started.");
+        CardBehavior.StartTypeStep();
         StartCoroutine(lineScaler());
         StartCoroutine(countDownRoutine(cards));
     }
@@ -127,6 +128,10 @@ public class Typer : MonoBehaviour
         }
         Player.IncrementHealth(-Enemy.GetDamagePlan(), "The enemy", "hurt");
 
+        Player.EndTypeStep();
+        Enemy.EndTypeStep();
+        CardBehavior.EndTypeStep();
+
         foreach (var text in UpcomingWords)
         {
             text.text = "";
@@ -151,6 +156,8 @@ public class Typer : MonoBehaviour
     void popCard ()
     {
         CurrentCard.DoBehavior(Player, Enemy);
+
+        CardBehavior.OnCast(CurrentCard, Player);
         
         Progress = "";
 

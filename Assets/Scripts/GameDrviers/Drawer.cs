@@ -11,7 +11,6 @@ public class Drawer : MonoBehaviour
 {
     [Header("Gameplay Values")]
     public TextAsset DeckJson;
-    public int DrawSize;
 
     [Header("Deck Tags")]
     public TagPair PunctuationTag;
@@ -88,7 +87,7 @@ public class Drawer : MonoBehaviour
 
         EventBox.Log($"\nThe demon plans on hurting you for {Enemy.DeviseDamagePlan()}.\n");
 
-        deck.DrawNewHand(DrawSize);
+        deck.DrawNewHand(Player.HandSize);
 
         DeckText.CrossFadeAlpha(1, FadeInTime, true);
     }
