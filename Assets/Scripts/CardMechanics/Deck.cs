@@ -81,7 +81,6 @@ public class Deck
         }
         
         int remainder = drawSize;
-        Debug.Log(remainder);
 
         int librarySize = taggedText.Where(t => t.Status == WordStatus.OtherCard).Count();
 

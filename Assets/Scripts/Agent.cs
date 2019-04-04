@@ -43,7 +43,7 @@ public class Agent : MonoBehaviour
         set
         {
             if (EssenceLock) return;
-            
+
             if (value < 0) value = 0;
 
             EventBox.Log(essenceStatus("nox", value - _nox, value));
