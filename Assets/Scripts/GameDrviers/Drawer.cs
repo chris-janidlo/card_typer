@@ -56,7 +56,7 @@ public class Drawer : MonoBehaviour
         // TODO: delay
         Tooltip.Instance.SetCard(hover);
 
-        if (hover != null && deck.GetCurrentDraw().Contains(hover) && !selectedIndices.Contains(hoverI) && Input.GetMouseButtonDown(0))
+        if (hover != null && deck.GetCurrentDraw().Contains(hover) && !selectedIndices.Contains(hoverI) && Input.GetMouseButtonUp(0))
         {
             handSelection.Add(hover);
             selectedIndices.Add(hoverI);
@@ -174,7 +174,7 @@ public class Drawer : MonoBehaviour
 
     Card getHoveredCard ()
     {
-        int linkIndex = TMP_TextUtilities.FindIntersectingLink(DeckText, Input.mousePosition, null);
+        int linkIndex = TMP_TextUtilities.FindIntersectingLink(DeckText, Input.mousePosition, CameraCache.Main);
 
         if (linkIndex == -1) return null;
 
@@ -184,7 +184,7 @@ public class Drawer : MonoBehaviour
 
     int getHoveredIndex ()
     {
-        int linkIndex = TMP_TextUtilities.FindIntersectingLink(DeckText, Input.mousePosition, null);
+        int linkIndex = TMP_TextUtilities.FindIntersectingLink(DeckText, Input.mousePosition, CameraCache.Main);
 
         if (linkIndex == -1) return -1;
 

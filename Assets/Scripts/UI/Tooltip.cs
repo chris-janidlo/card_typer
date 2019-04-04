@@ -7,6 +7,7 @@ using TMPro;
 
 public class Tooltip : Singleton<Tooltip>
 {
+    public RectTransform Canvas;
     public Color DamageColor;
     public int TitleSize, PartOfSpeechBurnSize, DefinitionSize;
     public TextMeshProUGUI ContentMirror, LeftBurn, RightBurn;
@@ -29,7 +30,11 @@ public class Tooltip : Singleton<Tooltip>
     void Update ()
     {
         bool trueIfLeft = rectTransform.anchoredPosition.x > 0;
-        transform.position = Input.mousePosition;
+
+        Vector3 pos;
+        RectTransformUtility.ScreenPointToWorldPointInRectangle(Canvas, Input.mousePosition, CameraCache.Main, out pos);
+        transform.position = pos;
+        
         rectTransform.pivot = new Vector2
         (
             trueIfLeft ? 1 : 0,
