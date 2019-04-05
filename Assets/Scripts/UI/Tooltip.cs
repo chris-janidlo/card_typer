@@ -8,6 +8,7 @@ using TMPro;
 public class Tooltip : Singleton<Tooltip>
 {
     public RectTransform Canvas;
+    public float Delay;
     public Color DamageColor;
     public int TitleSize, PartOfSpeechBurnSize, DefinitionSize;
     public TextMeshProUGUI ContentMirror, LeftBurn, RightBurn;
@@ -17,7 +18,9 @@ public class Tooltip : Singleton<Tooltip>
 
     TagPair damageTag;
 
-    Card currentCard;
+    Card currentCard = new Card();
+    IEnumerator setEnum;
+    bool hide = true, onLeftOfCursor;
     
     void Awake ()
     {
@@ -25,47 +28,75 @@ public class Tooltip : Singleton<Tooltip>
         content = GetComponent<TextMeshProUGUI>();
         rectTransform = GetComponent<RectTransform>();
         damageTag = new TagPair{ Start = $"<#{ColorUtility.ToHtmlStringRGB(DamageColor)}>", End = "</color>" };
+
+        SetCard(null);
     }
 
     void Update ()
     {
-        bool trueIfLeft = rectTransform.anchoredPosition.x > 0;
+        onLeftOfCursor = rectTransform.anchoredPosition.x > 0;
 
         Vector3 pos;
         RectTransformUtility.ScreenPointToWorldPointInRectangle(Canvas, Input.mousePosition, CameraCache.Main, out pos);
         transform.position = pos;
-        
+
         rectTransform.pivot = new Vector2
         (
-            trueIfLeft ? 1 : 0,
+            onLeftOfCursor ? 1 : 0,
             rectTransform.anchoredPosition.y > 0 ? 1 : 0            
         );
 
-        if (currentCard == null) return;
+        if (hide) return;
 
-        string burn = damageTag.Wrap(currentCard.Burn.ToString());
-        LeftBurn.text = trueIfLeft ? burn : "";
-        RightBurn.text = trueIfLeft ? "" : burn;
+        setBurn();
     }
 
     public void SetCard (Card card)
     {
+        if (card == currentCard) return;
+
         currentCard = card;
 
-        if (card == null)
+        hide = true;
+        content.enabled = false;
+        ContentMirror.text = "";
+        LeftBurn.text = "";
+        RightBurn.text = "";
+
+        if (setEnum != null)
         {
-            content.enabled = false;
-            ContentMirror.text = "";
-            LeftBurn.text = "";
-            RightBurn.text = "";
-            return;
+            StopCoroutine(setEnum);
+            setEnum = null;
         }
+
+        if (card == null) return;
+
+        setEnum = setRoutine(card);
+        StartCoroutine(setEnum);
+    }
+
+    IEnumerator setRoutine (Card card)
+    {
+        yield return new WaitForSeconds(Delay);
+        
+        hide = false;
+
         content.enabled = true;
         content.text =
-$@"<align=""center""><b><size={TitleSize}>{card.Word}</size></b>
-<i><size={PartOfSpeechBurnSize}>{card.PartOfSpeech}</size></i></align>
-<align=""left""><size={DefinitionSize}><b>meaning</b> {card.Definition} <b>usage</b> {card.EffectText}</size></align>";
+            $"<align=\"center\"><b><size={TitleSize}>{card.Word}</size></b>\n" +
+            $"<i><size={PartOfSpeechBurnSize}>{card.PartOfSpeech}</size></i></align>\n" +
+            $"<align=\"left\"><size={DefinitionSize}><b>meaning</b> {card.Definition} " +
+            $"<b>usage</b> {card.EffectText}</size></align>";
 
         ContentMirror.text = content.text;
+
+        setBurn();
+    }
+
+    void setBurn ()
+    {
+        string burn = damageTag.Wrap(currentCard.Burn.ToString());
+        LeftBurn.text = onLeftOfCursor ? burn : "";
+        RightBurn.text = onLeftOfCursor ? "" : burn;
     }
 }

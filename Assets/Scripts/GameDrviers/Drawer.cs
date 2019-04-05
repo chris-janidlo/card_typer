@@ -53,7 +53,6 @@ public class Drawer : MonoBehaviour
         var hover = getHoveredCard();
         var hoverI = getHoveredIndex();
 
-        // TODO: delay
         Tooltip.Instance.SetCard(hover);
 
         if (hover != null && deck.GetCurrentDraw().Contains(hover) && !selectedIndices.Contains(hoverI) && Input.GetMouseButtonUp(0))
