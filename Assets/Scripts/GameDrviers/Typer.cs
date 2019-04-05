@@ -15,6 +15,8 @@ public class Typer : MonoBehaviour
     public Enemy Enemy;
     public Image TyperBar;
     public TextMeshProUGUI ProgressIndicator, CurrentCardText, TimerText;
+    public TagPair BadLetterTag;
+    public float LineShakeMagnitude, LineShakeDuration;
     [Tooltip("Lower index => closer to the left/center")]
     public List<TextMeshProUGUI> UpcomingWords;
     [Tooltip("Lower index => closer to the right/center")]
@@ -38,6 +40,13 @@ public class Typer : MonoBehaviour
     public Card CurrentCard => Cards[0];
 
     bool inTypingPhase = false;
+
+    Vector2 lineStartPos;
+
+    void Awake ()
+    {
+        lineStartPos = TyperBar.transform.localPosition;
+    }
 
     void Update ()
     {
@@ -67,21 +76,28 @@ public class Typer : MonoBehaviour
             }
             else
             {
-                // TODO: feedback to player that they tried to confirm bad input
+                StartCoroutine(lineShaker());
             }
             return;
         }
 
         if (e.keyCode == KeyCode.Backspace && Progress.Length > 0)
         {
-            Progress = Progress.Substring(0, Progress.Length - 1);
+            int delLength = 1;
+            if (Progress[Progress.Length - 1] == '>')
+            {
+                // get the length of a character plus a tag pair (use of c here is arbitrary)
+                delLength = BadLetterTag.Wrap("c").Length;
+            }
+            Progress = Progress.Substring(0, Progress.Length - delLength);
             return;
         }
 
         if (System.Char.IsLetter(e.character))
         {
-            // TODO: highlight bad characters in red
-            Progress += e.character;
+            string estr = e.character.ToString();
+            string toAdd = CurrentCard.Word.StartsWith(Progress + e.character) ? estr : BadLetterTag.Wrap(estr);
+            Progress += toAdd;
         }
     }
 
@@ -203,5 +219,19 @@ public class Typer : MonoBehaviour
             TyperBar.rectTransform.sizeDelta += Vector2.right * ((float) Screen.width / CountdownTime) * Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
+    }
+
+    IEnumerator lineShaker ()
+    {
+        float timer = LineShakeDuration;
+
+        while (timer > 0)
+        {
+            TyperBar.transform.localPosition = lineStartPos + Random.insideUnitCircle * LineShakeMagnitude * (timer / LineShakeDuration);
+            timer -= Time.deltaTime;
+            yield return null;
+        }
+
+        TyperBar.transform.localPosition = lineStartPos;
     }
 }

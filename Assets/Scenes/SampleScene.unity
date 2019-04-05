@@ -589,6 +589,11 @@ MonoBehaviour:
   ProgressIndicator: {fileID: 1320779410}
   CurrentCardText: {fileID: 66292817}
   TimerText: {fileID: 541781966}
+  BadLetterTag:
+    Start: <#B90000>
+    End: </color>
+  LineShakeMagnitude: 50
+  LineShakeDuration: 1
   UpcomingWords:
   - {fileID: 998310843}
   - {fileID: 760462147}
