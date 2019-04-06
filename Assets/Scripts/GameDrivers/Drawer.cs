@@ -67,6 +67,8 @@ public class Drawer : MonoBehaviour
             EventBox.Log($"\nYou selected {hover.Word}. {handText}");
 
             ButtonContainer.gameObject.SetActive(true);
+
+            CardSelectSounds.Instance.PlayNewSound();
         }
     }
 
@@ -89,6 +91,8 @@ public class Drawer : MonoBehaviour
         deck.DrawNewHand(Player.HandSize);
 
         DeckText.CrossFadeAlpha(1, FadeInTime, true);
+
+        CardSelectSounds.Instance.StopAllSounds();
     }
 
     void onClickReset ()
@@ -100,6 +104,8 @@ public class Drawer : MonoBehaviour
         constructDeckString();
 
         EventBox.Log("\nYou cleared your hand.");
+
+        CardSelectSounds.Instance.StopAllSounds();
     }
 
     void onClickStart ()
