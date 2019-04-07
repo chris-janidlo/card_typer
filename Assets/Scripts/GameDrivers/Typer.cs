@@ -21,6 +21,8 @@ public class Typer : MonoBehaviour
     public List<TextMeshProUGUI> UpcomingWords;
     [Tooltip("Lower index => closer to the right/center")]
     public List<TextMeshProUGUI> CompletedWords;
+    public AudioSource CountdownSource;
+    public AudioClip CountdownClip;
 
     [SerializeField]
     string _progress;
@@ -77,6 +79,7 @@ public class Typer : MonoBehaviour
             else
             {
                 StartCoroutine(lineShaker());
+                TypingSounds.Instance.PlayDud();
             }
             return;
         }
@@ -95,9 +98,13 @@ public class Typer : MonoBehaviour
 
         if (System.Char.IsLetter(e.character))
         {
+            bool letterIsGood = CurrentCard.Word.StartsWith(Progress + e.character);
             string estr = e.character.ToString();
-            string toAdd = CurrentCard.Word.StartsWith(Progress + e.character) ? estr : BadLetterTag.Wrap(estr);
+            string toAdd = letterIsGood ? estr : BadLetterTag.Wrap(estr);
             Progress += toAdd;
+
+            if (letterIsGood) TypingSounds.Instance.PlayLetter();
+            else TypingSounds.Instance.PlayDud();
         }
     }
 
@@ -114,8 +121,11 @@ public class Typer : MonoBehaviour
         for (int i = CountdownTime; i > 0; i--)
         {
             TimerText.text = i.ToString();
+            CountdownSource.PlayOneShot(CountdownClip);
             yield return new WaitForSeconds(1);
         }
+
+        TypingSounds.Instance.PlayWord();
 
         initializePhase(cards);
     }
@@ -171,6 +181,8 @@ public class Typer : MonoBehaviour
 
     void popCard ()
     {
+        TypingSounds.Instance.PlayWord();
+
         CurrentCard.DoBehavior(Player, Enemy);
 
         CardBehavior.OnCast(CurrentCard, Player);
