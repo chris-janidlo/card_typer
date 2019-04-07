@@ -9,6 +9,9 @@ public class EventBox : Singleton<EventBox>
     public float WordsPerMinute;
     [Tooltip("The text goes faster as a function of how far off it is; change this to change how much faster or slower it goes.")]
     public float LagWeight;
+    public AudioSource LetterSource;
+    public AudioClip LetterClip;
+    public int CharactersPerSound;
 
     [SerializeField]
     TextMeshProUGUI contents;
@@ -17,6 +20,8 @@ public class EventBox : Singleton<EventBox>
 
     string targetText;
     float characterIndex;
+
+    int soundCounter;
 
     void Awake ()
     {
@@ -28,7 +33,20 @@ public class EventBox : Singleton<EventBox>
     {
         characterIndex += charactersPerSecond * Time.deltaTime;
         characterIndex = Mathf.Clamp(characterIndex, 0, targetText.Length);
-        contents.text = targetText.Substring(0, (int) characterIndex);
+
+        string newStr = targetText.Substring(0, (int) characterIndex);
+
+        if (contents.text != newStr)
+        {
+            soundCounter--;
+            if (soundCounter <= 0)
+            {
+                LetterSource.PlayOneShot(LetterClip);
+                soundCounter = CharactersPerSound;
+            }
+        }
+
+        contents.text = newStr;
     }
 
     public static void Log (string text)
