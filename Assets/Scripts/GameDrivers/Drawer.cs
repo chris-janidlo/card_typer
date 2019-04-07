@@ -92,7 +92,7 @@ public class Drawer : MonoBehaviour
 
         DeckText.CrossFadeAlpha(1, FadeInTime, true);
 
-        CardSelectSounds.Instance.StopAllSounds();
+        CardSelectSounds.Instance.StopAllSounds(false);
     }
 
     void onClickReset ()

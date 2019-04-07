@@ -10,7 +10,6 @@ public class EventBox : Singleton<EventBox>
     [Tooltip("The text goes faster as a function of how far off it is; change this to change how much faster or slower it goes.")]
     public float LagWeight;
     public AudioSource LetterSource;
-    public AudioClip LetterClip;
     public int CharactersPerSound;
 
     [SerializeField]
@@ -41,7 +40,7 @@ public class EventBox : Singleton<EventBox>
             soundCounter--;
             if (soundCounter <= 0)
             {
-                LetterSource.PlayOneShot(LetterClip);
+                LetterSource.Play();
                 soundCounter = CharactersPerSound;
             }
         }

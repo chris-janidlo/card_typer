@@ -22,7 +22,6 @@ public class Typer : MonoBehaviour
     [Tooltip("Lower index => closer to the right/center")]
     public List<TextMeshProUGUI> CompletedWords;
     public AudioSource CountdownSource;
-    public AudioClip CountdownClip;
 
     [SerializeField]
     string _progress;
@@ -86,6 +85,7 @@ public class Typer : MonoBehaviour
 
         if (e.keyCode == KeyCode.Backspace && Progress.Length > 0)
         {
+            TypingSounds.Instance.PlayLetter();
             int delLength = 1;
             if (Progress[Progress.Length - 1] == '>')
             {
@@ -121,11 +121,11 @@ public class Typer : MonoBehaviour
         for (int i = CountdownTime; i > 0; i--)
         {
             TimerText.text = i.ToString();
-            CountdownSource.PlayOneShot(CountdownClip);
+            CountdownSource.Play();
             yield return new WaitForSeconds(1);
         }
 
-        TypingSounds.Instance.PlayWord();
+        CountdownSource.Play();
 
         initializePhase(cards);
     }

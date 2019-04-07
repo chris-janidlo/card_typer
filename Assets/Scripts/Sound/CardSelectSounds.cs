@@ -50,11 +50,11 @@ public class CardSelectSounds : Singleton<CardSelectSounds>
         if (!additional) additional = true;
     }
 
-    public void StopAllSounds ()
+    public void StopAllSounds (bool playStopEffect = true)
     {
         if (soundCount == 0) return;
 
-        StopPlayer.Play();
+        if (playStopEffect) StopPlayer.Play();
 
         for (int i = 0; i < soundCount; i++)
         {

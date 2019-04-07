@@ -991,7 +991,6 @@ MonoBehaviour:
   - {fileID: 1390936666}
   - {fileID: 1584100840}
   CountdownSource: {fileID: 1907746258}
-  CountdownClip: {fileID: 8300000, guid: 2cf84f184ff9f4f9ab508a28762a0f79, type: 3}
   _progress: 
 --- !u!4 &66934700
 Transform:
@@ -2290,7 +2289,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -60.499996}
+  m_AnchoredPosition: {x: 0, y: -60.500008}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &335435253
@@ -2972,7 +2971,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: f0a29608a9c5b4c1e9ae8df4d8b12795, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0.3
   m_Pitch: 1
@@ -3904,7 +3903,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1409599035}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.42707893
+  m_Size: 0.42707878
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -15798,7 +15797,6 @@ MonoBehaviour:
   DudSounds:
     Sounds:
       Items:
-      - {fileID: 8300000, guid: 410603b44f596410197cf14de56a7677, type: 3}
       - {fileID: 8300000, guid: 3513704f1f03742bd81f2c3791734796, type: 3}
       - {fileID: 8300000, guid: 0816b2b865cad4fb286220a0e32cf323, type: 3}
       - {fileID: 8300000, guid: ea3ba8d2c1b1242cdb913736e907c73c, type: 3}
@@ -16576,7 +16574,7 @@ AudioSource:
   m_PlayOnAwake: 1
   m_Volume: 0.07
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -16699,7 +16697,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 2cf84f184ff9f4f9ab508a28762a0f79, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -17750,6 +17748,5 @@ MonoBehaviour:
   WordsPerMinute: 300
   LagWeight: 0.3
   LetterSource: {fileID: 511519531}
-  LetterClip: {fileID: 8300000, guid: f0a29608a9c5b4c1e9ae8df4d8b12795, type: 3}
-  CharactersPerSound: 3
+  CharactersPerSound: 5
   contents: {fileID: 335435253}
