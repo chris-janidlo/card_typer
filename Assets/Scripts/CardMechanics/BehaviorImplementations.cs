@@ -3,7 +3,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 
-public static partial class CardBehavior
+public static partial class CardStepBehaviors
 {
 	public static Dictionary<string, Action<Card, Agent, Agent>> CardBehaviors = new Dictionary<string, Action<Card, Agent, Agent>>()
 	{

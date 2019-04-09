@@ -18,7 +18,7 @@ public class Tooltip : Singleton<Tooltip>
 
     TagPair damageTag;
 
-    Card currentCard = new Card();
+    Card currentCard = null;
     IEnumerator setEnum;
     bool hide = true, onLeftOfCursor;
     

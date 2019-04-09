@@ -36,7 +36,7 @@ public class Drawer : MonoBehaviour
 
     void Awake ()
     {
-        deck = Deck.FromJson(DeckJson);
+        deck.TagText();
 
         handSelection = new List<Card>();
         selectedIndices = new List<int>();

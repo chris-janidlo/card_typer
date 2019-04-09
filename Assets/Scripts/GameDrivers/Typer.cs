@@ -111,7 +111,7 @@ public class Typer : MonoBehaviour
     public void StartTypingPhase (List<Card> cards)
     {
         EventBox.Log("\n\nThe typing phase has started.");
-        CardBehavior.StartTypeStep();
+        CardStepBehaviors.StartTypeStep();
         StartCoroutine(lineScaler());
         StartCoroutine(countDownRoutine(cards));
     }
@@ -156,7 +156,7 @@ public class Typer : MonoBehaviour
 
         Player.EndTypeStep();
         Enemy.EndTypeStep();
-        CardBehavior.EndTypeStep();
+        CardStepBehaviors.EndTypeStep();
 
         foreach (var text in UpcomingWords)
         {
@@ -185,7 +185,7 @@ public class Typer : MonoBehaviour
 
         CurrentCard.DoBehavior(Player, Enemy);
 
-        CardBehavior.OnCast(CurrentCard, Player);
+        CardStepBehaviors.OnCast(CurrentCard, Player);
         
         Progress = "";
 

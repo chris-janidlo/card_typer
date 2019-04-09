@@ -6,7 +6,7 @@ using System.Collections.ObjectModel;
 using UnityEngine;
 
 [Serializable]
-public class Deck
+public abstract class Deck
 {
     public enum WordStatus
     {
@@ -41,21 +41,10 @@ public class Deck
     List<TaggedWord> taggedText;
     public ReadOnlyCollection<TaggedWord> TaggedText => taggedText.AsReadOnly();
 
-    [SerializeField]
-    string fullText;
+    protected abstract string fullText { get; }
+    // protected abstract List<Card> cardData { get; }
 
-    [SerializeField]
-    List<Card> cardData;
-
-    Dictionary<string, Card> cardDataLookup;
-
-    public static Deck FromJson (TextAsset source)
-    {
-        Deck deck = JsonUtility.FromJson<Deck>(source.text);
-        deck.cardDataLookup = deck.cardData.ToDictionary(cd => cd.Word, cd => cd);
-        deck.tagText();
-        return deck;
-    }
+    Dictionary<string, Card> _cardDataLookup = new Dictionary<string, Card>();
 
     public override string ToString ()
     {
@@ -67,7 +56,55 @@ public class Deck
         return output;
     }
 
-    // FIXME: doesn't properly loop graveyard back into library when library is too small for a full hand
+    public void TagText ()
+    {
+        taggedText = new List<TaggedWord>();
+        
+        string currentWord = "";
+        bool scanningPunctuation = !Char.IsLetter(fullText[0]);
+
+        Action addWord = () => {
+            WordStatus status;
+            
+            Card card = GetCard(currentWord);
+
+            if (scanningPunctuation)
+            {
+                status = WordStatus.Punctuation;
+            }
+            else if (card != null)
+            {
+                status = WordStatus.OtherCard;
+            }
+            else
+            {
+                status = WordStatus.NonCardWord;
+            }
+
+            TaggedWord next = new TaggedWord
+            {
+                Word = currentWord,
+                Status = status,
+                Card = card
+            };
+            taggedText.Add(next);
+
+            currentWord = "";
+        };
+
+        foreach (char c in fullText)
+        {
+            if (scanningPunctuation == Char.IsLetter(c))
+            {
+                addWord();
+                scanningPunctuation = !scanningPunctuation;
+            }
+            currentWord += c;
+        }
+
+        addWord();
+    }
+
     public void DrawNewHand (int drawSize)
     {
 		for (int i = 0; i < taggedText.Count; i++)
@@ -130,56 +167,17 @@ public class Deck
     public Card GetCard (string name)
     {
         Card value;
-        return cardDataLookup.TryGetValue(name, out value) ? value : null;
-    }
 
-    void tagText ()
-    {
-        taggedText = new List<TaggedWord>();
-        
-        string currentWord = "";
-        bool scanningPunctuation = !Char.IsLetter(fullText[0]);
-
-        Action addWord = () => {
-            WordStatus status;
-            
-            Card card;
-            cardDataLookup.TryGetValue(currentWord, out card);
-
-            if (scanningPunctuation)
-            {
-                status = WordStatus.Punctuation;
-            }
-            else if (card != null)
-            {
-                status = WordStatus.OtherCard;
-            }
-            else
-            {
-                status = WordStatus.NonCardWord;
-            }
-
-            TaggedWord next = new TaggedWord
-            {
-                Word = currentWord,
-                Status = status,
-                Card = card
-            };
-            taggedText.Add(next);
-
-            currentWord = "";
-        };
-
-        foreach (char c in fullText)
+        if (_cardDataLookup.TryGetValue(name, out value))
         {
-            if (scanningPunctuation == Char.IsLetter(c))
-            {
-                addWord();
-                scanningPunctuation = !scanningPunctuation;
-            }
-            currentWord += c;
+            return value;
         }
-
-        addWord();
+        else
+        {
+            var type = Type.GetType(name);
+            var card = type == null ? null : (Card) Activator.CreateInstance(type);
+            _cardDataLookup[name] = card;
+            return card; 
+        }
     }
 }
