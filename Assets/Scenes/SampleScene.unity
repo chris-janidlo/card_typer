@@ -3903,7 +3903,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1409599035}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.42707893
+  m_Size: 0.42707902
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -17748,5 +17748,5 @@ MonoBehaviour:
   WordsPerMinute: 300
   LagWeight: 0.3
   LetterSource: {fileID: 511519531}
-  CharactersPerSound: 5
+  CharactersPerSound: 4
   contents: {fileID: 335435253}

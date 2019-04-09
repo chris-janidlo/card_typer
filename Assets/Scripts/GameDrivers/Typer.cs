@@ -1,11 +1,15 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using crass;
 
-public class Typer : MonoBehaviour
+public class Typer : Singleton<Typer>
 {
+    public event Action OnEndPhase, OnStartPhase;
+
     public float TypingTime;
     public int CountdownTime;
 
@@ -37,6 +41,7 @@ public class Typer : MonoBehaviour
 
     public float Timer { get; private set; }
     public List<Card> Cards { get; private set; }
+    public int CardsCasted { get; private set; }
 
     public Card CurrentCard => Cards[0];
 
@@ -46,6 +51,8 @@ public class Typer : MonoBehaviour
 
     void Awake ()
     {
+        // TODO: unsubscribe all events before resetting?
+        SingletonSetInstance(this, true);
         lineStartPos = TyperBar.transform.localPosition;
     }
 
@@ -111,7 +118,8 @@ public class Typer : MonoBehaviour
     public void StartTypingPhase (List<Card> cards)
     {
         EventBox.Log("\n\nThe typing phase has started.");
-        CardStepBehaviors.StartTypeStep();
+        CardsCasted = 0;
+        if (OnStartPhase != null) OnStartPhase();
         StartCoroutine(lineScaler());
         StartCoroutine(countDownRoutine(cards));
     }
@@ -156,7 +164,7 @@ public class Typer : MonoBehaviour
 
         Player.EndTypeStep();
         Enemy.EndTypeStep();
-        CardStepBehaviors.EndTypeStep();
+        if (OnEndPhase != null) OnEndPhase();
 
         foreach (var text in UpcomingWords)
         {
@@ -185,9 +193,9 @@ public class Typer : MonoBehaviour
 
         CurrentCard.DoBehavior(Player, Enemy);
 
-        CardStepBehaviors.OnCast(CurrentCard, Player);
-        
         Progress = "";
+
+        CardsCasted++;
 
         for (int i = 0; i < UpcomingWords.Count - 1; i++)
         {
@@ -239,7 +247,7 @@ public class Typer : MonoBehaviour
 
         while (timer > 0)
         {
-            TyperBar.transform.localPosition = lineStartPos + Random.insideUnitCircle * LineShakeMagnitude * (timer / LineShakeDuration);
+            TyperBar.transform.localPosition = lineStartPos + UnityEngine.Random.insideUnitCircle * LineShakeMagnitude * (timer / LineShakeDuration);
             timer -= Time.deltaTime;
             yield return null;
         }

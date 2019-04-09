@@ -7,8 +7,10 @@ using UnityEngine.UI;
 using TMPro;
 using crass;
 
-public class Drawer : MonoBehaviour
+public class Drawer : Singleton<Drawer>
 {
+    public event Action OnEndPhase, OnStartPhase;
+
     [Header("Gameplay Values")]
     public TextAsset DeckJson;
 
@@ -36,6 +38,9 @@ public class Drawer : MonoBehaviour
 
     void Awake ()
     {
+        // TODO: unsubscribe all events before resetting?
+        SingletonSetInstance(this, true);
+
         deck.TagText();
 
         handSelection = new List<Card>();
@@ -93,6 +98,8 @@ public class Drawer : MonoBehaviour
         DeckText.CrossFadeAlpha(1, FadeInTime, true);
 
         CardSelectSounds.Instance.StopAllSounds(false);
+
+        if (OnStartPhase != null) OnStartPhase();
     }
 
     void onClickReset ()
@@ -118,6 +125,8 @@ public class Drawer : MonoBehaviour
         selectedIndices = new List<int>();
 
         DeckText.CrossFadeAlpha(0, FadeOutTime, true);
+
+        if (OnEndPhase != null) OnEndPhase();
     }
 
     void onDeckChange ()

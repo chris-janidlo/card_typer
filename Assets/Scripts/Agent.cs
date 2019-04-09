@@ -7,7 +7,7 @@ public class Agent : MonoBehaviour
     public int MaxHealth;
     public string ReceivingName, StatusName, StatusVerb = "has";
     public int HandSize = 7;
-    public bool EssenceLock;
+    public bool EssenceLock, LuxLock, NoxLock, NoxFloor;
     public int Shield;
 
     [SerializeField]
@@ -18,7 +18,7 @@ public class Agent : MonoBehaviour
         get => _lux;
         set
         {
-            if (EssenceLock) return;
+            if (EssenceLock || LuxLock) return;
 
             if (value < 0) value = 0;
 
@@ -42,7 +42,8 @@ public class Agent : MonoBehaviour
         get => _nox;
         set
         {
-            if (EssenceLock) return;
+            if (EssenceLock || NoxLock) return;
+            if (NoxFloor && value < Nox) return;
 
             if (value < 0) value = 0;
 

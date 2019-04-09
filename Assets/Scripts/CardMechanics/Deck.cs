@@ -10,8 +10,7 @@ public abstract class Deck
 {
     public enum WordStatus
     {
-        Punctuation,
-        NonCardWord, // for words like "a", "the"
+        NonCardText,
         Discarded,
         Drawn,
         OtherCard // for any card that is neither discarded nor drawn
@@ -41,8 +40,8 @@ public abstract class Deck
     List<TaggedWord> taggedText;
     public ReadOnlyCollection<TaggedWord> TaggedText => taggedText.AsReadOnly();
 
-    protected abstract string fullText { get; }
-    // protected abstract List<Card> cardData { get; }
+    protected abstract string bracketedText { get; }
+    protected abstract List<Card> cardList { get; }
 
     Dictionary<string, Card> _cardDataLookup = new Dictionary<string, Card>();
 
@@ -60,8 +59,9 @@ public abstract class Deck
     {
         taggedText = new List<TaggedWord>();
         
+        int wordIndex = 0;
         string currentWord = "";
-        bool scanningPunctuation = !Char.IsLetter(fullText[0]);
+        bool scanningCardWord = bracketedText[0] == '{';
 
         Action addWord = () => {
             WordStatus status;
@@ -92,14 +92,22 @@ public abstract class Deck
             currentWord = "";
         };
 
-        foreach (char c in fullText)
+        foreach (char c in bracketedText)
         {
-            if (scanningPunctuation == Char.IsLetter(c))
+            switch (c)
             {
-                addWord();
-                scanningPunctuation = !scanningPunctuation;
+                case '{':
+                    addWord();
+                    scanningCardWord = true;
+                    break;
+                
+                case '}':
+                    if (scanningCardWord)
+                    {
+                        addWord();
+                        scanningCardWord = false;
+                    }
             }
-            currentWord += c;
         }
 
         addWord();
@@ -174,7 +182,7 @@ public abstract class Deck
         }
         else
         {
-            var type = Type.GetType(name);
+            var type = Type.GetType("CardBehavior." + name);
             var card = type == null ? null : (Card) Activator.CreateInstance(type);
             _cardDataLookup[name] = card;
             return card; 
