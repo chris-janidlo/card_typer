@@ -3,7 +3,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 
-public static partial class CardBehavior
+public static partial class CardStepBehaviors
 {
 	public static int CardCount;
 
@@ -39,11 +39,6 @@ public static partial class CardBehavior
 	public static void OnCast (Card card, Agent caster)
 	{
 		doStepBehaviors(CardCastBehaviors.Select<Func<Card, Agent, bool>, Func<bool>>(f => () => f(card, caster)).ToList());
-	}
-
-	public static void DoCardBehavior (Card card, Agent caster, Agent enemy)
-	{
-		CardBehaviors[card.ClassName ?? card.Word](card, caster, enemy);
 	}
 
 	static void doStepBehaviors (List<Func<bool>> list)
