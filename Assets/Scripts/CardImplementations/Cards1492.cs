@@ -446,13 +446,15 @@ public class Zealot : Card
 {
 	public override string PartOfSpeech => "noun";
 	public override string Definition => "one marked by fervant partisanship";
-	public override string EffectText => "convert all lux to nox";
+	public override string EffectText => $"gain {noxPerLux} nox per lux; lose all your lux";
 
 	public override int Burn => 2;
 
+	float noxPerLux = 1;
+
 	protected override void behaviorImplementation (Agent caster, Agent enemy)
 	{
-		caster.Nox += caster.Lux;
+		caster.Nox += (int) (caster.Lux * noxPerLux);
 		caster.Lux = 0;
 	}
 }
