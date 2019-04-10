@@ -4,7 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[Serializable]
 public abstract class Card
 {
     public static event Action<Card, Agent> CardCast;
@@ -17,11 +16,6 @@ public abstract class Card
     public abstract string EffectText { get; }
 
     public abstract int Burn { get; }
-
-    public Card (string word)
-    {
-        Word = word;
-    }
 
     public void DoBehavior (Agent caster, Agent enemy)
     {

@@ -9,6 +9,11 @@ public struct TagPair
     {
         return Start + target + End;
     }
+    
+    public string Wrap (char target)
+    {
+        return Start + target + End;
+    }
 }
 
 [Serializable]
@@ -18,6 +23,6 @@ public struct LinkTag
 
     public string Wrap (string target, int index)
     {
-        return $"<link=\"{ID}:{target}:{index}\">{target}</link>";
+        return $"<link=\"{ID}:{index}\">{target}</link>";
     }
 }

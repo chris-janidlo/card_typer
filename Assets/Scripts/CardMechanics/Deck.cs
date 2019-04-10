@@ -5,145 +5,92 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using UnityEngine;
 
-[Serializable]
 public abstract class Deck
 {
-    public enum WordStatus
+    public enum TextStatus
     {
-        NonCardText,
-        Discarded,
-        Drawn,
-        OtherCard // for any card that is neither discarded nor drawn
+        Card,
+        DrawnCard,
+        DiscardedCard,
+        NonCardText
     }
 
-    public struct TaggedWord
+    public struct TaggedText
     {
-        public string Word;
-        public WordStatus Status;
+        public string Text;
+        public TextStatus Status;
         public Card Card;
 
-        public TaggedWord (string word, WordStatus status, Card card)
+        public TaggedText (string word, TextStatus status, Card card)
         {
-            Word = word;
+            Text = word;
             Status = status;
             Card = card;
         }
 
         public string ToTagString ()
         {
-            return $"'{Word}': {Status}";
+            return $"'{Text}': {Status}";
         }
     }
 
     public event Action TaggedTextChanged;
 
-    List<TaggedWord> taggedText;
-    public ReadOnlyCollection<TaggedWord> TaggedText => taggedText.AsReadOnly();
+    List<TaggedText> taggedTexts;
+    public ReadOnlyCollection<TaggedText> TaggedTexts => taggedTexts.AsReadOnly();
 
     protected abstract string bracketedText { get; }
     protected abstract List<Card> cardList { get; }
 
-    Dictionary<string, Card> _cardDataLookup = new Dictionary<string, Card>();
+    public static Deck FromClassString (string name)
+    {
+        Type type = Type.GetType(name) ?? Type.GetType("Deck" + name);
+        Deck value = (Deck) Activator.CreateInstance(type);
+        value.tagText();
+        return value;
+    }
 
     public override string ToString ()
     {
         string output = "";
-        foreach (var tt in taggedText)
+        foreach (var tt in taggedTexts)
         {
             output += tt.ToTagString() + "\n";
         }
         return output;
     }
 
-    public void TagText ()
-    {
-        taggedText = new List<TaggedWord>();
-        
-        int wordIndex = 0;
-        string currentWord = "";
-        bool scanningCardWord = bracketedText[0] == '{';
-
-        Action addWord = () => {
-            WordStatus status;
-            
-            Card card = GetCard(currentWord);
-
-            if (scanningPunctuation)
-            {
-                status = WordStatus.Punctuation;
-            }
-            else if (card != null)
-            {
-                status = WordStatus.OtherCard;
-            }
-            else
-            {
-                status = WordStatus.NonCardWord;
-            }
-
-            TaggedWord next = new TaggedWord
-            {
-                Word = currentWord,
-                Status = status,
-                Card = card
-            };
-            taggedText.Add(next);
-
-            currentWord = "";
-        };
-
-        foreach (char c in bracketedText)
-        {
-            switch (c)
-            {
-                case '{':
-                    addWord();
-                    scanningCardWord = true;
-                    break;
-                
-                case '}':
-                    if (scanningCardWord)
-                    {
-                        addWord();
-                        scanningCardWord = false;
-                    }
-            }
-        }
-
-        addWord();
-    }
-
     public void DrawNewHand (int drawSize)
     {
-		for (int i = 0; i < taggedText.Count; i++)
+		for (int i = 0; i < taggedTexts.Count; i++)
         {
-            if (taggedText[i].Status == WordStatus.Drawn)
+            if (taggedTexts[i].Status == TextStatus.DrawnCard)
             {
-                var tt = taggedText[i];
-                tt.Status = WordStatus.Discarded;
-                taggedText[i] = tt;
+                var tt = taggedTexts[i];
+                tt.Status = TextStatus.DiscardedCard;
+                taggedTexts[i] = tt;
             }
         }
         
         int remainder = drawSize;
 
-        int librarySize = taggedText.Where(t => t.Status == WordStatus.OtherCard).Count();
+        int librarySize = taggedTexts.Where(t => t.Status == TextStatus.Card).Count();
 
         if (librarySize < drawSize)
         {
-            for (int i = 0; i < taggedText.Count; i++)
+            for (int i = 0; i < taggedTexts.Count; i++)
             {
-                var tt = taggedText[i];
-                WordStatus newStatus = tt.Status;
-                if (tt.Status == WordStatus.Discarded)
+                var tt = taggedTexts[i];
+                TextStatus newStatus = tt.Status;
+                if (tt.Status == TextStatus.DiscardedCard)
                 {
-                    newStatus = WordStatus.OtherCard;
+                    newStatus = TextStatus.Card;
                 }
-                else if (tt.Status == WordStatus.OtherCard)
+                else if (tt.Status == TextStatus.Card)
                 {
-                    newStatus = WordStatus.Drawn;
+                    newStatus = TextStatus.DrawnCard;
                 }
-                taggedText[i] = new TaggedWord(tt.Word, newStatus, tt.Card);
+                taggedTexts[i] = new TaggedText(tt.Text, newStatus, tt.Card);
             }
             remainder -= librarySize;
         }
@@ -151,13 +98,13 @@ public abstract class Deck
         for (int i = 0; i < remainder; i++)
         {
             // get list of indices on taggedText of words that are not drawn or discarded
-            var indices = taggedText.Select((val, ind) => new { val, ind })
-                                    .Where(x => x.val.Status == WordStatus.OtherCard)
+            var indices = taggedTexts.Select((val, ind) => new { val, ind })
+                                    .Where(x => x.val.Status == TextStatus.Card)
                                     .Select(x => x.ind).ToList();
             var index = indices[UnityEngine.Random.Range(0, indices.Count)];
             
-            var tt = taggedText[index];
-            taggedText[index] = new TaggedWord(tt.Word, WordStatus.Drawn, tt.Card);
+            var tt = taggedTexts[index];
+            taggedTexts[index] = new TaggedText(tt.Text, TextStatus.DrawnCard, tt.Card);
         }
         
         var temp = TaggedTextChanged;
@@ -166,26 +113,63 @@ public abstract class Deck
 
     public List<Card> GetCurrentDraw ()
     {
-        return taggedText
-            .Where(t => t.Status == WordStatus.Drawn)
+        return taggedTexts
+            .Where(t => t.Status == TextStatus.DrawnCard)
             .Select(t => t.Card)
             .ToList();
     }
 
-    public Card GetCard (string name)
+    void tagText ()
     {
-        Card value;
+        taggedTexts = new List<TaggedText>();
+        
+        int wordIndex = 0;
+        string currentText = "";
+        bool scanningCard = bracketedText[0] == '{', atStart = true;
 
-        if (_cardDataLookup.TryGetValue(name, out value))
+        Action addWord = () => {
+            Card card = null;
+
+            if (scanningCard)
+            {
+                card = cardList[wordIndex++];
+                card.Word = currentText;
+            }
+
+            TaggedText next = new TaggedText
+            {
+                Text = currentText,
+                Status = scanningCard ? TextStatus.Card : TextStatus.NonCardText,
+                Card = card
+            };
+            taggedTexts.Add(next);
+
+            currentText = "";
+        };
+
+        foreach (char c in bracketedText)
         {
-            return value;
+            switch (c)
+            {
+                case '{':
+                    if (scanningCard) throw new Exception("unexpected {");
+                    if (!atStart) addWord();
+                    scanningCard = true;
+                    break;
+                
+                case '}':
+                    if (!scanningCard) throw new Exception("unexpected }");
+                    addWord();
+                    scanningCard = false;
+                    break;
+                
+                default:
+                    currentText += c;
+                    break;
+            }
+            atStart = false;
         }
-        else
-        {
-            var type = Type.GetType("CardBehavior." + name);
-            var card = type == null ? null : (Card) Activator.CreateInstance(type);
-            _cardDataLookup[name] = card;
-            return card; 
-        }
+
+        addWord();
     }
 }

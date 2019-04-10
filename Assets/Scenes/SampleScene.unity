@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311947, g: 0.38074005, b: 0.35872722, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -916,20 +916,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c50766b919a806c499e356e9263481b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DeckJson: {fileID: 4900000, guid: b1b0b061390df674899b72886380bedc, type: 3}
-  PunctuationTag:
+  NonCardTag:
     Start: <#666666>
     End: </color>
-  NonCardWordTag:
-    Start: <#666666>
-    End: </color>
-  DiscardedTag:
+  DiscardedCardTag:
     Start: <#AAAAAA>
     End: </color>
-  DrawnTag:
+  DrawnCardTag:
     Start: <u>
     End: </u>
-  OtherCardTag:
+  CardTag:
     Start: 
     End: 
   SelectedCardTag:
@@ -937,6 +933,8 @@ MonoBehaviour:
     End: </b>
   CardLinkTag:
     ID: card
+  NonCardLinkTag:
+    ID: text
   Typer: {fileID: 66934698}
   Player: {fileID: 535493213}
   Enemy: {fileID: 843238103}
@@ -946,9 +944,6 @@ MonoBehaviour:
   ResetOrder: {fileID: 68259426}
   StartTyping: {fileID: 1493163238}
   DeckText: {fileID: 549575333}
-  deck:
-    fullText: 
-    cardData: []
 --- !u!114 &66934698
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2289,7 +2284,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -60.500004}
+  m_AnchoredPosition: {x: 0, y: -60.499985}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &335435253
@@ -3106,6 +3101,9 @@ MonoBehaviour:
   StatusVerb: have
   HandSize: 7
   EssenceLock: 0
+  LuxLock: 0
+  NoxLock: 0
+  NoxFloor: 0
   Shield: 0
   _lux: 0
   _nox: 0
@@ -3903,7 +3901,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1409599035}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.42707902
+  m_Size: 0.8541578
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -4877,6 +4875,9 @@ MonoBehaviour:
   StatusVerb: has
   HandSize: 7
   EssenceLock: 0
+  LuxLock: 0
+  NoxLock: 0
+  NoxFloor: 0
   Shield: 0
   _lux: 0
   _nox: 0
@@ -13744,7 +13745,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1262379047}
   m_HandleRect: {fileID: 1262379046}
   m_Direction: 0
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:

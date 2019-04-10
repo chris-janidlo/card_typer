@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,9 +19,9 @@ public class Tooltip : Singleton<Tooltip>
 
     TagPair damageTag;
 
-    Card currentCard = null;
+    Card currentCard;
     IEnumerator setEnum;
-    bool hide = true, onLeftOfCursor;
+    bool hide = true, init = true, onLeftOfCursor;
     
     void Awake ()
     {
@@ -30,6 +31,7 @@ public class Tooltip : Singleton<Tooltip>
         damageTag = new TagPair{ Start = $"<#{ColorUtility.ToHtmlStringRGB(DamageColor)}>", End = "</color>" };
 
         SetCard(null);
+        init = false;
     }
 
     void Update ()
@@ -53,7 +55,7 @@ public class Tooltip : Singleton<Tooltip>
 
     public void SetCard (Card card)
     {
-        if (card == currentCard) return;
+        if (card == currentCard && !init) return;
 
         currentCard = card;
 

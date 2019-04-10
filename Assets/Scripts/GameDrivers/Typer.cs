@@ -74,7 +74,7 @@ public class Typer : Singleton<Typer>
 
         Event e = Event.current;
 
-        if (e.type != EventType.KeyDown) return;
+        if (!e.isKey || e.type != EventType.KeyDown) return;
 
         if (e.keyCode == KeyCode.Space || e.keyCode == KeyCode.Return)
         {
@@ -90,8 +90,14 @@ public class Typer : Singleton<Typer>
             return;
         }
 
-        if (e.keyCode == KeyCode.Backspace && Progress.Length > 0)
+        if (e.keyCode == KeyCode.Backspace)
         {
+            if (Progress.Length == 0)
+            {
+                TypingSounds.Instance.PlayDud();
+                return;
+            }
+            
             TypingSounds.Instance.PlayLetter();
             int delLength = 1;
             if (Progress[Progress.Length - 1] == '>')
@@ -103,15 +109,21 @@ public class Typer : Singleton<Typer>
             return;
         }
 
-        if (System.Char.IsLetter(e.character))
-        {
-            bool letterIsGood = CurrentCard.Word.StartsWith(Progress + e.character);
-            string estr = e.character.ToString();
-            string toAdd = letterIsGood ? estr : BadLetterTag.Wrap(estr);
-            Progress += toAdd;
+        char typed = e.character;
 
-            if (letterIsGood) TypingSounds.Instance.PlayLetter();
-            else TypingSounds.Instance.PlayDud();
+        // shoo away the weird ghost characters
+        // seriously everything breaks if this isn't here because UGUI is haunted
+        if (!Char.IsLetter(typed) && !Char.IsDigit(typed) && !Char.IsPunctuation(typed)) return;
+
+        if (CurrentCard.Word.StartsWith(Progress + typed))
+        {
+            Progress += typed;
+            TypingSounds.Instance.PlayLetter();
+        }
+        else
+        {
+            Progress += BadLetterTag.Wrap(typed);
+            TypingSounds.Instance.PlayDud();
         }
     }
 
@@ -155,6 +167,8 @@ public class Typer : Singleton<Typer>
 
     void endTypingPhase ()
     {
+        CardSelectSounds.Instance.StopAllSounds(Cards.Count > 0);
+
         EventBox.Log("\n\n");
         foreach (var card in Cards)
         {
@@ -162,6 +176,7 @@ public class Typer : Singleton<Typer>
         }
         Player.IncrementHealth(-Enemy.GetDamagePlan(), "The enemy", "hurt");
 
+        // TODO: move these to event
         Player.EndTypeStep();
         Enemy.EndTypeStep();
         if (OnEndPhase != null) OnEndPhase();

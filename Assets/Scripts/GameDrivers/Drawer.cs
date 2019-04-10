@@ -12,12 +12,11 @@ public class Drawer : Singleton<Drawer>
     public event Action OnEndPhase, OnStartPhase;
 
     [Header("Gameplay Values")]
-    public TextAsset DeckJson;
+    public string DeckClassName;
 
     [Header("Deck Tags")]
-    public TagPair PunctuationTag;
-    public TagPair NonCardWordTag, DiscardedTag, DrawnTag, OtherCardTag, SelectedCardTag;
-    public LinkTag CardLinkTag;
+    public TagPair NonCardTag;
+    public TagPair DiscardedCardTag, DrawnCardTag, CardTag, SelectedCardTag;
 
     [Header("UI")]
     public Typer Typer;
@@ -28,35 +27,35 @@ public class Drawer : Singleton<Drawer>
     public Button ResetOrder, StartTyping;
     public TextMeshProUGUI DeckText;
 
-    [SerializeField]
     Deck deck;
 
     List<Card> handSelection;
     List<int> selectedIndices;
 
-    int orderIndex;
+    public LinkTag linkTag = new LinkTag { ID = "taggedtext" };
 
     void Awake ()
     {
         // TODO: unsubscribe all events before resetting?
         SingletonSetInstance(this, true);
 
-        deck.TagText();
+        deck = Deck.FromClassString(DeckClassName);
+        deck.TaggedTextChanged += onDeckChange;
 
         handSelection = new List<Card>();
         selectedIndices = new List<int>();
 
         ResetOrder.onClick.AddListener(onClickReset);
         StartTyping.onClick.AddListener(onClickStart);
-        deck.TaggedTextChanged += onDeckChange;
 
         DeckText.CrossFadeAlpha(0, 0, false);
     }
 
     void Update ()
     {
-        var hover = getHoveredCard();
-        var hoverI = getHoveredIndex();
+        int hoverI = getHoveredIndex();
+        Deck.TaggedText? hoveredText = hoverI > 0 ? (Deck.TaggedText?) deck.TaggedTexts[hoverI] : null;
+        Card hover = hoveredText?.Card;
 
         Tooltip.Instance.SetCard(hover);
 
@@ -96,8 +95,6 @@ public class Drawer : Singleton<Drawer>
         deck.DrawNewHand(Player.HandSize);
 
         DeckText.CrossFadeAlpha(1, FadeInTime, true);
-
-        CardSelectSounds.Instance.StopAllSounds(false);
 
         if (OnStartPhase != null) OnStartPhase();
     }
@@ -142,37 +139,33 @@ public class Drawer : Singleton<Drawer>
     {
         string richText = "";
         
-        for (int i = 0; i < deck.TaggedText.Count; i++)
+        for (int i = 0; i < deck.TaggedTexts.Count; i++)
         {
-            var tt = deck.TaggedText[i];
-            string toAdd;
+            var tt = deck.TaggedTexts[i];
+            string linked = linkTag.Wrap(tt.Text, i), toAdd;
 
             if (selectedIndices.Contains(i))
             {
-                toAdd = SelectedCardTag.Wrap(CardLinkTag.Wrap(tt.Word, i));
+                toAdd = SelectedCardTag.Wrap(linked);
             }
             else
             {
                 switch (tt.Status)
                 {
-                    case Deck.WordStatus.Punctuation:
-                        toAdd = PunctuationTag.Wrap(tt.Word);
+                    case Deck.TextStatus.NonCardText:
+                        toAdd = NonCardTag.Wrap(linked);
                         break;
 
-                    case Deck.WordStatus.NonCardWord:
-                        toAdd = NonCardWordTag.Wrap(tt.Word);
+                    case Deck.TextStatus.DiscardedCard:
+                        toAdd = DiscardedCardTag.Wrap(linked);
                         break;
 
-                    case Deck.WordStatus.Discarded:
-                        toAdd = DiscardedTag.Wrap(CardLinkTag.Wrap(tt.Word, i));
+                    case Deck.TextStatus.Card:
+                        toAdd = CardTag.Wrap(linked);
                         break;
 
-                    case Deck.WordStatus.OtherCard:
-                        toAdd = OtherCardTag.Wrap(CardLinkTag.Wrap(tt.Word, i));
-                        break;
-
-                    case Deck.WordStatus.Drawn:
-                        toAdd = DrawnTag.Wrap(CardLinkTag.Wrap(tt.Word, i));
+                    case Deck.TextStatus.DrawnCard:
+                        toAdd = DrawnCardTag.Wrap(linked);
                         break;
                     
                     default:
@@ -184,16 +177,6 @@ public class Drawer : Singleton<Drawer>
         }
 
         DeckText.text = richText;
-    }
-
-    Card getHoveredCard ()
-    {
-        int linkIndex = TMP_TextUtilities.FindIntersectingLink(DeckText, Input.mousePosition, CameraCache.Main);
-
-        if (linkIndex == -1) return null;
-
-        string hoveredWord = DeckText.textInfo.linkInfo[linkIndex].GetLinkText();
-        return deck.GetCard(hoveredWord);
     }
 
     int getHoveredIndex ()
