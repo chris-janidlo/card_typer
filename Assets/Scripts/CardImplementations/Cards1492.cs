@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Cards1492
 {
@@ -16,7 +17,7 @@ public class Abhor : Card
 
 	protected override void behaviorImplementation (Agent caster, Agent enemy)
 	{
-		enemy.IncrementHealth(-caster.Nox * damagePerNox);
+		enemy.IncrementHealth(-caster.Nox * damagePerNox, caster.SubjectName, "maimed");
 	}
 }
 
@@ -45,13 +46,25 @@ public class Ancient : Card
 {
 	public override string PartOfSpeech => "adjective";
 	public override string Definition => "having the qualities of age; old-fashioned; antique";
-	public override string EffectText => "";
+	public override string EffectText => $"gain {noxGain} extra nox per turn for the next {turns} turns";
 
-	public override int Burn => 0;
+	public override int Burn => 5;
+
+	int noxGain = 2;
+	int turns = 3;
 
 	protected override void behaviorImplementation (Agent caster, Agent enemy)
 	{
-		throw new NotImplementedException();
+		int counter = turns;
+
+		Action extraNox = null;
+		extraNox = () => {
+			EventBox.Log($"\nDarkness wells up inside {caster.ObjectName}.");
+			caster.Nox += noxGain;
+			counter--;
+			if (counter <= 0) Typer.Instance.OnEndPhase -= extraNox;
+		};
+		Typer.Instance.OnEndPhase += extraNox;
 	}
 }
 
@@ -61,7 +74,7 @@ public class Barrier : Card
 	public override string Definition => "a circumstance or obstacle that keeps people apart or prevents progress";
 	public override string EffectText => $"gain {shieldPerNox} shield per nox";
 
-	public override int Burn => 0;
+	public override int Burn => 3;
 
 	float shieldPerNox = 0.5f;
 
@@ -77,13 +90,13 @@ public class Bulwark : Card
 	public override string Definition => "a strong support";
 	public override string EffectText => $"deal {damagePerLux} damage per lux";
 
-	public override int Burn => 0;
+	public override int Burn => 4;
 
 	float damagePerLux = 1;
 
 	protected override void behaviorImplementation (Agent caster, Agent enemy)
 	{
-		enemy.IncrementHealth((int) (-caster.Lux * damagePerLux));
+		enemy.IncrementHealth((int) (-caster.Lux * damagePerLux), "A huge wall", "crashed down on");
 	}
 }
 
@@ -93,13 +106,13 @@ public class Devise : Card
 	public override string Definition => "plan or contrive in the mind";
 	public override string EffectText => $"deal {damagePerCard} damage for every spell cast so far this turn";
 
-	public override int Burn => 0;
+	public override int Burn => 7;
 
 	int damagePerCard = 3;
 
 	protected override void behaviorImplementation (Agent caster, Agent enemy)
 	{
-		enemy.IncrementHealth(-Typer.Instance.CardsCasted * damagePerCard);
+		enemy.IncrementHealth(-Typer.Instance.CardsCasted * damagePerCard, caster.SubjectName, "wounded");
 	}
 }
 
@@ -107,21 +120,21 @@ public class Flaming : Card
 {
 	public override string PartOfSpeech => "adjective";
 	public override string Definition => "passionate, violent, used as an intensifier";
-	public override string EffectText => $"if this precedes another attack, deal an extra {damagePerLux} damage per lux";
+	public override string EffectText => $"if this precedes {anA} {effectedPartOfSpeech}, deal {damagePerLux} damage per lux";
 
 	public override int Burn => 0;
 
-	float damagePerLux = 0.5f;
+	string anA = "a";
+	string effectedPartOfSpeech = "noun";
+	float damagePerLux = 1;
 	
 	protected override void behaviorImplementation (Agent caster, Agent enemy)
 	{
-		var damageCards = new List<string> { "sword", "abhorred" };
-
 		Action<Card, Agent> burn = null;
 		burn = (card, agent) => {
-			if (agent == caster && damageCards.Contains(card.Word))
+			if (agent == caster && card.PartOfSpeech.Equals(effectedPartOfSpeech))
 			{
-				enemy.IncrementHealth((int) (-caster.Lux * damagePerLux));
+				enemy.IncrementHealth((int) (-caster.Lux * damagePerLux), caster.SubjectName, "burnt");
 			}
 			CardCast -= burn;
 		};
@@ -136,9 +149,9 @@ public class Grim : Card
 	public override string Definition => "lacking genuine levity";
 	public override string EffectText => $"gain {noxGain} nox";
 
-	public override int Burn => 0;
+	public override int Burn => 5;
 
-	int noxGain = 10;
+	int noxGain = 3;
 
 	protected override void behaviorImplementation (Agent caster, Agent enemy)
 	{
@@ -172,10 +185,16 @@ public class Lock : Card
 	{
 		caster.EssenceLock = true;
 		
+		int counter = 1;
+		
 		Action<Card, Agent> unlock = null;
 		unlock = (card, agent) => {
-			caster.EssenceLock = false;
-			CardCast -= unlock;
+			counter--;
+			if (counter <= 0)
+			{
+				caster.EssenceLock = false;
+				CardCast -= unlock;
+			}
 		};
 		CardCast += unlock;
 	}
@@ -185,7 +204,7 @@ public class Priest : Card
 {
 	public override string PartOfSpeech => "noun";
 	public override string Definition => "one especially consecrated to the service of divinity";
-	public override string EffectText => $"heal {healPerLux} health for every lux; remove {1 - luxRedux : P0} of your lux";
+	public override string EffectText => $"heal {healPerLux} health for every lux; remove {1 - luxRedux} of your lux";
 
 	public override int Burn => 0;
 
@@ -194,7 +213,7 @@ public class Priest : Card
 
 	protected override void behaviorImplementation (Agent caster, Agent enemy)
 	{
-		caster.IncrementHealth(caster.Lux * healPerLux);
+		caster.IncrementHealth(caster.Lux * healPerLux, "The priest", "healed");
 		caster.Lux = (int) (caster.Lux * luxRedux);
 	}
 }
@@ -203,13 +222,15 @@ public class Prince : Card
 {
 	public override string PartOfSpeech => "noun";
 	public override string Definition => "of a royal family, a nonreigning male member";
-	public override string EffectText => "";
+	public override string EffectText => $"gain {luxGain} lux";
 
 	public override int Burn => 0;
 
+	int luxGain = 10;
+
 	protected override void behaviorImplementation (Agent caster, Agent enemy)
 	{
-		throw new NotImplementedException();
+		caster.Lux += luxGain;
 	}
 }
 
@@ -225,6 +246,8 @@ public class Prophet : Card
 
 	protected override void behaviorImplementation (Agent caster, Agent enemy)
 	{
+		EventBox.Log(" You can now see the future, and just as soon, you wish you couldn't.");
+
 		caster.HandSize += extraDraw;
 		
 		Action reducer = null;
@@ -248,7 +271,7 @@ public class Sword : Card
 
 	protected override void behaviorImplementation (Agent caster, Agent enemy)
 	{
-		enemy.IncrementHealth(-damage);
+		enemy.IncrementHealth(-damage, caster.SubjectName, "stabbed");
 	}
 }
 
@@ -272,14 +295,16 @@ public class TwoFaced : Card
 public class Unveil : Card
 {
 	public override string PartOfSpeech => "verb";
-	public override string Definition => "to make something secret known";
-	public override string EffectText => "";
+	public override string Definition => "to make something clear";
+	public override string EffectText => $"gain {luxPerNox} lux per nox";
 
 	public override int Burn => 0;
 
+	float luxPerNox = 0.5f;
+
 	protected override void behaviorImplementation (Agent caster, Agent enemy)
 	{
-		throw new NotImplementedException();
+		caster.Lux += (int) (luxPerNox * caster.Nox);
 	}
 }
 
@@ -301,13 +326,25 @@ public class Year : Card
 {
 	public override string PartOfSpeech => "noun";
 	public override string Definition => "a period of approximately the same length in other calendars";
-	public override string EffectText => "";
+	public override string EffectText => $"deal {damagePerLux} damage per lux multiplied by {damagePerCard} damage per spell casted this turn";
 
-	public override int Burn => 0;
+	public override int Burn => 8;
+
+	float damagePerLux = 0.5f;
+	float damagePerCard = 1;
 
 	protected override void behaviorImplementation (Agent caster, Agent enemy)
 	{
-		throw new NotImplementedException();
+		float lux = caster.Lux * damagePerLux;
+		float card = Typer.Instance.CardsCasted * damagePerCard;
+		if (lux * card == 0)
+		{
+			EventBox.Log(" But nothing happened...");
+		}
+		else
+		{
+			enemy.IncrementHealth((int) (-lux * card), caster.SubjectName, "hurt");
+		}
 	}
 }
 

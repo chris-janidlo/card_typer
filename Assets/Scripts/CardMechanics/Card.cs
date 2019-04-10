@@ -19,7 +19,7 @@ public abstract class Card
 
     public void DoBehavior (Agent caster, Agent enemy)
     {
-    	EventBox.Log($"\n{caster.StatusName} casted {Word}.");
+    	EventBox.Log($"\n{caster.SubjectName} casted {Word}. ");
         if (CardCast != null) CardCast(this, caster);
         behaviorImplementation(caster, enemy);
     }

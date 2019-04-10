@@ -11,8 +11,9 @@ public class Enemy : Agent
 
     int damagePlan;
 
-    void Start ()
+    protected override void Start ()
     {
+        base.Start();
         Death += a => SceneManager.LoadScene("Victory");
     }
 

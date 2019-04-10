@@ -6,8 +6,9 @@ using crass;
 
 public class Player : Agent
 {
-    void Start ()
+    protected override void Start ()
     {
+        base.Start();
         Death += a => SceneManager.LoadScene("Loss");
     }
 }

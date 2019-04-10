@@ -5,7 +5,7 @@ using UnityEngine;
 public class Agent : MonoBehaviour
 {
     public int MaxHealth;
-    public string ReceivingName, StatusName, StatusVerb = "has";
+    public string SubjectName, ObjectName, StatusVerb = "has";
     public int HandSize = 7;
     public bool EssenceLock, LuxLock, NoxLock, NoxFloor;
     public int Shield;
@@ -44,6 +44,7 @@ public class Agent : MonoBehaviour
         {
             if (EssenceLock || NoxLock) return;
             if (NoxFloor && value < Nox) return;
+            if (_nox == value) return;
 
             if (value < 0) value = 0;
 
@@ -63,7 +64,7 @@ public class Agent : MonoBehaviour
         health = MaxHealth;
     }
 
-    void Start ()
+    protected virtual void Start ()
     {
         Typer.Instance.OnEndPhase += endTypeStep;
     }
@@ -90,7 +91,7 @@ public class Agent : MonoBehaviour
     {
         if (newValue == health) return;
 
-        EventBox.Log($"{sender} {verb} {ReceivingName} for {Mathf.Abs(newValue - health)} health.");
+        EventBox.Log($"{sender} {verb} {ObjectName} for {Mathf.Abs(newValue - health)} health.");
 
         SetHealth(newValue);
     }
@@ -108,17 +109,20 @@ public class Agent : MonoBehaviour
 
     public void LogStatus ()
     {
-        EventBox.Log($"\n{StatusName} {StatusVerb} {health} health out of {MaxHealth}.");
+        EventBox.Log($"\n{SubjectName} {StatusVerb} {health} health out of {MaxHealth}.");
     }
 
     void endTypeStep ()
     {
+        string purple = "\n\nHatred grows";
+        purple += Lux > 0 ? " and the light recedes." : ".";
+        EventBox.Log(purple);
         Lux--;
         Nox++;
     }
 
     string essenceStatus (string essenceName, int delta, int value)
     {
-        return $"\n{StatusName} now {StatusVerb} {System.Math.Abs(delta)} {(delta > 0 ? "more" : "less")} {essenceName}, for a total of {value}.";
+        return $"\n{SubjectName} now {StatusVerb} {System.Math.Abs(delta)} {(delta > 0 ? "more" : "less")} {essenceName}, for a total of {value}.";
     }
 }

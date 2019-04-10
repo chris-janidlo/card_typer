@@ -83,12 +83,12 @@ public class Drawer : Singleton<Drawer>
 
     public void StartDrawPhase ()
     {
-        EventBox.Log("\n");
+        EventBox.Log("\n\n<b>The draw phase has started.</b>");
         
+        EventBox.Log("\n");
+
         Player.LogStatus();
         Enemy.LogStatus();
-
-        EventBox.Log("\n\nThe draw phase has started.");
 
         EventBox.Log($"\nThe demon plans on hurting you for {Enemy.DeviseDamagePlan()}.\n");
 
