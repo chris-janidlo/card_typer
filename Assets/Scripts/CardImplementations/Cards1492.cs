@@ -162,14 +162,18 @@ public class Grim : Card
 public class Hound : Card
 {
 	public override string PartOfSpeech => "verb";
-	public override string Definition => "pursued tenaciously, doglike";
-	public override string EffectText => "";
+	public override string Definition => "pursue tenaciously, doglike";
+	public override string EffectText => $"deal {damagePerNox} damage per nox times the percentage of typing time remaining after casting this";
 
-	public override int Burn => 0;
+	public override int Burn => 5;
+
+	public int damagePerNox = 1;
 
 	protected override void behaviorImplementation (Agent caster, Agent enemy)
 	{
-		throw new NotImplementedException();
+		int noxDamage = damagePerNox * caster.Nox;
+		int damage = (int) (noxDamage * Typer.Instance.TimeLeftPercent);
+		enemy.IncrementHealth(-damage);
 	}
 }
 
@@ -179,7 +183,7 @@ public class Lock : Card
 	public override string Definition => "fasten by a key or combination";
 	public override string EffectText => "the next spell has no effect on your lux or nox";
 
-	public override int Burn => 0;
+	public override int Burn => 7;
 
 	protected override void behaviorImplementation (Agent caster, Agent enemy)
 	{
@@ -206,7 +210,7 @@ public class Priest : Card
 	public override string Definition => "one especially consecrated to the service of divinity";
 	public override string EffectText => $"heal {healPerLux} health for every lux; remove {1 - luxRedux} of your lux";
 
-	public override int Burn => 0;
+	public override int Burn => 5;
 
 	int healPerLux = 2;
 	float luxRedux = 0.5f;
@@ -224,7 +228,7 @@ public class Prince : Card
 	public override string Definition => "of a royal family, a nonreigning male member";
 	public override string EffectText => $"gain {luxGain} lux";
 
-	public override int Burn => 0;
+	public override int Burn => 5;
 
 	int luxGain = 10;
 
@@ -265,7 +269,7 @@ public class Sword : Card
 	public override string Definition => "military power, violence, destruction, one of the tarot suits";
 	public override string EffectText => $"deal {damage} damage";
 
-	public override int Burn => 0;
+	public override int Burn => 3;
 
 	int damage = 3;
 
@@ -298,7 +302,7 @@ public class Unveil : Card
 	public override string Definition => "to make something clear";
 	public override string EffectText => $"gain {luxPerNox} lux per nox";
 
-	public override int Burn => 0;
+	public override int Burn => 5;
 
 	float luxPerNox = 0.5f;
 
@@ -312,13 +316,19 @@ public class Weary : Card
 {
 	public override string PartOfSpeech => "adjective";
 	public override string Definition => "tired";
-	public override string EffectText => "";
+	public override string EffectText => $"if you've casted at least {minCast} spells this turn, deal {maxDamage} damage multiplied by the percent of the timer that has elapsed before casting this";
 
-	public override int Burn => 0;
+	public override int Burn => 20;
+
+	int minCast = 3;
+	int maxDamage = 10;
 
 	protected override void behaviorImplementation (Agent caster, Agent enemy)
 	{
-		throw new NotImplementedException();
+		if (Typer.Instance.CardsCasted < minCast) return;
+
+		float elapsed = 1 - Typer.Instance.TimeLeftPercent;
+		enemy.IncrementHealth((int) (-maxDamage * elapsed));
 	}
 }
 
@@ -328,7 +338,7 @@ public class Year : Card
 	public override string Definition => "a period of approximately the same length in other calendars";
 	public override string EffectText => $"deal {damagePerLux} damage per lux multiplied by {damagePerCard} damage per spell casted this turn";
 
-	public override int Burn => 8;
+	public override int Burn => 7;
 
 	float damagePerLux = 0.5f;
 	float damagePerCard = 1;

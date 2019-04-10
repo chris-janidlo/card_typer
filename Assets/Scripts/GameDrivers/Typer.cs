@@ -40,6 +40,7 @@ public class Typer : Singleton<Typer>
     }
 
     public float Timer { get; private set; }
+    public float TimeLeftPercent => Timer / TypingTime;
     public List<Card> Cards { get; private set; }
     public int CardsCasted { get; private set; }
 
@@ -227,7 +228,7 @@ public class Typer : Singleton<Typer>
         {
             if (Timer > 0)
             {
-                Debug.Log("Time bonus: " + (Timer / TypingTime) * 100);
+                Debug.Log("Time bonus: " + (TimeLeftPercent) * 100);
                 endTypingPhase();
             }
             return;
