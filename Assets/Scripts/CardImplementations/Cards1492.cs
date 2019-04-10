@@ -11,7 +11,7 @@ public class Abhor : Card
 	public override string Definition => "detest; loathe; abominate; despise; hate";
 	public override string EffectText => $"deal {damagePerNox} damage for every nox";
 
-	public override int Burn => 0;
+	public override int Burn => 5;
 
 	int damagePerNox = 1;
 
@@ -27,7 +27,7 @@ public class Anchorage : Card
 	public override string Definition => "a port; a source of assurance; a dwelling place of a religious refuse";
 	public override string EffectText => "for the rest of the turn, do not lose any nox";
 
-	public override int Burn => 0;
+	public override int Burn => 4;
 
 	protected override void behaviorImplementation (Agent caster, Agent enemy)
 	{
@@ -122,7 +122,7 @@ public class Flaming : Card
 	public override string Definition => "passionate, violent, used as an intensifier";
 	public override string EffectText => $"if this precedes {anA} {effectedPartOfSpeech}, deal {damagePerLux} damage per lux";
 
-	public override int Burn => 0;
+	public override int Burn => 7;
 
 	string anA = "a";
 	string effectedPartOfSpeech = "noun";
@@ -159,6 +159,22 @@ public class Grim : Card
 	}
 }
 
+public class Heart : Card
+{
+	public override string PartOfSpeech => "noun";
+	public override string Definition => "courage or enthusiasm";
+	public override string EffectText => $"heal {healPerLux} health per lux";
+
+	public override int Burn => 6;
+
+	float healPerLux = 0.25f;
+
+	protected override void behaviorImplementation (Agent caster, Agent enemy)
+	{
+		caster.IncrementHealth((int) (healPerLux * caster.Lux), "The power of love", "healed");
+	}
+}
+
 public class Hound : Card
 {
 	public override string PartOfSpeech => "verb";
@@ -173,7 +189,7 @@ public class Hound : Card
 	{
 		int noxDamage = damagePerNox * caster.Nox;
 		int damage = (int) (noxDamage * Typer.Instance.TimeLeftPercent);
-		enemy.IncrementHealth(-damage);
+		enemy.IncrementHealth(-damage, caster.SubjectName, "hounded");
 	}
 }
 
@@ -208,17 +224,17 @@ public class Priest : Card
 {
 	public override string PartOfSpeech => "noun";
 	public override string Definition => "one especially consecrated to the service of divinity";
-	public override string EffectText => $"heal {healPerLux} health for every lux; remove {1 - luxRedux} of your lux";
+	public override string EffectText => $"heal {healPerLux} health for every lux; remove {luxRedux} of your lux";
 
 	public override int Burn => 5;
 
 	int healPerLux = 2;
-	float luxRedux = 0.5f;
+	float luxRedux = 0.25f;
 
 	protected override void behaviorImplementation (Agent caster, Agent enemy)
 	{
 		caster.IncrementHealth(caster.Lux * healPerLux, "The priest", "healed");
-		caster.Lux = (int) (caster.Lux * luxRedux);
+		caster.Lux = (int) (caster.Lux * (1 - luxRedux));
 	}
 }
 
@@ -260,6 +276,72 @@ public class Prophet : Card
 			Drawer.Instance.OnEndPhase -= reducer;
 		};
 		Drawer.Instance.OnEndPhase += reducer;
+	}
+}
+
+public class Refuse : Card
+{
+	public override string PartOfSpeech => "verb";
+	public override string Definition => "decline to accept; express determination to not do something";
+	public override string EffectText => $"gain {shieldPerNox} shield per nox. the next spell you cast loses all of its effects; if it's a noun, it deals damage equal to its length instead of its regular effect";
+
+	public override int Burn => 10;
+
+	float shieldPerNox = 0.25f;
+
+	class lengthDummy : Card
+	{
+		public override string PartOfSpeech => "";
+		public override string Definition => "";
+		public override string EffectText => "";
+	
+		public override int Burn => 0;
+	
+		protected override void behaviorImplementation (Agent caster, Agent enemy)
+		{
+			enemy.IncrementHealth(-Word.Length, caster.SubjectName, "hurt");
+		}
+	}
+
+	class nothingDummy : Card
+	{
+		public override string PartOfSpeech => "";
+		public override string Definition => "";
+		public override string EffectText => "";
+	
+		public override int Burn => 0;
+	
+		protected override void behaviorImplementation (Agent caster, Agent enemy)
+		{
+			EventBox.Log("But nothing happened...");
+		}
+	}
+
+	protected override void behaviorImplementation (Agent caster, Agent enemy)
+	{
+		float shield = shieldPerNox * caster.Nox;
+
+		var nextCard = Typer.Instance.Cards[1];
+		
+		var dummy = nextCard.PartOfSpeech.Equals("noun") ? (Card) new lengthDummy() : new nothingDummy();
+		dummy.Word = nextCard.Word;
+		Typer.Instance.Cards[1] = dummy;
+	}
+}
+
+public class Sunset : Card
+{
+	public override string PartOfSpeech => "noun";
+	public override string Definition => "the apparent descent of the sun";
+	public override string EffectText => $"gain {luxPerCard} lux per spell casted so far this turn";
+
+	public override int Burn => 10;
+
+	int luxPerCard = 2;
+
+	protected override void behaviorImplementation (Agent caster, Agent enemy)
+	{
+		caster.Lux += Typer.Instance.CardsCasted * luxPerCard;
 	}
 }
 
@@ -328,7 +410,7 @@ public class Weary : Card
 		if (Typer.Instance.CardsCasted < minCast) return;
 
 		float elapsed = 1 - Typer.Instance.TimeLeftPercent;
-		enemy.IncrementHealth((int) (-maxDamage * elapsed));
+		enemy.IncrementHealth((int) (-maxDamage * elapsed), caster.SubjectName, "incapacitated");
 	}
 }
 
@@ -364,7 +446,7 @@ public class Zealot : Card
 	public override string Definition => "one marked by fervant partisanship";
 	public override string EffectText => "convert all lux to nox";
 
-	public override int Burn => 0;
+	public override int Burn => 2;
 
 	protected override void behaviorImplementation (Agent caster, Agent enemy)
 	{
