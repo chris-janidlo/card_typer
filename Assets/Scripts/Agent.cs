@@ -53,8 +53,6 @@ public class Agent : MonoBehaviour
         }
     }
 
-    public Blackboard Blackboard;
-
     [SerializeField]
     int health;
 
@@ -63,6 +61,11 @@ public class Agent : MonoBehaviour
     void Awake ()
     {
         health = MaxHealth;
+    }
+
+    void Start ()
+    {
+        Typer.Instance.OnEndPhase += endTypeStep;
     }
 
     public void SetHealth (int newValue)
@@ -108,7 +111,7 @@ public class Agent : MonoBehaviour
         EventBox.Log($"\n{StatusName} {StatusVerb} {health} health out of {MaxHealth}.");
     }
 
-    public void EndTypeStep ()
+    void endTypeStep ()
     {
         Lux--;
         Nox++;
@@ -118,12 +121,4 @@ public class Agent : MonoBehaviour
     {
         return $"\n{StatusName} now {StatusVerb} {System.Math.Abs(delta)} {(delta > 0 ? "more" : "less")} {essenceName}, for a total of {value}.";
     }
-}
-
-[System.Serializable]
-public class Blackboard
-{
-    public Dictionary<string, int> Ints = new Dictionary<string, int>();
-    public Dictionary<string, float> Floats = new Dictionary<string, float>();
-    public Dictionary<string, string> Strings = new Dictionary<string, string>();
 }

@@ -176,9 +176,6 @@ public class Typer : Singleton<Typer>
         }
         Player.IncrementHealth(-Enemy.GetDamagePlan(), "The enemy", "hurt");
 
-        // TODO: move these to event
-        Player.EndTypeStep();
-        Enemy.EndTypeStep();
         if (OnEndPhase != null) OnEndPhase();
 
         foreach (var text in UpcomingWords)
