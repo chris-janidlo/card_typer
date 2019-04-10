@@ -59,7 +59,7 @@ public class Agent : MonoBehaviour
 
     public event System.Action<Agent> Death;
 
-    void Awake ()
+    protected virtual void Awake ()
     {
         health = MaxHealth;
     }

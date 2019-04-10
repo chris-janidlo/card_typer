@@ -90,7 +90,7 @@ public class Drawer : Singleton<Drawer>
         Player.LogStatus();
         Enemy.LogStatus();
 
-        EventBox.Log($"\nThe demon plans on hurting you for {Enemy.DeviseDamagePlan()}.\n");
+        EventBox.Log($"\n\nThe demon is choosing between {Enemy.GetDraw()}.");
 
         deck.DrawNewHand(Player.HandSize);
 

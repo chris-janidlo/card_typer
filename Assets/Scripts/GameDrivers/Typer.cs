@@ -175,7 +175,8 @@ public class Typer : Singleton<Typer>
         {
             Player.IncrementHealth(-card.Burn, "The word " + card.Word, "burnt");
         }
-        Player.IncrementHealth(-Enemy.GetDamagePlan(), "The enemy", "hurt");
+
+        castEnemyCards();
 
         if (OnEndPhase != null) OnEndPhase();
 
@@ -198,6 +199,22 @@ public class Typer : Singleton<Typer>
         Drawer.StartDrawPhase();
 
         inTypingPhase = false;
+    }
+
+    void castEnemyCards ()
+    {
+        var cards = Enemy.GetHand();
+        if (cards.Count == 0)
+        {
+            EventBox.Log($"\n{Enemy.SubjectName} failed to cast any spells.");
+        }
+        else
+        {
+            foreach (var card in cards)
+            {
+                card.DoBehavior(Enemy, Player);
+            }
+        }
     }
 
     void popCard ()
