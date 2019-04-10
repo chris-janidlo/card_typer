@@ -72,15 +72,17 @@ public class Barrier : Card
 {
 	public override string PartOfSpeech => "noun";
 	public override string Definition => "a circumstance or obstacle that keeps people apart or prevents progress";
-	public override string EffectText => $"gain {shieldPerNox} shield per nox";
+	public override string EffectText => $"gain {shieldPerNox} shield per nox; lose {noxRedux} of your nox";
 
 	public override int Burn => 3;
 
 	float shieldPerNox = 0.5f;
+	float noxRedux = 0.5f;
 
 	protected override void behaviorImplementation (Agent caster, Agent enemy)
 	{
 		caster.Shield += (int) (caster.Nox * shieldPerNox);
+		caster.Nox = (int) (caster.Nox * (1.0f - noxRedux));
 	}
 }
 
@@ -163,15 +165,17 @@ public class Heart : Card
 {
 	public override string PartOfSpeech => "noun";
 	public override string Definition => "courage or enthusiasm";
-	public override string EffectText => $"heal {healPerLux} health per lux";
+	public override string EffectText => $"heal {healPerLux} health per lux; remove {luxRedux} of your lux";
 
 	public override int Burn => 6;
 
 	float healPerLux = 0.25f;
+	float luxRedux = 0.25f;
 
 	protected override void behaviorImplementation (Agent caster, Agent enemy)
 	{
-		caster.IncrementHealth((int) (healPerLux * caster.Lux), "The power of love", "healed");
+		caster.IncrementHealth((int) (healPerLux * caster.Lux), $"The strength of passion within {caster.SubjectName}", "healed");
+		caster.Lux = (int) (caster.Lux * (1 - luxRedux));
 	}
 }
 
@@ -224,17 +228,15 @@ public class Priest : Card
 {
 	public override string PartOfSpeech => "noun";
 	public override string Definition => "one especially consecrated to the service of divinity";
-	public override string EffectText => $"heal {healPerLux} health for every lux; remove {luxRedux} of your lux";
+	public override string EffectText => $"heal {healPerLux} health for every lux";
 
 	public override int Burn => 5;
 
 	int healPerLux = 2;
-	float luxRedux = 0.25f;
 
 	protected override void behaviorImplementation (Agent caster, Agent enemy)
 	{
 		caster.IncrementHealth(caster.Lux * healPerLux, "The priest", "healed");
-		caster.Lux = (int) (caster.Lux * (1 - luxRedux));
 	}
 }
 
