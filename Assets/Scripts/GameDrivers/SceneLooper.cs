@@ -5,11 +5,13 @@ using UnityEngine.SceneManagement;
 
 public class SceneLooper : MonoBehaviour
 {
+    public string TargetScene;
+
     void Update ()
     {
-        if (Input.GetButtonDown("Submit"))
+        if (Input.anyKey)
         {
-            SceneManager.LoadScene("SampleScene");
+            SceneManager.LoadScene(TargetScene);
         }
     }
 }

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using crass;
 
-public class DeckTextMousePlay : MonoBehaviour
+public class UIMouseFollower : MonoBehaviour
 {
     public RectTransform MouseBox;
     public float MaxRotation, MaxDegreeRotationPerSecond, LagWeight, CenterZoom, ClickMovement;
