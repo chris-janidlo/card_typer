@@ -101,8 +101,8 @@ public class Agent : MonoBehaviour
         int temp = delta;
         if (delta < 0)
         {
-            temp = Mathf.Min(0, delta + Shield);
-            Shield = Mathf.Max(0, Shield - delta);
+            temp = Mathf.Min(0, Shield + delta);
+            Shield = Mathf.Max(0, Shield + delta);
         }
         SetHealth(health + temp, sender, verb);
     }
