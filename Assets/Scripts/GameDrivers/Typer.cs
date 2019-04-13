@@ -169,8 +169,6 @@ public class Typer : Singleton<Typer>
 
     void endTypingPhase ()
     {
-        Debug.Log(Cards.Count);
-
         CardSelectSounds.Instance.StopAllSounds(Cards.Count > 0);
 
         EventBox.Log("\n\n");
@@ -215,6 +213,7 @@ public class Typer : Singleton<Typer>
         {
             foreach (var card in cards)
             {
+                CardsCasted++;
                 card.DoBehavior(Enemy, Player);
             }
         }
