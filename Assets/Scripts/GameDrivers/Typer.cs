@@ -130,6 +130,8 @@ public class Typer : Singleton<Typer>
 
     public void StartTypingPhase (List<Card> cards)
     {
+        Cards = new List<Card>(cards);
+
         EventBox.Log("\n\n<b>The typing phase has started.</b>");
         if (OnStartPhase != null) OnStartPhase();
         StartCoroutine(lineScaler());
@@ -147,20 +149,19 @@ public class Typer : Singleton<Typer>
 
         CountdownSource.Play();
 
-        initializePhase(cards);
+        initializePhase();
     }
 
-    void initializePhase (List<Card> cards)
+    void initializePhase ()
     {
-        Cards = cards;
         Progress = "";
         Timer = TypingTime;
         CardsCasted = 0;
 
         CurrentCardText.text = CurrentCard.Word;
-        for (int i = 1; i < cards.Count; i++)
+        for (int i = 1; i < Cards.Count; i++)
         {
-            UpcomingWords[i - 1].text = cards[i].Word;
+            UpcomingWords[i - 1].text = Cards[i].Word;
         }
 
         inTypingPhase = true;
@@ -168,6 +169,8 @@ public class Typer : Singleton<Typer>
 
     void endTypingPhase ()
     {
+        Debug.Log(Cards.Count);
+
         CardSelectSounds.Instance.StopAllSounds(Cards.Count > 0);
 
         EventBox.Log("\n\n");
