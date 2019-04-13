@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
@@ -32,6 +33,11 @@ public class EventBox : Singleton<EventBox>
     {
         characterIndex += charactersPerSecond * Time.deltaTime;
         characterIndex = Mathf.Clamp(characterIndex, 0, targetText.Length);
+
+        if (targetText[(int) characterIndex - 1] == '<')
+        {
+            characterIndex = targetText.IndexOf('>', (int) characterIndex) + 1;
+        }
 
         string newStr = targetText.Substring(0, (int) characterIndex);
 
