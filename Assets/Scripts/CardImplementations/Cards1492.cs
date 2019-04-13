@@ -153,7 +153,7 @@ public class Grim : Card
 
 	public override int Burn => 5;
 
-	int noxGain = 3;
+	int noxGain = 5;
 
 	protected override void behaviorImplementation (Agent caster, Agent enemy)
 	{
@@ -248,7 +248,7 @@ public class Prince : Card
 
 	public override int Burn => 5;
 
-	int luxGain = 10;
+	int luxGain = 4;
 
 	protected override void behaviorImplementation (Agent caster, Agent enemy)
 	{
@@ -339,7 +339,7 @@ public class Sunset : Card
 
 	public override int Burn => 10;
 
-	int luxPerCard = 2;
+	int luxPerCard = 1;
 
 	protected override void behaviorImplementation (Agent caster, Agent enemy)
 	{

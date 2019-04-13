@@ -91,7 +91,7 @@ public class Enemy : Agent
                 new List<float> {
                     .7f,
                     .9f,
-                    .6f
+                    .9f
                 },
                 new List<Card> {
                     new Lock { Word = "locked" },
@@ -108,8 +108,8 @@ public class Enemy : Agent
                 },
                 new List<float> {
                     1,
-                    .5f,
-                    1,
+                    .8f,
+                    .7f,
                     1
                 },
                 new List<Card> {
