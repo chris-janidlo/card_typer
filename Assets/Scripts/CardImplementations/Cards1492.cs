@@ -174,7 +174,7 @@ public class Heart : Card
 
 	protected override void behaviorImplementation (Agent caster, Agent enemy)
 	{
-		caster.IncrementHealth((int) (healPerLux * caster.Lux), $"The strength of passion within {caster.SubjectName}", "healed");
+		caster.IncrementHealth((int) (healPerLux * caster.Lux), $"The strength of passion within {caster.ObjectName}", "healed");
 		caster.Lux = (int) (caster.Lux * (1 - luxRedux));
 	}
 }

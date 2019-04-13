@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,10 +9,9 @@ public class Agent : MonoBehaviour
     public string SubjectName, ObjectName, StatusVerb = "has";
     public int HandSize = 7;
     public bool EssenceLock, LuxLock, NoxLock, NoxFloor;
-    public int Shield;
 
     [SerializeField]
-    int _lux, _nox;
+    int _lux, _nox, _shield;
 
     public int Lux
     {
@@ -54,6 +54,16 @@ public class Agent : MonoBehaviour
         }
     }
 
+    public int Shield
+    {
+        get => _shield;
+        set
+        {
+            EventBox.Log(essenceStatus("shield", value - _shield, value));
+            _shield = value;
+        }
+    }
+
     [SerializeField]
     int health;
 
@@ -91,7 +101,7 @@ public class Agent : MonoBehaviour
     {
         if (newValue == health) return;
 
-        EventBox.Log($"{sender} {verb} {ObjectName} for {Mathf.Abs(newValue - health)} health.");
+        EventBox.Log($" {sender} {verb} {ObjectName} for {Mathf.Abs(newValue - health)} health.");
 
         SetHealth(newValue);
     }
@@ -99,12 +109,17 @@ public class Agent : MonoBehaviour
     public void IncrementHealth (int delta, string sender, string verb)
     {
         int temp = delta;
-        if (delta < 0)
+        if (delta < 0 && Shield > 0)
         {
+            EventBox.Log($" {SubjectName} blocked {Math.Min(Shield, Math.Abs(delta))} damage.");
             temp = Mathf.Min(0, Shield + delta);
-            Shield = Mathf.Max(0, Shield + delta);
         }
         SetHealth(health + temp, sender, verb);
+
+        if (delta < 0 && Shield > 0)
+        {
+            Shield = Mathf.Max(0, Shield + delta);
+        }
     }
 
     public void LogStatus ()
