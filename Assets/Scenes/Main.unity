@@ -2301,6 +2301,7 @@ GameObject:
   - component: {fileID: 535493212}
   - component: {fileID: 535493215}
   - component: {fileID: 535493213}
+  - component: {fileID: 535493216}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -2337,6 +2338,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f5b65bfed3a50c4f85a9023795c5ce3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Keyboard: {fileID: 535493216}
   GoodGuy: {fileID: 535493212}
   BadGuy: {fileID: 843238102}
   TyperBar: {fileID: 306965348}
@@ -2395,6 +2397,134 @@ MonoBehaviour:
   ResetOrder: {fileID: 68259426}
   StartTyping: {fileID: 1493163238}
   DeckText: {fileID: 549575333}
+--- !u!114 &535493216
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 535493211}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e63a119308fb2404b839dcc8a61d1983, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BackspaceState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  ReturnState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  SpaceState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  AState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  BState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  CState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  DState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  EState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  FState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  GState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  HState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  IState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  JState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  KState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  LState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  MState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  NState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  OState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  PState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  QState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  RState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  SState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  TState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  UState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  VState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  WState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  XState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  YState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  ZState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
 --- !u!1 &541781964
 GameObject:
   m_ObjectHideFlags: 0
@@ -3648,6 +3778,7 @@ GameObject:
   - component: {fileID: 843238102}
   - component: {fileID: 843238105}
   - component: {fileID: 843238103}
+  - component: {fileID: 843238106}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -3684,6 +3815,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae7fbd70096f145d09620d72b838c2e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Keyboard: {fileID: 843238106}
   GoodGuy: {fileID: 843238102}
   BadGuy: {fileID: 535493212}
   TyperBar: {fileID: 128664315}
@@ -3721,6 +3853,134 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54768da421d2d4cb78a338e2e8ea2af4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &843238106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 843238101}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e63a119308fb2404b839dcc8a61d1983, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BackspaceState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  ReturnState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  SpaceState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  AState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  BState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  CState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  DState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  EState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  FState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  GState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  HState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  IState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  JState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  KState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  LState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  MState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  NState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  OState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  PState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  QState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  RState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  SState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  TState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  UState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  VState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  WState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  XState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  YState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
+  ZState:
+    Type: 0
+    StickyPressesRemaining: 0
+    DelaySeconds: 0
 --- !u!1 &949125160
 GameObject:
   m_ObjectHideFlags: 0

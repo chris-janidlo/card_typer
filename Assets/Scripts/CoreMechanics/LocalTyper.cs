@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Assertions;
 using TMPro;
 using crass;
 
@@ -54,7 +55,8 @@ public abstract class LocalTyper : ITyper
         return cards;
     }
 
-    public override void StartPhase () {
+    public override void StartPhase ()
+    {
         Progress = "";
         AcceptingInput = true;
         TyperBar.enabled = true;
@@ -72,7 +74,86 @@ public abstract class LocalTyper : ITyper
         }
     }
 
-    protected void typeLetter (char typed)
+    protected void typeKey (KeyCode key, bool shiftIsPressed = false)
+    {
+        Assert.IsTrue(AcceptingInput, "typing input received when it shouldn't have been");
+
+        KeyState state = Keyboard.GetState(key);
+
+        switch (state.Type)
+        {
+            case KeyStateType.Active:
+                processKey(key, shiftIsPressed);
+                break;
+
+            case KeyStateType.Deactivated:
+                badInputFeedback();
+                break;
+
+            case KeyStateType.Delayed:
+                // TODO: feedback
+                StartCoroutine(delayedKeyPress(state.DelaySeconds, key, shiftIsPressed));
+                break;
+
+            case KeyStateType.Sticky:
+                // TODO: feedback
+                state.StickyPressesRemaining--;
+                if (state.StickyPressesRemaining <= 0)
+                {
+                    state.Type = KeyStateType.Active;
+                }
+                break;
+        }
+    }
+
+    protected void typeKey (char key)
+    {
+        if (key == ' ')
+        {
+            typeKey(KeyCode.Space);
+        }
+        else
+        {
+            KeyCode code = (KeyCode) Enum.Parse(typeof(KeyCode), key.ToString(), true);
+            typeKey(code, Char.IsUpper(key));
+        }
+    }
+
+    void processKey (KeyCode key, bool shiftIsPressed)
+    {
+        switch (key)
+        {
+            case KeyCode.Space:
+            case KeyCode.Return:
+                confirmInput();
+                break;
+            
+            case KeyCode.Backspace:
+                deleteLetter();
+                break;
+
+            default:
+                char chr = key.ToString()[0];
+                
+                Assert.IsTrue(Char.IsLetter(chr) || Char.IsDigit(chr) || Char.IsPunctuation(chr), $"bad character input: '{chr}' of type {key}");
+                
+                if (!shiftIsPressed)
+                {
+                    chr = Char.ToLower(chr);
+                }
+
+                addLetter(chr);
+                break;
+        }
+    }
+
+    IEnumerator delayedKeyPress (float delay, KeyCode key, bool shiftIsPressed)
+    {
+        yield return new WaitForSeconds(delay);
+        processKey(key, shiftIsPressed);
+    }
+
+    void addLetter (char typed)
     {
         if (cards.Any(c => c.Word.StartsWith(Progress + typed)))
         {
@@ -86,7 +167,7 @@ public abstract class LocalTyper : ITyper
         }
     }
 
-    protected void deleteLetter ()
+    void deleteLetter ()
     {
         if (Progress.Length == 0)
         {
@@ -104,13 +185,18 @@ public abstract class LocalTyper : ITyper
         Progress = Progress.Substring(0, Progress.Length - delLength);
     }
 
-    protected void typeConfirmKey ()
+    void confirmInput ()
     {
         if (!tryPopCard())
         {
-            StartCoroutine(lineShaker());
-            TypingSounds.Instance.PlayDud();
+            badInputFeedback();
         }
+    }
+
+    void badInputFeedback ()
+    {
+        StartCoroutine(lineShaker());
+        TypingSounds.Instance.PlayDud();
     }
 
     bool tryPopCard ()

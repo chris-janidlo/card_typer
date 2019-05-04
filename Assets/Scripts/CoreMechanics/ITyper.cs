@@ -6,6 +6,8 @@ public abstract class ITyper : MonoBehaviour
 {
     public static int CardsCastedSinceTurnStart;
 
+    public Keyboard Keyboard;
+
     public abstract void SetPlay (List<Card> play);
     public abstract List<Card> GetPlay ();
     public abstract void StartPhase ();

@@ -17,15 +17,9 @@ public class PlayerTyper : LocalTyper
 
         if (!e.isKey || e.type != EventType.KeyDown) return;
 
-        if (e.keyCode == KeyCode.Space || e.keyCode == KeyCode.Return)
+        if (e.keyCode == KeyCode.Space || e.keyCode == KeyCode.Return || e.keyCode == KeyCode.Backspace)
         {
-            typeConfirmKey();
-            return;
-        }
-
-        if (e.keyCode == KeyCode.Backspace)
-        {
-            deleteLetter();
+            typeKey(e.keyCode);
             return;
         }
 
@@ -35,6 +29,6 @@ public class PlayerTyper : LocalTyper
         // seriously everything breaks if this isn't here because UGUI is haunted
         if (!Char.IsLetter(typed) && !Char.IsDigit(typed) && !Char.IsPunctuation(typed)) return;
 
-        typeLetter(typed);
+        typeKey(typed);
     }
 }

@@ -27,15 +27,7 @@ public class EnemyTyper : LocalTyper
         if (typingIndex >= typingTicker + 1)
         {
             typingTicker++;
-            char toType = typingGoal[typingTicker];
-            if (toType == ' ')
-            {
-                typeConfirmKey();
-            }
-            else
-            {
-                typeLetter(toType);
-            }
+            typeKey(typingGoal[typingTicker]);
         }
     }
 }
