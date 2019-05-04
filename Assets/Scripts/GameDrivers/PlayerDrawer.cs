@@ -7,11 +7,8 @@ using UnityEngine.UI;
 using TMPro;
 using crass;
 
-public class Drawer : Singleton<Drawer>
+public class PlayerDrawer : IDrawer
 {
-    public event Action OnEndPhase, OnStartPhase;
-
-    [Header("Gameplay Values")]
     public string DeckClassName;
 
     [Header("Deck Tags")]
@@ -19,28 +16,27 @@ public class Drawer : Singleton<Drawer>
     public TagPair DiscardedCardTag, DrawnCardTag, CardTag, SelectedCardTag;
 
     [Header("UI")]
-    public Typer Typer;
-    public Player Player;
-    public Enemy Enemy;
-    public float FadeInTime, FadeOutTime;
+    public float FadeInTime;
+    public float FadeOutTime;
     public RectTransform ButtonContainer;
     public Button ResetOrder, StartTyping;
     public TextMeshProUGUI DeckText;
+
+    public override int HandSize { get; set; } = 7;
 
     Deck deck;
 
     List<Card> handSelection;
     List<int> selectedIndices;
 
-    public LinkTag linkTag = new LinkTag { ID = "taggedtext" };
+    LinkTag linkTag = new LinkTag { ID = "taggedtext" };
+
+    DecidedPlayCallback decidedPlayCallback;
 
     void Awake ()
     {
-        // TODO: unsubscribe all events before resetting?
-        SingletonSetInstance(this, true);
-
         deck = Deck.FromClassString(DeckClassName);
-        deck.TaggedTextChanged += onDeckChange;
+        deck.TaggedTextChanged += constructDeckString;
 
         handSelection = new List<Card>();
         selectedIndices = new List<int>();
@@ -66,10 +62,6 @@ public class Drawer : Singleton<Drawer>
 
             constructDeckString();
 
-            string handText = listToCommaSeparated("Your current hand is ", handSelection.Select(h => h.Word).ToList());
-
-            EventBox.Log($"\nYou selected {hover.Word}. {handText}");
-
             ButtonContainer.gameObject.SetActive(true);
 
             CardSelectSounds.Instance.PlayNewSound();
@@ -78,25 +70,16 @@ public class Drawer : Singleton<Drawer>
 
     void OnDestroy ()
     {
-        deck.TaggedTextChanged -= onDeckChange;
+        deck.TaggedTextChanged -= constructDeckString;
     }
 
-    public void StartDrawPhase ()
+    public override void StartPhase (DecidedPlayCallback callback)
     {
-        EventBox.Log("\n\n<b>The draw phase has started.</b>");
-        
-        EventBox.Log("\n");
+        deck.DrawNewHand(HandSize);
 
-        Player.LogStatus();
-        Enemy.LogStatus();
-
-        EventBox.Log($"\n\nThe demon is choosing between {Enemy.GetDraw()}.");
-
-        deck.DrawNewHand(Player.HandSize);
+        decidedPlayCallback = callback;
 
         DeckText.CrossFadeAlpha(1, FadeInTime, true);
-
-        if (OnStartPhase != null) OnStartPhase();
     }
 
     void onClickReset ()
@@ -107,8 +90,6 @@ public class Drawer : Singleton<Drawer>
 
         constructDeckString();
 
-        EventBox.Log("\nYou cleared your hand.");
-
         CardSelectSounds.Instance.StopAllSounds();
     }
 
@@ -116,23 +97,12 @@ public class Drawer : Singleton<Drawer>
     {
         ButtonContainer.gameObject.SetActive(false);
 
-        Typer.StartTypingPhase(handSelection);
+        DeckText.CrossFadeAlpha(0, FadeOutTime, true);
+
+        decidedPlayCallback(handSelection);
 
         handSelection = new List<Card>();
         selectedIndices = new List<int>();
-
-        DeckText.CrossFadeAlpha(0, FadeOutTime, true);
-
-        if (OnEndPhase != null) OnEndPhase();
-    }
-
-    void onDeckChange ()
-    {
-        var draw = deck.GetCurrentDraw();
-        
-        EventBox.Log(listToCommaSeparated("\nYou drew ", draw.Select(d => d.Word).ToList()));
-
-        constructDeckString();
     }
 
     void constructDeckString ()
