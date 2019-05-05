@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Agent : MonoBehaviour
 {
-    public event Action<Agent> Death;
+    public event Action Death;
 
     public int MaxHealth;
     public IDrawer Drawer;
@@ -43,7 +43,7 @@ public class Agent : MonoBehaviour
         if (Health <= 0)
         {
             var temp = Death;
-            if (temp != null) temp(this);
+            if (temp != null) temp();
         }
     }
 }

@@ -37,8 +37,8 @@ public class MatchManager : Singleton<MatchManager>
             Destroy(inst.gameObject);
         }
 
-        Player.Death += a => SceneManager.LoadScene("Loss");
-        Enemy.Death += a => SceneManager.LoadScene("Victory");
+        Player.Death += () => SceneManager.LoadScene("Loss");
+        Enemy.Death += () => SceneManager.LoadScene("Victory");
     }
 
     void Start ()
