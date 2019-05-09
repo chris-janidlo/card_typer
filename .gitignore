@@ -40,6 +40,8 @@ sysinfo.txt
 
 # other generally useful files
 
+# python extension stuff
+.vscode/.ropeproject/objectdb
 
 # Visual Studio project files
 *.leu
