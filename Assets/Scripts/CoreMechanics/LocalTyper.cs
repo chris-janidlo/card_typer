@@ -133,16 +133,7 @@ public abstract class LocalTyper : ITyper
                 break;
 
             default:
-                char chr = key.ToString()[0];
-                
-                Assert.IsTrue(Char.IsLetter(chr) || Char.IsDigit(chr) || Char.IsPunctuation(chr), $"bad character input: '{chr}' of type {key}");
-                
-                if (!shiftIsPressed)
-                {
-                    chr = Char.ToLower(chr);
-                }
-
-                addLetter(chr);
+                addLetter(key.ToChar(shiftIsPressed));
                 break;
         }
     }

@@ -4,30 +4,39 @@ using UnityEngine;
 
 public class EnemyTyper : LocalTyper
 {
-    public float CharsPerSecond;
+    public TextAsset SerializedRecording;
 
-    string typingGoal = "Grim abhorred hatred heart ";
+    KeyboardInputRecord recording;
 
-    float typingIndex;
-    int typingTicker;
+    float startTime;
+    int nextIndex;
+
+    void Start ()
+    {
+        recording = KeyboardInputRecord.Deserialize(SerializedRecording);
+    }
 
     public override void StartPhase ()
     {
         base.StartPhase();
-        typingIndex = -1;
-        typingTicker = -1;
+        startTime = Time.time;
+        nextIndex = 0;
     }
 
     void Update ()
     {
         if (!AcceptingInput) return;
 
-        typingIndex += CharsPerSecond * Time.deltaTime;
+        var next = recording.Inputs[nextIndex];
         
-        if (typingIndex >= typingTicker + 1)
+        if (Time.time - startTime < next.Time) return;
+
+        typeKey(next.Key, next.Uppercase);
+        nextIndex++;
+
+        if (nextIndex >= recording.Inputs.Count)
         {
-            typingTicker++;
-            typeKey(typingGoal[typingTicker]);
+            AcceptingInput = false;
         }
     }
 }

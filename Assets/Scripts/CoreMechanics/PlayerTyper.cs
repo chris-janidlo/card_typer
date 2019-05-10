@@ -17,18 +17,11 @@ public class PlayerTyper : LocalTyper
 
         if (!e.isKey || e.type != EventType.KeyDown) return;
 
-        if (e.keyCode == KeyCode.Space || e.keyCode == KeyCode.Return || e.keyCode == KeyCode.Backspace)
+        KeyCode key = e.keyCode;
+
+        if (key.IsAcceptableInput(true))
         {
-            typeKey(e.keyCode);
-            return;
+            typeKey(key, e.shift);
         }
-
-        char typed = e.character;
-
-        // shoo away the weird ghost characters
-        // seriously everything breaks if this isn't here because UGUI is haunted
-        if (!Char.IsLetter(typed) && !Char.IsDigit(typed) && !Char.IsPunctuation(typed)) return;
-
-        typeKey(typed);
     }
 }
