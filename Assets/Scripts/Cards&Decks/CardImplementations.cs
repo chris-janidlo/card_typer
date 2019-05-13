@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Cards1492
 {
+
+using Keys = List<KeyCode>;
+
 public static class CardUtils
 {
     public static void DoAfterTime (Action action, float time)
@@ -76,7 +80,7 @@ public class Ancient : Card
 	public override int Burn => 5;
 
     // Phoenician alphabet
-    List<KeyCode> keys = new List<KeyCode> {
+    Keys keys = new Keys {
         KeyCode.B,
         KeyCode.D,
         KeyCode.G,
@@ -100,7 +104,7 @@ public class Ancient : Card
 	{
 		foreach (var key in keys)
         {
-            caster.Typer.Keyboard.IncrementState(key, new KeyState { EnergyLevel = energy });
+            caster.Typer.Keyboard.GetState(key).EnergyLevel += energy;
         }
 	}
 }
@@ -114,7 +118,7 @@ public class Barrier : Card
 	public override int Burn => 3;
 
 	float shield = 1f;
-	List<KeyCode> keys = new List<KeyCode> {
+	Keys keys = new Keys {
 		KeyCode.Q,
 		KeyCode.W,
 		KeyCode.E,
@@ -145,7 +149,7 @@ public class Bulwark : Card
 	public override int Burn => 4;
 
 	float damage = 1;
-	List<KeyCode> keys = new List<KeyCode> {
+	Keys keys = new Keys {
 		KeyCode.A,
 		KeyCode.S,
 		KeyCode.D,
@@ -223,15 +227,28 @@ public class Grim : Card
 {
 	public override string PartOfSpeech => "adjective";
 	public override string Definition => "lacking genuine levity";
-	public override string EffectText => $"gain {noxGain} nox";
+	public override string EffectText => $"your {keys.ToNaturalString()} each gain {energyGain} energy";
 
 	public override int Burn => 5;
 
-	int noxGain = 5;
+	int energyGain = 1;
+	Keys keys = new Keys {
+		KeyCode.A,
+		KeyCode.D,
+		KeyCode.M,
+		KeyCode.S,
+		KeyCode.F,
+		KeyCode.I,
+		KeyCode.L,
+		KeyCode.Y
+	};
 
 	protected override void behaviorImplementation (Agent caster, Agent enemy)
 	{
-		caster.Nox += noxGain;
+		foreach (var key in keys)
+		{
+			caster.Typer.Keyboard.GetState(key).EnergyLevel += energyGain;
+		}
 	}
 }
 
@@ -239,17 +256,28 @@ public class Heart : Card
 {
 	public override string PartOfSpeech => "noun";
 	public override string Definition => "courage or enthusiasm";
-	public override string EffectText => $"heal {healPerLux} health per lux; remove {luxRedux} of your lux";
+	public override string EffectText => $"heal {healthGain} health per energy on your {keys.ToNaturalString()} keys; each of those keys loses all of its energy";
 
 	public override int Burn => 6;
 
-	float healPerLux = 0.25f;
-	float luxRedux = 0.25f;
+	int healthGain = 2;
+	Keys keys = new Keys {
+		KeyCode.A,
+		KeyCode.E,
+		KeyCode.I,
+		KeyCode.O,
+		KeyCode.U,
+		KeyCode.Y
+	};
 
 	protected override void behaviorImplementation (Agent caster, Agent enemy)
 	{
-		caster.IncrementHealth((int) (healPerLux * caster.Lux), $"The strength of passion within {caster.ObjectName}", "healed");
-		caster.Lux = (int) (caster.Lux * (1 - luxRedux));
+		foreach (var key in keys)
+		{
+			var state = caster.Typer.Keyboard.GetState(key);
+			caster.IncrementHealth(state.EnergyLevel);
+			state.EnergyLevel = 0;
+		}
 	}
 }
 
@@ -257,17 +285,15 @@ public class Hound : Card
 {
 	public override string PartOfSpeech => "verb";
 	public override string Definition => "pursue tenaciously, doglike";
-	public override string EffectText => $"deal {damagePerNox} damage per nox times the percentage of typing time remaining after casting this";
+	public override string EffectText => $"deal {damage} damage times the percentage of typing time remaining after casting this";
 
 	public override int Burn => 5;
 
-	public int damagePerNox = 1;
+	public int damage = 1;
 
 	protected override void behaviorImplementation (Agent caster, Agent enemy)
 	{
-		int noxDamage = damagePerNox * caster.Nox;
-		int damage = (int) (noxDamage * Typer.Instance.TimeLeftPercent);
-		enemy.IncrementHealth(-damage, caster.SubjectName, "hounded");
+		enemy.IncrementHealth((int) (-damage * MatchManager.Instance.TypingTimeLeftPercent));
 	}
 }
 
@@ -275,26 +301,34 @@ public class Lock : Card
 {
 	public override string PartOfSpeech => "verb";
 	public override string Definition => "fasten by a key or combination";
-	public override string EffectText => "the next spell has no effect on your lux or nox";
+	public override string EffectText => $"for {time} seconds, disable every key that was used to type the last spell that was cast (from either side!)";
 
 	public override int Burn => 7;
 
+	float time = 4;
+	Card lastCast;
+	Agent lastCaster;
+
+	protected override void initialize ()
+	{
+		CardCast += (casted, agent) => { lastCast = casted; lastCaster = agent; };
+	}
+
 	protected override void behaviorImplementation (Agent caster, Agent enemy)
 	{
-		caster.EssenceLock = true;
-		
-		int counter = 1;
-		
-		Action<Card, Agent> unlock = null;
-		unlock = (card, agent) => {
-			counter--;
-			if (counter <= 0)
+		// capture the relevant information from lastCast and lastCaster so that (when its time to disable) we disable what they were when we cast the spell, not what they are `time` seconds after casting it
+		Keys keys = lastCast.Word.Select(c => c.ToKeyCode()).ToList();
+		Agent lastCasterCapture = lastCaster;
+
+		Action<bool> setActiveState = flag => {
+			foreach (var key in keys)
 			{
-				caster.EssenceLock = false;
-				CardCast -= unlock;
+				lastCasterCapture.Typer.Keyboard.GetState(key).Type = flag ? KeyStateType.Active : KeyStateType.Deactivated;
 			}
 		};
-		CardCast += unlock;
+
+		setActiveState(false);
+		CardUtils.DoAfterTime(() => setActiveState(true), time);
 	}
 }
 

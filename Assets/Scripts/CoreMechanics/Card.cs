@@ -17,6 +17,11 @@ public abstract class Card
 
     public abstract int Burn { get; }
 
+    public Card ()
+    {
+        initialize();
+    }
+
     public void DoBehavior (Agent caster, Agent enemy)
     {
         if (CardCast != null) CardCast(this, caster);
@@ -24,4 +29,6 @@ public abstract class Card
     }
 
     protected abstract void behaviorImplementation (Agent caster, Agent enemy);
+
+    protected virtual void initialize () {}
 }

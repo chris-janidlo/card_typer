@@ -114,8 +114,7 @@ public abstract class LocalTyper : ITyper
         }
         else
         {
-            KeyCode code = (KeyCode) Enum.Parse(typeof(KeyCode), key.ToString(), true);
-            typeKey(code, Char.IsUpper(key));
+            typeKey(key.ToKeyCode(), Char.IsUpper(key));
         }
     }
 

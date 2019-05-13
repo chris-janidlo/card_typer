@@ -79,20 +79,6 @@ public class Keyboard : MonoBehaviour
         if (!Locked) getField(key).SetValue(this, newState);
     }
 
-	// TODO: super untested and experimental
-	public void IncrementState (KeyCode key, KeyState deltaState)
-	{
-		KeyState oldState = GetState(key), newState = new KeyState();
-		foreach (FieldInfo field in typeof(KeyState).GetFields())
-		{
-			double? oldField = field.GetValue(oldState) as double?;
-			if (oldField != null)
-			{
-				field.SetValue(newState, (double) oldField + (double) field.GetValue(deltaState));
-			}
-		}
-	}
-
     FieldInfo getField (KeyCode key)
     {
         return this.GetType().GetField($"{key.ToString()}State");
