@@ -109,17 +109,30 @@ public class Barrier : Card
 {
 	public override string PartOfSpeech => "noun";
 	public override string Definition => "a circumstance or obstacle that keeps people apart or prevents progress";
-	public override string EffectText => $"gain {shieldPerNox} shield per nox; lose {noxRedux} of your nox";
+	public override string EffectText => $"gain {shield} per energy on the top row ({keys.ToNaturalString()})";
 
 	public override int Burn => 3;
 
-	float shieldPerNox = 0.5f;
-	float noxRedux = 0.5f;
+	float shield = 1f;
+	List<KeyCode> keys = new List<KeyCode> {
+		KeyCode.Q,
+		KeyCode.W,
+		KeyCode.E,
+		KeyCode.R,
+		KeyCode.T,
+		KeyCode.Y,
+		KeyCode.U,
+		KeyCode.I,
+		KeyCode.O,
+		KeyCode.P
+	};
 
 	protected override void behaviorImplementation (Agent caster, Agent enemy)
 	{
-		caster.Shield += (int) (caster.Nox * shieldPerNox);
-		caster.Nox = (int) (caster.Nox * (1.0f - noxRedux));
+		foreach (var key in keys)
+		{
+			caster.Shield += (int) (shield * caster.Typer.Keyboard.GetState(key).EnergyLevel);
+		}
 	}
 }
 
@@ -127,15 +140,31 @@ public class Bulwark : Card
 {
 	public override string PartOfSpeech => "noun";
 	public override string Definition => "a strong support";
-	public override string EffectText => $"deal {damagePerLux} damage per lux";
+	public override string EffectText => $"deal {damage} damage per energy on the home row ({keys.ToNaturalString()})";
 
 	public override int Burn => 4;
 
-	float damagePerLux = 1;
+	float damage = 1;
+	List<KeyCode> keys = new List<KeyCode> {
+		KeyCode.A,
+		KeyCode.S,
+		KeyCode.D,
+		KeyCode.F,
+		KeyCode.G,
+		KeyCode.H,
+		KeyCode.J,
+		KeyCode.K,
+		KeyCode.L
+	};
 
 	protected override void behaviorImplementation (Agent caster, Agent enemy)
 	{
-		enemy.IncrementHealth((int) (-caster.Lux * damagePerLux), "A huge wall", "crashed down on");
+		float total = 0;
+		foreach (var key in keys)
+		{
+			total += caster.Typer.Keyboard.GetState(key).EnergyLevel * damage;
+		}
+		enemy.IncrementHealth(-(int) total);
 	}
 }
 
@@ -151,7 +180,7 @@ public class Devise : Card
 
 	protected override void behaviorImplementation (Agent caster, Agent enemy)
 	{
-		enemy.IncrementHealth(-Typer.Instance.CardsCasted * damagePerCard, caster.SubjectName, "wounded");
+		enemy.IncrementHealth(-ITyper.CardsCastedSinceTurnStart * damagePerCard);
 	}
 }
 
@@ -159,26 +188,34 @@ public class Flaming : Card
 {
 	public override string PartOfSpeech => "adjective";
 	public override string Definition => "passionate, violent, used as an intensifier";
-	public override string EffectText => $"if this precedes {anA} {effectedPartOfSpeech}, deal {damagePerLux} damage per lux";
+	public override string EffectText => $"the next time you cast a spell this turn: if it's {anA} {effectedPartOfSpeech}, deal {damage} damage; otherwise, this does nothing";
 
 	public override int Burn => 7;
 
 	string anA = "a";
 	string effectedPartOfSpeech = "noun";
-	float damagePerLux = 1;
+	int damage = 1;
 	
 	protected override void behaviorImplementation (Agent caster, Agent enemy)
 	{
 		Action<Card, Agent> burn = null;
+		Action unsubscribe = null;
+
+		unsubscribe = () => {
+			CardCast -= burn;
+			MatchManager.Instance.OnTypePhaseEnd -= unsubscribe;
+		};
+
 		burn = (card, agent) => {
 			if (agent == caster && card.PartOfSpeech.Equals(effectedPartOfSpeech))
 			{
-				enemy.IncrementHealth((int) (-caster.Lux * damagePerLux), caster.SubjectName, "burnt");
+				enemy.IncrementHealth(-damage);
 			}
-			CardCast -= burn;
+			unsubscribe();
 		};
 
 		CardCast += burn;
+		MatchManager.Instance.OnTypePhaseEnd += unsubscribe;
 	}
 }
 
