@@ -107,15 +107,11 @@ public class Keyboard : MonoBehaviour, IEnumerable<KeyState>
 		return GetEnumerator();
 	}
 
-	public KeyState GetState (KeyCode key)
-    {
-        return (KeyState) getField(key).GetValue(this);
-    }
-
-    public void SetState (KeyCode key, KeyState newState)
-    {
-        if (!Locked) getField(key).SetValue(this, newState);
-    }
+	public KeyState this[KeyCode key]
+	{
+		get { return (KeyState) getField(key).GetValue(this); }
+		set { if (!Locked) getField(key).SetValue(this, value); }
+	}
 
     FieldInfo getField (KeyCode key)
     {

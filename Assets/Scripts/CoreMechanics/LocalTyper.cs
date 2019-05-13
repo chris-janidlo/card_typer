@@ -78,7 +78,7 @@ public abstract class LocalTyper : ITyper
     {
         Assert.IsTrue(AcceptingInput, "typing input received when it shouldn't have been");
 
-        KeyState state = Keyboard.GetState(key);
+        KeyState state = Keyboard[key];
 
         switch (state.Type)
         {

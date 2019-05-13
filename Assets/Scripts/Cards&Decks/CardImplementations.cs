@@ -105,7 +105,7 @@ public class Ancient : Card
 	{
 		foreach (var key in keys)
         {
-            caster.Typer.Keyboard.GetState(key).EnergyLevel += energy;
+            caster.Typer.Keyboard[key].EnergyLevel += energy;
         }
 	}
 }
@@ -136,7 +136,7 @@ public class Barrier : Card
 	{
 		foreach (var key in keys)
 		{
-			caster.Shield += (int) (shield * caster.Typer.Keyboard.GetState(key).EnergyLevel);
+			caster.Shield += (int) (shield * caster.Typer.Keyboard[key].EnergyLevel);
 		}
 	}
 }
@@ -167,7 +167,7 @@ public class Bulwark : Card
 		float total = 0;
 		foreach (var key in keys)
 		{
-			total += caster.Typer.Keyboard.GetState(key).EnergyLevel * damage;
+			total += caster.Typer.Keyboard[key].EnergyLevel * damage;
 		}
 		enemy.IncrementHealth(-(int) total);
 	}
@@ -248,7 +248,7 @@ public class Grim : Card
 	{
 		foreach (var key in keys)
 		{
-			caster.Typer.Keyboard.GetState(key).EnergyLevel += energyGain;
+			caster.Typer.Keyboard[key].EnergyLevel += energyGain;
 		}
 	}
 }
@@ -275,7 +275,7 @@ public class Heart : Card
 	{
 		foreach (var key in keys)
 		{
-			var state = caster.Typer.Keyboard.GetState(key);
+			var state = caster.Typer.Keyboard[key];
 			caster.IncrementHealth(state.EnergyLevel);
 			state.EnergyLevel = 0;
 		}
@@ -330,7 +330,7 @@ public class Lock : Card
 		Action<bool> setActiveState = flag => {
 			foreach (var key in keys)
 			{
-				lastCasterCapture.Typer.Keyboard.GetState(key).Type = flag ? KeyStateType.Active : KeyStateType.Deactivated;
+				lastCasterCapture.Typer.Keyboard[key].Type = flag ? KeyStateType.Active : KeyStateType.Deactivated;
 			}
 		};
 
@@ -382,7 +382,7 @@ public class Prince : Card
 
 	protected override void behaviorImplementation (Agent caster, Agent enemy)
 	{
-		enemy.Typer.Keyboard.GetState(keys.PickRandom()).Type = KeyStateType.Deactivated;
+		enemy.Typer.Keyboard[keys.PickRandom()].Type = KeyStateType.Deactivated;
 	}
 }
 
@@ -485,6 +485,7 @@ public class TwoFaced : Card
 
 	protected override void behaviorImplementation (Agent caster, Agent enemy)
 	{
+		caster.Typer.Keyboard
 		caster.Lux += luxGain;
 		enemy.Lux += luxGain;
 	}
