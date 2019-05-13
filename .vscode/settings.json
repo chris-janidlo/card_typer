@@ -23,6 +23,5 @@
         "ProjectSettings/":true,
         "temp/":true,
         "Temp/":true
-    },
-    "python.pythonPath": "C:\\Users\\chris\\AppData\\Local\\Programs\\Python\\Python37\\python.exe"
+    }
 }

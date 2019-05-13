@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Keyboard : MonoBehaviour
+public class Keyboard : MonoBehaviour, IEnumerable<KeyState>
 {
 	public bool Locked;
 
@@ -67,9 +67,47 @@ public class Keyboard : MonoBehaviour
 	private KeyState YState = new KeyState { Type = KeyStateType.Active };
 	[SerializeField]
 	private KeyState ZState = new KeyState { Type = KeyStateType.Active };
+
+	public IEnumerator<KeyState> GetEnumerator ()
+	{
+		yield return BackspaceState;
+		yield return ReturnState;
+		yield return SpaceState;
+		yield return AState;
+		yield return BState;
+		yield return CState;
+		yield return DState;
+		yield return EState;
+		yield return FState;
+		yield return GState;
+		yield return HState;
+		yield return IState;
+		yield return JState;
+		yield return KState;
+		yield return LState;
+		yield return MState;
+		yield return NState;
+		yield return OState;
+		yield return PState;
+		yield return QState;
+		yield return RState;
+		yield return SState;
+		yield return TState;
+		yield return UState;
+		yield return VState;
+		yield return WState;
+		yield return XState;
+		yield return YState;
+		yield return ZState;
+	}
 #endregion
 
-    public KeyState GetState (KeyCode key)
+	IEnumerator IEnumerable.GetEnumerator ()
+	{
+		return GetEnumerator();
+	}
+
+	public KeyState GetState (KeyCode key)
     {
         return (KeyState) getField(key).GetValue(this);
     }

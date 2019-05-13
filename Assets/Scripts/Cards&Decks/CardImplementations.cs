@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using crass;
 
 namespace Cards1492
 {
@@ -206,7 +207,7 @@ public class Flaming : Card
 		Action unsubscribe = null;
 
 		unsubscribe = () => {
-			CardCast -= burn;
+			BeforeCast -= burn;
 			MatchManager.Instance.OnTypePhaseEnd -= unsubscribe;
 		};
 
@@ -218,7 +219,7 @@ public class Flaming : Card
 			unsubscribe();
 		};
 
-		CardCast += burn;
+		BeforeCast += burn;
 		MatchManager.Instance.OnTypePhaseEnd += unsubscribe;
 	}
 }
@@ -311,7 +312,13 @@ public class Lock : Card
 
 	protected override void initialize ()
 	{
-		CardCast += (casted, agent) => { lastCast = casted; lastCaster = agent; };
+		BeforeCast += (casted, agent) => {
+			if (casted.GetType() != GetType())
+			{
+				lastCast = casted;
+				lastCaster = agent;
+			}
+		};
 	}
 
 	protected override void behaviorImplementation (Agent caster, Agent enemy)
@@ -336,15 +343,22 @@ public class Priest : Card
 {
 	public override string PartOfSpeech => "noun";
 	public override string Definition => "one especially consecrated to the service of divinity";
-	public override string EffectText => $"heal {healPerLux} health for every lux";
+	// TODO: format percentage as a percentage
+	public override string EffectText => $"if there is less than {percent} of the typing time left, clear all status effects from your keyboard";
 
 	public override int Burn => 5;
 
-	int healPerLux = 2;
+	float percent = 0.1f;
 
 	protected override void behaviorImplementation (Agent caster, Agent enemy)
 	{
-		caster.IncrementHealth(caster.Lux * healPerLux, "The priest", "healed");
+		if (MatchManager.Instance.TypingTimeLeftPercent <= percent)
+		{
+			foreach (var state in caster.Typer.Keyboard)
+			{
+				state.Type = KeyStateType.Active;
+			}
+		}
 	}
 }
 
@@ -352,15 +366,23 @@ public class Prince : Card
 {
 	public override string PartOfSpeech => "noun";
 	public override string Definition => "of a royal family, a nonreigning male member";
-	public override string EffectText => $"gain {luxGain} lux";
+	public override string EffectText => $"disable one of the {keys.ToNaturalString(true)} keys on your opponent's keyboard";
 
 	public override int Burn => 5;
 
 	int luxGain = 4;
+	Keys keys = new Keys {
+		KeyCode.P,
+		KeyCode.R,
+		KeyCode.I,
+		KeyCode.N,
+		KeyCode.C,
+		KeyCode.E
+	};
 
 	protected override void behaviorImplementation (Agent caster, Agent enemy)
 	{
-		caster.Lux += luxGain;
+		enemy.Typer.Keyboard.GetState(keys.PickRandom()).Type = KeyStateType.Deactivated;
 	}
 }
 
@@ -376,16 +398,14 @@ public class Prophet : Card
 
 	protected override void behaviorImplementation (Agent caster, Agent enemy)
 	{
-		EventBox.Log(" You can now see the future, and just as soon, you wish you couldn't.");
-
-		caster.HandSize += extraDraw;
+		caster.Drawer.HandSize += extraDraw;
 		
 		Action reducer = null;
 		reducer = () => {
-			caster.HandSize -= extraDraw;
-			Drawer.Instance.OnEndPhase -= reducer;
+			caster.Drawer.HandSize -= extraDraw;
+			MatchManager.Instance.OnDrawPhaseEnd -= reducer;
 		};
-		Drawer.Instance.OnEndPhase += reducer;
+		MatchManager.Instance.OnDrawPhaseEnd += reducer;
 	}
 }
 
@@ -393,49 +413,31 @@ public class Refuse : Card
 {
 	public override string PartOfSpeech => "verb";
 	public override string Definition => "decline to accept; express determination to not do something";
-	public override string EffectText => $"gain {shieldPerNox} shield per nox. the next spell you cast loses all of its effects; if it's a noun, it deals damage equal to its length instead of its regular effect";
+	public override string EffectText => $"the next spell casted by you or your opponent loses all of its effects; instead of its regular effects, it deals damage equal to its length times {damageMult}";
 
 	public override int Burn => 10;
 
-	float shieldPerNox = 0.25f;
-
-	class lengthDummy : Card
-	{
-		public override string PartOfSpeech => "";
-		public override string Definition => "";
-		public override string EffectText => "";
-	
-		public override int Burn => 0;
-	
-		protected override void behaviorImplementation (Agent caster, Agent enemy)
-		{
-			enemy.IncrementHealth(-Word.Length, caster.SubjectName, "hurt");
-		}
-	}
-
-	class nothingDummy : Card
-	{
-		public override string PartOfSpeech => "";
-		public override string Definition => "";
-		public override string EffectText => "";
-	
-		public override int Burn => 0;
-	
-		protected override void behaviorImplementation (Agent caster, Agent enemy)
-		{
-			EventBox.Log("But nothing happened...");
-		}
-	}
+	int damageMult = 2;
 
 	protected override void behaviorImplementation (Agent caster, Agent enemy)
 	{
-		float shield = shieldPerNox * caster.Nox;
+		Action<Card, Agent> beforeCast = null, afterCast = null;
+		int length = 0;
 
-		var nextCard = Typer.Instance.Cards[1];
-		
-		var dummy = nextCard.PartOfSpeech.Equals("noun") ? (Card) new lengthDummy() : new nothingDummy();
-		dummy.Word = nextCard.Word;
-		Typer.Instance.Cards[1] = dummy;
+		beforeCast = (card, agent) => {
+			length = card.Word.Length;
+			CastLock = true;
+			BeforeCast -= beforeCast;
+		};
+
+		afterCast = (card, agent) => {
+			enemy.IncrementHealth(-length * damageMult);
+			CastLock = false;
+			AfterCast -= afterCast;
+		};
+
+		BeforeCast += beforeCast;
+		AfterCast += afterCast;
 	}
 }
 
