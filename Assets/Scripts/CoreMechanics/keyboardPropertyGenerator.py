@@ -7,10 +7,12 @@ from pyperclip import copy
 
 special_keys = ['Backspace', 'Return', 'Space']
 
-out = ''
+out = '#region AUTO_GENERATED_FIELDS\n'
 
 for key in chain(special_keys, ascii_uppercase):
 	state_type = 'Deactivated' if key.upper() in map(str.upper, argv[1:]) else 'Active'
-	out += f'\tpublic KeyState {key}State = new KeyState {{ Type = KeyStateType.{state_type} }};\n'
+	out += f'\t[SerializeField]\n\tprivate KeyState {key}State = new KeyState {{ Type = KeyStateType.{state_type} }};\n'
+
+out += '#endregion'
 
 copy(out)

@@ -6,36 +6,68 @@ using UnityEngine;
 
 public class Keyboard : MonoBehaviour
 {
-	public KeyState BackspaceState = new KeyState { Type = KeyStateType.Active };
-	public KeyState ReturnState = new KeyState { Type = KeyStateType.Active };
-	public KeyState SpaceState = new KeyState { Type = KeyStateType.Active };
-	public KeyState AState = new KeyState { Type = KeyStateType.Active };
-	public KeyState BState = new KeyState { Type = KeyStateType.Active };
-	public KeyState CState = new KeyState { Type = KeyStateType.Active };
-	public KeyState DState = new KeyState { Type = KeyStateType.Active };
-	public KeyState EState = new KeyState { Type = KeyStateType.Active };
-	public KeyState FState = new KeyState { Type = KeyStateType.Active };
-	public KeyState GState = new KeyState { Type = KeyStateType.Active };
-	public KeyState HState = new KeyState { Type = KeyStateType.Active };
-	public KeyState IState = new KeyState { Type = KeyStateType.Active };
-	public KeyState JState = new KeyState { Type = KeyStateType.Active };
-	public KeyState KState = new KeyState { Type = KeyStateType.Active };
-	public KeyState LState = new KeyState { Type = KeyStateType.Active };
-	public KeyState MState = new KeyState { Type = KeyStateType.Active };
-	public KeyState NState = new KeyState { Type = KeyStateType.Active };
-	public KeyState OState = new KeyState { Type = KeyStateType.Active };
-	public KeyState PState = new KeyState { Type = KeyStateType.Active };
-	public KeyState QState = new KeyState { Type = KeyStateType.Active };
-	public KeyState RState = new KeyState { Type = KeyStateType.Active };
-	public KeyState SState = new KeyState { Type = KeyStateType.Active };
-	public KeyState TState = new KeyState { Type = KeyStateType.Active };
-	public KeyState UState = new KeyState { Type = KeyStateType.Active };
-	public KeyState VState = new KeyState { Type = KeyStateType.Active };
-	public KeyState WState = new KeyState { Type = KeyStateType.Active };
-	public KeyState XState = new KeyState { Type = KeyStateType.Active };
-	public KeyState YState = new KeyState { Type = KeyStateType.Active };
-	public KeyState ZState = new KeyState { Type = KeyStateType.Active };
+	public bool Locked;
 
+#region AUTO_GENERATED_FIELDS
+	[SerializeField]
+	private KeyState BackspaceState = new KeyState { Type = KeyStateType.Active };
+	[SerializeField]
+	private KeyState ReturnState = new KeyState { Type = KeyStateType.Active };
+	[SerializeField]
+	private KeyState SpaceState = new KeyState { Type = KeyStateType.Active };
+	[SerializeField]
+	private KeyState AState = new KeyState { Type = KeyStateType.Active };
+	[SerializeField]
+	private KeyState BState = new KeyState { Type = KeyStateType.Active };
+	[SerializeField]
+	private KeyState CState = new KeyState { Type = KeyStateType.Active };
+	[SerializeField]
+	private KeyState DState = new KeyState { Type = KeyStateType.Active };
+	[SerializeField]
+	private KeyState EState = new KeyState { Type = KeyStateType.Active };
+	[SerializeField]
+	private KeyState FState = new KeyState { Type = KeyStateType.Active };
+	[SerializeField]
+	private KeyState GState = new KeyState { Type = KeyStateType.Active };
+	[SerializeField]
+	private KeyState HState = new KeyState { Type = KeyStateType.Active };
+	[SerializeField]
+	private KeyState IState = new KeyState { Type = KeyStateType.Active };
+	[SerializeField]
+	private KeyState JState = new KeyState { Type = KeyStateType.Active };
+	[SerializeField]
+	private KeyState KState = new KeyState { Type = KeyStateType.Active };
+	[SerializeField]
+	private KeyState LState = new KeyState { Type = KeyStateType.Active };
+	[SerializeField]
+	private KeyState MState = new KeyState { Type = KeyStateType.Active };
+	[SerializeField]
+	private KeyState NState = new KeyState { Type = KeyStateType.Active };
+	[SerializeField]
+	private KeyState OState = new KeyState { Type = KeyStateType.Active };
+	[SerializeField]
+	private KeyState PState = new KeyState { Type = KeyStateType.Active };
+	[SerializeField]
+	private KeyState QState = new KeyState { Type = KeyStateType.Active };
+	[SerializeField]
+	private KeyState RState = new KeyState { Type = KeyStateType.Active };
+	[SerializeField]
+	private KeyState SState = new KeyState { Type = KeyStateType.Active };
+	[SerializeField]
+	private KeyState TState = new KeyState { Type = KeyStateType.Active };
+	[SerializeField]
+	private KeyState UState = new KeyState { Type = KeyStateType.Active };
+	[SerializeField]
+	private KeyState VState = new KeyState { Type = KeyStateType.Active };
+	[SerializeField]
+	private KeyState WState = new KeyState { Type = KeyStateType.Active };
+	[SerializeField]
+	private KeyState XState = new KeyState { Type = KeyStateType.Active };
+	[SerializeField]
+	private KeyState YState = new KeyState { Type = KeyStateType.Active };
+	[SerializeField]
+	private KeyState ZState = new KeyState { Type = KeyStateType.Active };
+#endregion
 
     public KeyState GetState (KeyCode key)
     {
@@ -44,8 +76,22 @@ public class Keyboard : MonoBehaviour
 
     public void SetState (KeyCode key, KeyState newState)
     {
-        getField(key).SetValue(this, newState);
+        if (!Locked) getField(key).SetValue(this, newState);
     }
+
+	// TODO: super untested and experimental
+	public void IncrementState (KeyCode key, KeyState deltaState)
+	{
+		KeyState oldState = GetState(key), newState = new KeyState();
+		foreach (FieldInfo field in typeof(KeyState).GetFields())
+		{
+			double? oldField = field.GetValue(oldState) as double?;
+			if (oldField != null)
+			{
+				field.SetValue(newState, (double) oldField + (double) field.GetValue(deltaState));
+			}
+		}
+	}
 
     FieldInfo getField (KeyCode key)
     {
@@ -62,6 +108,7 @@ public enum KeyStateType
 public class KeyState
 {
     public KeyStateType Type;
+	public int EnergyLevel;
     public int StickyPressesRemaining;
     public float DelaySeconds;
 }

@@ -159,20 +159,4 @@ public class PlayerDrawer : IDrawer
         string id = tag.Substring(tag.LastIndexOf(":") + 1);
         return Int32.Parse(id);
     }
-
-    string listToCommaSeparated (string prelude, List<string> list)
-    {
-        string output = prelude + list[0];
-        
-        if (list.Count == 1) return output + ".";
-
-        if (list.Count == 2) return $"{output} and {list[1]}.";
-
-        for (int i = 1; i < list.Count - 1; i++)
-        {
-            output += $", {list[i]}";
-        }
-        
-        return $"{output}, and {list[list.Count - 1]}.";
-    }
 }

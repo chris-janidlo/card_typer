@@ -9,7 +9,7 @@ using crass;
 
 public class MatchManager : Singleton<MatchManager>
 {
-    public event Action OnStartTypePhase, OnEndTypePhase, OnStartDrawPhase, OnEndDrawPhase;
+    public event Action OnTypePhaseStart, OnTypePhaseTick, OnTypePhaseEnd, OnDrawPhaseStart, OnDrawPhaseEnd;
 
     public float TypingTime;
     public int TypingCountdownTime;
@@ -30,10 +30,10 @@ public class MatchManager : Singleton<MatchManager>
         var inst = SingletonGetInstance();
         if (inst != null)
         {
-            inst.OnStartTypePhase = null;
-            inst.OnEndTypePhase = null;
-            inst.OnStartDrawPhase = null;
-            inst.OnEndDrawPhase = null;
+            inst.OnTypePhaseStart = null;
+            inst.OnTypePhaseEnd = null;
+            inst.OnDrawPhaseStart = null;
+            inst.OnDrawPhaseEnd = null;
             Destroy(inst.gameObject);
         }
 
@@ -50,6 +50,8 @@ public class MatchManager : Singleton<MatchManager>
     {
         if (!inTypingPhase) return;
 
+        if (OnTypePhaseTick != null) OnTypePhaseTick();
+
         TypingTimer -= Time.deltaTime;
         TimerText.text = Mathf.Ceil(TypingTimer).ToString();
         if (TypingTimer <= 0)
@@ -60,7 +62,7 @@ public class MatchManager : Singleton<MatchManager>
 
     void startDrawPhase ()
     {
-        if (OnStartDrawPhase != null) OnStartDrawPhase();
+        if (OnDrawPhaseStart != null) OnDrawPhaseStart();
 
         Action checker = () =>
         {
@@ -76,7 +78,7 @@ public class MatchManager : Singleton<MatchManager>
 
     void endDrawPhase ()
     {
-        if (OnEndDrawPhase != null) OnEndDrawPhase();
+        if (OnDrawPhaseEnd != null) OnDrawPhaseEnd();
 
         StartCoroutine(startTypePhase());
     }
@@ -95,7 +97,7 @@ public class MatchManager : Singleton<MatchManager>
         inTypingPhase = true;
         TypingTimer = TypingTime;
 
-        if (OnStartTypePhase != null) OnStartTypePhase();
+        if (OnTypePhaseStart != null) OnTypePhaseStart();
         
         ITyper.CardsCastedSinceTurnStart = 0;
         
@@ -105,7 +107,7 @@ public class MatchManager : Singleton<MatchManager>
 
     void endTypePhase ()
     {
-        if (OnEndTypePhase != null) OnEndTypePhase();
+        if (OnTypePhaseEnd != null) OnTypePhaseEnd();
 
         TimerText.text = "";
 

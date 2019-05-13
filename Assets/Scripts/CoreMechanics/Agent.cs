@@ -6,6 +6,7 @@ using UnityEngine;
 public class Agent : MonoBehaviour
 {
     public event Action Death;
+    public event Action<int> OnDamage;
 
     public int MaxHealth;
     public IDrawer Drawer;
@@ -39,6 +40,8 @@ public class Agent : MonoBehaviour
         }
 
         Health += shieldedDelta;
+
+        if (OnDamage != null) OnDamage(shieldedDelta);
 
         if (Health <= 0)
         {
