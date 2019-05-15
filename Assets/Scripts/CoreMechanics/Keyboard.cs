@@ -120,6 +120,10 @@ public class Keyboard : MonoBehaviour, IEnumerable<KeyState>
 		List<KeyState> ret = new List<KeyState>();
 		switch (key)
 		{
+			case KeyCode.Minus:
+				ret.Add(this[KeyCode.P]);
+				break;
+
 			case KeyCode.Space:
 				ret.Add(this[KeyCode.X]);
 				ret.Add(this[KeyCode.C]);
@@ -268,6 +272,7 @@ public class Keyboard : MonoBehaviour, IEnumerable<KeyState>
 			case KeyCode.P:
 				ret.Add(this[KeyCode.O]);
 				ret.Add(this[KeyCode.L]);
+				ret.Add(this[KeyCode.Minus]);
 				break;
 
 			case KeyCode.Q:
