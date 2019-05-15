@@ -7,6 +7,8 @@ public class EnemyDrawer : IDrawer
 {
     public override int HandSize { get; set; } = 4;
 
+    public override void InitializeGame () {}
+
     public override void StartPhase (DecidedPlayCallback callback)
     {
         var cards = new List<Card>

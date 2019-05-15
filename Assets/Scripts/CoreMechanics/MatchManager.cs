@@ -36,6 +36,7 @@ public class MatchManager : Singleton<MatchManager>
             inst.OnDrawPhaseEnd = null;
             Destroy(inst.gameObject);
         }
+        SingletonSetInstance(this, true);
 
         Player.Death += () => SceneManager.LoadScene("Loss");
         Enemy.Death += () => SceneManager.LoadScene("Victory");
@@ -43,6 +44,8 @@ public class MatchManager : Singleton<MatchManager>
 
     void Start ()
     {
+        Player.Drawer.InitializeGame();
+        Enemy.Drawer.InitializeGame();
         startDrawPhase();
     }
 

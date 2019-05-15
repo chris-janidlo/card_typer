@@ -33,20 +33,6 @@ public class PlayerDrawer : IDrawer
 
     DecidedPlayCallback decidedPlayCallback;
 
-    void Awake ()
-    {
-        deck = Deck.FromClassString(DeckClassName);
-        deck.TaggedTextChanged += constructDeckString;
-
-        handSelection = new List<Card>();
-        selectedIndices = new List<int>();
-
-        ResetOrder.onClick.AddListener(onClickReset);
-        StartTyping.onClick.AddListener(onClickStart);
-
-        DeckText.CrossFadeAlpha(0, 0, false);
-    }
-
     void Update ()
     {
         int hoverI = getHoveredIndex();
@@ -71,6 +57,20 @@ public class PlayerDrawer : IDrawer
     void OnDestroy ()
     {
         deck.TaggedTextChanged -= constructDeckString;
+    }
+
+    public override void InitializeGame ()
+    {
+        deck = Deck.FromClassString(DeckClassName);
+        deck.TaggedTextChanged += constructDeckString;
+
+        handSelection = new List<Card>();
+        selectedIndices = new List<int>();
+
+        ResetOrder.onClick.AddListener(onClickReset);
+        StartTyping.onClick.AddListener(onClickStart);
+
+        DeckText.CrossFadeAlpha(0, 0, false);
     }
 
     public override void StartPhase (DecidedPlayCallback callback)

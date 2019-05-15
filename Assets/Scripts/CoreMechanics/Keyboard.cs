@@ -361,7 +361,7 @@ public class Keyboard : MonoBehaviour, IEnumerable<KeyState>
 
     FieldInfo getField (KeyCode key)
     {
-        return this.GetType().GetField($"{key.ToString()}State");
+        return this.GetType().GetField($"{key.ToString()}State", BindingFlags.Instance | BindingFlags.NonPublic);
     }
 }
 
