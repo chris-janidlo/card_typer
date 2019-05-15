@@ -5,7 +5,7 @@ from itertools import chain
 from sys import argv
 from pyperclip import copy
 
-special_keys = ['Backspace', 'Return', 'Space']
+special_keys = ['Backspace', 'Minus', 'Return', 'Space', 'Quote']
 
 properties = ''
 enumerator = '\tpublic IEnumerator<KeyState> GetEnumerator()\n\t{\n'

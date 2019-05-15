@@ -13,9 +13,12 @@ public class Keyboard : MonoBehaviour, IEnumerable<KeyState>
 	[SerializeField]
 	private KeyState BackspaceState = new KeyState { Key = KeyCode.Backspace, Type = KeyStateType.Active };
 	[SerializeField]
+	private KeyState MinusState = new KeyState { Key = KeyCode.Minus, Type = KeyStateType.Active };
 	private KeyState ReturnState = new KeyState { Key = KeyCode.Return, Type = KeyStateType.Active };
 	[SerializeField]
 	private KeyState SpaceState = new KeyState { Key = KeyCode.Space, Type = KeyStateType.Active };
+	[SerializeField]
+	private KeyState QuoteState = new KeyState { Key = KeyCode.Quote, Type = KeyStateType.Active };
 	[SerializeField]
 	private KeyState AState = new KeyState { Key = KeyCode.A, Type = KeyStateType.Active };
 	[SerializeField]
@@ -72,8 +75,10 @@ public class Keyboard : MonoBehaviour, IEnumerable<KeyState>
 	public IEnumerator<KeyState> GetEnumerator()
 	{
 		yield return BackspaceState;
+		yield return MinusState;
 		yield return ReturnState;
 		yield return SpaceState;
+		yield return QuoteState;
 		yield return AState;
 		yield return BState;
 		yield return CState;
