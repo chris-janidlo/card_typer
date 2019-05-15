@@ -8,6 +8,8 @@ public abstract class ITyper : MonoBehaviour
 
     public Keyboard Keyboard;
 
+    public abstract float AccuracyThisTurn { get; }
+
     public abstract void SetPlay (List<Card> play);
     public abstract List<Card> GetPlay ();
     public abstract void StartPhase ();

@@ -30,8 +30,12 @@ public abstract class LocalTyper : ITyper
 
     public bool AcceptingInput { get; protected set; } = false;
 
+    public override float AccuracyThisTurn => (float) correctLettersTypedThisTurn / totalLettersTypedThisTurn;
+
     List<Card> cards;
     Vector2 lineStartPos;
+
+    int totalLettersTypedThisTurn, correctLettersTypedThisTurn;
 
     void Awake ()
     {
@@ -60,6 +64,8 @@ public abstract class LocalTyper : ITyper
         Progress = "";
         AcceptingInput = true;
         TyperBar.enabled = true;
+        totalLettersTypedThisTurn = 0;
+        correctLettersTypedThisTurn = 0;
     }
 
     public override void EndPhase ()
@@ -124,6 +130,7 @@ public abstract class LocalTyper : ITyper
         {
             case KeyCode.Space:
             case KeyCode.Return:
+                totalLettersTypedThisTurn++;
                 confirmInput();
                 break;
             
@@ -132,6 +139,7 @@ public abstract class LocalTyper : ITyper
                 break;
 
             default:
+                totalLettersTypedThisTurn++;
                 addLetter(key.ToChar(shiftIsPressed));
                 break;
         }
@@ -149,6 +157,7 @@ public abstract class LocalTyper : ITyper
         {
             Progress += typed;
             TypingSounds.Instance.PlayLetter();
+            correctLettersTypedThisTurn++;
         }
         else
         {
@@ -177,7 +186,11 @@ public abstract class LocalTyper : ITyper
 
     void confirmInput ()
     {
-        if (!tryPopCard())
+        if (tryPopCard())
+        {
+            correctLettersTypedThisTurn++;
+        }
+        else
         {
             badInputFeedback();
         }

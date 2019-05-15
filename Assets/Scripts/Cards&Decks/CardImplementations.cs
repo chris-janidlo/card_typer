@@ -312,12 +312,9 @@ public class Lock : Card
 
 	protected override void initialize ()
 	{
-		BeforeCast += (casted, agent) => {
-			if (casted.GetType() != GetType())
-			{
-				lastCast = casted;
-				lastCaster = agent;
-			}
+		AfterCast += (casted, agent) => {
+			lastCast = casted;
+			lastCaster = agent;
 		};
 	}
 
@@ -343,21 +340,20 @@ public class Priest : Card
 {
 	public override string PartOfSpeech => "noun";
 	public override string Definition => "one especially consecrated to the service of divinity";
-	// TODO: format percentage as a percentage
-	public override string EffectText => $"if there is less than {percent} of the typing time left, clear all status effects from your keyboard";
+	public override string EffectText => $"clear {healed} random status effect{(healed == 1 ? "" : "s")} from your keyboard";
 
 	public override int Burn => 5;
 
-	float percent = 0.1f;
+	int healed = 1;
 
 	protected override void behaviorImplementation (Agent caster, Agent enemy)
 	{
-		if (MatchManager.Instance.TypingTimeLeftPercent <= percent)
+		for (int i = 0; i < healed; i++)
 		{
-			foreach (var state in caster.Typer.Keyboard)
-			{
-				state.Type = KeyStateType.Active;
-			}
+			caster.Typer.Keyboard
+				.Where(s => s.Type != KeyStateType.Active).ToList()
+				.PickRandom()
+				.Type = KeyStateType.Active;
 		}
 	}
 }
@@ -445,15 +441,20 @@ public class Sunset : Card
 {
 	public override string PartOfSpeech => "noun";
 	public override string Definition => "the apparent descent of the sun";
-	public override string EffectText => $"gain {luxPerCard} lux per spell casted so far this turn";
+	public override string EffectText => $"if there is less than {time} second{(time == 1 ? "" : "s")} left: deal damage based on your typing accuracy, for a maximum of {maxDamage} (this damage is at its maximum at 100% accuracy, but quickly drops off as your accuracy decreases)";
 
 	public override int Burn => 10;
 
-	int luxPerCard = 1;
+	float time = 1;
+	float maxDamage = 12;
 
 	protected override void behaviorImplementation (Agent caster, Agent enemy)
 	{
-		caster.Lux += Typer.Instance.CardsCasted * luxPerCard;
+		if (MatchManager.Instance.TypingTime <= time)
+		{
+			float damage = Mathf.Pow(maxDamage, caster.Typer.AccuracyThisTurn);
+			enemy.IncrementHealth(-(int) damage);
+		}
 	}
 }
 
@@ -469,7 +470,7 @@ public class Sword : Card
 
 	protected override void behaviorImplementation (Agent caster, Agent enemy)
 	{
-		enemy.IncrementHealth(-damage, caster.SubjectName, "stabbed");
+		enemy.IncrementHealth(-damage);
 	}
 }
 
@@ -477,17 +478,14 @@ public class TwoFaced : Card
 {
 	public override string PartOfSpeech => "adjective";
 	public override string Definition => "deceitful";
-	public override string EffectText => $"you and your opponent each gain {luxGain} lux";
+	public override string EffectText => $"disable the space bar on both your and your opponent's keyboard";
 
     public override int Burn => 1;
 
-	int luxGain = 3;
-
 	protected override void behaviorImplementation (Agent caster, Agent enemy)
 	{
-		caster.Typer.Keyboard
-		caster.Lux += luxGain;
-		enemy.Lux += luxGain;
+		caster.Typer.Keyboard[KeyCode.Space].Type = KeyStateType.Deactivated;
+		enemy.Typer.Keyboard[KeyCode.Space].Type = KeyStateType.Deactivated;
 	}
 }
 
@@ -495,15 +493,21 @@ public class Unveil : Card
 {
 	public override string PartOfSpeech => "verb";
 	public override string Definition => "to make something clear";
-	public override string EffectText => $"gain {luxPerNox} lux per nox";
+	public override string EffectText => $"clear the status effects of any key on your keyboard that is touching at least {healEnergy} energy";
 
 	public override int Burn => 5;
 
-	float luxPerNox = 0.5f;
+	int healEnergy = 4;
 
 	protected override void behaviorImplementation (Agent caster, Agent enemy)
 	{
-		caster.Lux += (int) (luxPerNox * caster.Nox);
+		foreach (var state in caster.Typer.Keyboard.Where(s => s.Type != KeyStateType.Active))
+		{
+			if (caster.Typer.Keyboard.GetSurroundingKeys(state).Sum(s => s.EnergyLevel) >= healEnergy)
+			{
+				state.Type = KeyStateType.Active;
+			}
+		}
 	}
 }
 
@@ -520,10 +524,10 @@ public class Weary : Card
 
 	protected override void behaviorImplementation (Agent caster, Agent enemy)
 	{
-		if (Typer.Instance.CardsCasted < minCast) return;
+		if (ITyper.CardsCastedSinceTurnStart < minCast) return;
 
-		float elapsed = 1 - Typer.Instance.TimeLeftPercent;
-		enemy.IncrementHealth((int) (-maxDamage * elapsed), caster.SubjectName, "incapacitated");
+		float elapsed = 1 - MatchManager.Instance.TypingTimeLeftPercent;
+		enemy.IncrementHealth((int) (-maxDamage * elapsed));
 	}
 }
 
@@ -531,25 +535,28 @@ public class Year : Card
 {
 	public override string PartOfSpeech => "noun";
 	public override string Definition => "a period of approximately the same length in other calendars";
-	public override string EffectText => $"deal {damagePerLux} damage per lux multiplied by {damagePerCard} damage per spell casted this turn";
+	public override string EffectText => $"deal {damageMult} damage per energy in your {keys.ToNaturalString()} keys";
 
 	public override int Burn => 7;
 
-	float damagePerLux = 0.5f;
-	float damagePerCard = 1;
+	float damageMult = 0.5f;
+	Keys keys = new Keys {
+		KeyCode.N,
+		KeyCode.U,
+		KeyCode.M,
+		KeyCode.B,
+		KeyCode.E,
+		KeyCode.R
+	};
 
 	protected override void behaviorImplementation (Agent caster, Agent enemy)
 	{
-		float lux = caster.Lux * damagePerLux;
-		float card = Typer.Instance.CardsCasted * damagePerCard;
-		if (lux * card == 0)
+		int total = 0;
+		foreach (var key in keys)
 		{
-			EventBox.Log(" But nothing happened...");
+			total += caster.Typer.Keyboard[key].EnergyLevel;
 		}
-		else
-		{
-			enemy.IncrementHealth((int) (-lux * card), caster.SubjectName, "hurt");
-		}
+		enemy.IncrementHealth((int) (damageMult * -total));
 	}
 }
 
@@ -557,16 +564,39 @@ public class Zealot : Card
 {
 	public override string PartOfSpeech => "noun";
 	public override string Definition => "one marked by fervant partisanship";
-	public override string EffectText => $"gain {noxPerLux} nox per lux; lose all your lux";
+	public override string EffectText => $"concentrate all of your keyboard's energy into the last key you typed before casting this spell";
 
 	public override int Burn => 2;
 
-	float noxPerLux = 1;
+	Dictionary<Agent, KeyCode> lastLettersTyped = new Dictionary<Agent, KeyCode>();
+
+	protected override void initialize ()
+	{
+		AfterCast += (card, agent) => {
+			var key = card.Word[card.Word.Length - 1].ToKeyCode();
+			lastLettersTyped[agent] = key;
+		};
+
+		MatchManager.Instance.OnTypePhaseStart += () => {
+			lastLettersTyped = new Dictionary<Agent, KeyCode>();
+		};
+	}
 
 	protected override void behaviorImplementation (Agent caster, Agent enemy)
 	{
-		caster.Nox += (int) (caster.Lux * noxPerLux);
-		caster.Lux = 0;
+		int total = 0;
+
+		foreach (var state in caster.Typer.Keyboard)
+		{
+			total += state.EnergyLevel;
+			state.EnergyLevel = 0;
+		}
+
+		KeyCode key;
+		if (lastLettersTyped.TryGetValue(caster, out key))
+		{
+			caster.Typer.Keyboard[key].EnergyLevel = total;
+		}
 	}
 }
 }
