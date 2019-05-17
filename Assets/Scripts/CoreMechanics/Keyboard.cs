@@ -14,6 +14,7 @@ public class Keyboard : MonoBehaviour, IEnumerable<KeyState>
 	private KeyState BackspaceState = new KeyState { Key = KeyCode.Backspace, Type = KeyStateType.Active };
 	[SerializeField]
 	private KeyState MinusState = new KeyState { Key = KeyCode.Minus, Type = KeyStateType.Active };
+	[SerializeField]
 	private KeyState ReturnState = new KeyState { Key = KeyCode.Return, Type = KeyStateType.Active };
 	[SerializeField]
 	private KeyState SpaceState = new KeyState { Key = KeyCode.Space, Type = KeyStateType.Active };
