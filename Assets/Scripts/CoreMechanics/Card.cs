@@ -15,6 +15,7 @@ public abstract class Card
     public abstract string PartOfSpeech { get; }
     public abstract string Definition { get; }
     public abstract string EffectText { get; }
+    public abstract Dictionary<string, WordPronunciation> SynonymList { get; }
 
     public abstract int Burn { get; }
 
