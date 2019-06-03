@@ -17,7 +17,7 @@ public static class KeyCodeExtensions
 
             case KeyCode.Quote:
                 return '\'';
-            
+
             default:
                 char chr = key.ToString()[0];
                 return uppercase ? chr : char.ToLower(chr);
