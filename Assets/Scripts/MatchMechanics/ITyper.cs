@@ -7,6 +7,7 @@ public abstract class ITyper : MonoBehaviour
     public static int CardsCastedSinceTurnStart;
 
     public Keyboard Keyboard;
+    public UIKeyboard UIKeyboard;
 
     public abstract float AccuracyThisTurn { get; }
 

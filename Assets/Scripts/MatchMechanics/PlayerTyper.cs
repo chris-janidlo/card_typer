@@ -19,6 +19,8 @@ public class PlayerTyper : LocalTyper
 
         KeyCode key = e.keyCode;
 
+        UIKeyboard.Keys[key].Press();
+
         if (key.IsAcceptableInput(true))
         {
             typeKey(key, e.shift);

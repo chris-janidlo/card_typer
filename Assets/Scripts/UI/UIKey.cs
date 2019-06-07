@@ -7,24 +7,50 @@ using TMPro;
 public class UIKey : MonoBehaviour
 {
     public KeyCode Key;
-    public Color LabelOnColor, LabelOffColor, BorderOnColor, BorderOffColor;
 
     Image border;
     TextMeshProUGUI label;
 
-    void Start ()
+    UIKeyboard parent;
+
+    IEnumerator pressRef;
+
+    public void Initialize (UIKeyboard parent)
     {
+        this.parent = parent;
+        
         border = GetComponent<Image>();
         label = GetComponentInChildren<TextMeshProUGUI>();
 
         label.text = Key.ToChar().ToString();
+        
+        setActiveState(false);
     }
 
-    void Update ()
+    public void Press ()
     {
-        bool on = Input.GetKey(Key);
+        if (pressRef != null)
+        {
+            StopCoroutine(pressRef);
+        }
 
-        border.color = on ? BorderOnColor : BorderOffColor;
-        label.color = on ? LabelOnColor : LabelOffColor;
+        StartCoroutine(pressRef = pressRoutine());
+    }
+
+    IEnumerator pressRoutine ()
+    {
+        setActiveState(true);
+
+        yield return new WaitForSeconds(parent.OnTime);
+        
+        setActiveState(false);
+
+        pressRef = null;
+    }
+
+    void setActiveState (bool value)
+    {
+        border.color = value ? parent.BorderOnColor : parent.BorderOffColor;
+        label.color = value ? parent.LabelOnColor : parent.LabelOffColor;
     }
 }

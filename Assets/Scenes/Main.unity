@@ -1381,10 +1381,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Key: 106
-  LabelOnColor: {r: 0, g: 0, b: 0, a: 1}
-  LabelOffColor: {r: 0, g: 0, b: 0, a: 0.39215687}
-  BorderOnColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 1}
-  BorderOffColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 0.39215687}
 --- !u!1 &148805874
 GameObject:
   m_ObjectHideFlags: 0
@@ -1635,10 +1631,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Key: 100
-  LabelOnColor: {r: 0, g: 0, b: 0, a: 1}
-  LabelOffColor: {r: 0, g: 0, b: 0, a: 0.39215687}
-  BorderOnColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 1}
-  BorderOffColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 0.39215687}
 --- !u!1 &187090389
 GameObject:
   m_ObjectHideFlags: 0
@@ -1929,10 +1921,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Key: 118
-  LabelOnColor: {r: 0, g: 0, b: 0, a: 1}
-  LabelOffColor: {r: 0, g: 0, b: 0, a: 0.39215687}
-  BorderOnColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 1}
-  BorderOffColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 0.39215687}
 --- !u!1 &191423850
 GameObject:
   m_ObjectHideFlags: 0
@@ -3860,10 +3848,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Key: 121
-  LabelOnColor: {r: 0, g: 0, b: 0, a: 1}
-  LabelOffColor: {r: 0, g: 0, b: 0, a: 0.39215687}
-  BorderOnColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 1}
-  BorderOffColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 0.39215687}
 --- !u!1 &394621954
 GameObject:
   m_ObjectHideFlags: 0
@@ -4080,10 +4064,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Key: 109
-  LabelOnColor: {r: 0, g: 0, b: 0, a: 1}
-  LabelOffColor: {r: 0, g: 0, b: 0, a: 0.39215687}
-  BorderOnColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 1}
-  BorderOffColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 0.39215687}
 --- !u!1 &467733595
 GameObject:
   m_ObjectHideFlags: 0
@@ -4300,10 +4280,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Key: 103
-  LabelOnColor: {r: 0, g: 0, b: 0, a: 1}
-  LabelOffColor: {r: 0, g: 0, b: 0, a: 0.39215687}
-  BorderOnColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 1}
-  BorderOffColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 0.39215687}
 --- !u!1 &504716571
 GameObject:
   m_ObjectHideFlags: 0
@@ -4877,6 +4853,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Keyboard: {fileID: 535493216}
+  UIKeyboard: {fileID: 1968113161}
   GoodGuy: {fileID: 535493212}
   BadGuy: {fileID: 843238102}
   TyperBar: {fileID: 306965348}
@@ -6660,10 +6637,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Key: 110
-  LabelOnColor: {r: 0, g: 0, b: 0, a: 1}
-  LabelOffColor: {r: 0, g: 0, b: 0, a: 0.39215687}
-  BorderOnColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 1}
-  BorderOffColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 0.39215687}
 --- !u!1 &770166356
 GameObject:
   m_ObjectHideFlags: 0
@@ -7201,10 +7174,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Key: 98
-  LabelOnColor: {r: 0, g: 0, b: 0, a: 1}
-  LabelOffColor: {r: 0, g: 0, b: 0, a: 0.39215687}
-  BorderOnColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 1}
-  BorderOffColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 0.39215687}
 --- !u!1 &843238101
 GameObject:
   m_ObjectHideFlags: 0
@@ -7255,6 +7224,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Keyboard: {fileID: 843238106}
+  UIKeyboard: {fileID: 0}
   GoodGuy: {fileID: 843238102}
   BadGuy: {fileID: 535493212}
   TyperBar: {fileID: 128664315}
@@ -8050,10 +8020,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Key: 111
-  LabelOnColor: {r: 0, g: 0, b: 0, a: 1}
-  LabelOffColor: {r: 0, g: 0, b: 0, a: 0.39215687}
-  BorderOnColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 1}
-  BorderOffColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 0.39215687}
 --- !u!1 &940561637
 GameObject:
   m_ObjectHideFlags: 0
@@ -8143,10 +8109,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Key: 104
-  LabelOnColor: {r: 0, g: 0, b: 0, a: 1}
-  LabelOffColor: {r: 0, g: 0, b: 0, a: 0.39215687}
-  BorderOnColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 1}
-  BorderOffColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 0.39215687}
 --- !u!1 &949125160
 GameObject:
   m_ObjectHideFlags: 0
@@ -8468,10 +8430,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Key: 97
-  LabelOnColor: {r: 0, g: 0, b: 0, a: 1}
-  LabelOffColor: {r: 0, g: 0, b: 0, a: 0.39215687}
-  BorderOnColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 1}
-  BorderOffColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 0.39215687}
 --- !u!1 &997023037
 GameObject:
   m_ObjectHideFlags: 0
@@ -8706,10 +8664,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Key: 115
-  LabelOnColor: {r: 0, g: 0, b: 0, a: 1}
-  LabelOffColor: {r: 0, g: 0, b: 0, a: 0.39215687}
-  BorderOnColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 1}
-  BorderOffColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 0.39215687}
 --- !u!1 &1031459264
 GameObject:
   m_ObjectHideFlags: 0
@@ -9053,10 +9007,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Key: 99
-  LabelOnColor: {r: 0, g: 0, b: 0, a: 1}
-  LabelOffColor: {r: 0, g: 0, b: 0, a: 0.39215687}
-  BorderOnColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 1}
-  BorderOffColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 0.39215687}
 --- !u!1 &1082236118
 GameObject:
   m_ObjectHideFlags: 0
@@ -10610,10 +10560,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Key: 117
-  LabelOnColor: {r: 0, g: 0, b: 0, a: 1}
-  LabelOffColor: {r: 0, g: 0, b: 0, a: 0.39215687}
-  BorderOnColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 1}
-  BorderOffColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 0.39215687}
 --- !u!1 &1225679677
 GameObject:
   m_ObjectHideFlags: 0
@@ -10703,10 +10649,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Key: 39
-  LabelOnColor: {r: 0, g: 0, b: 0, a: 1}
-  LabelOffColor: {r: 0, g: 0, b: 0, a: 0.39215687}
-  BorderOnColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 1}
-  BorderOffColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 0.39215687}
 --- !u!1 &1236500892
 GameObject:
   m_ObjectHideFlags: 0
@@ -12120,10 +12062,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Key: 102
-  LabelOnColor: {r: 0, g: 0, b: 0, a: 1}
-  LabelOffColor: {r: 0, g: 0, b: 0, a: 0.39215687}
-  BorderOnColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 1}
-  BorderOffColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 0.39215687}
 --- !u!1 &1403940284
 GameObject:
   m_ObjectHideFlags: 0
@@ -12340,10 +12278,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Key: 120
-  LabelOnColor: {r: 0, g: 0, b: 0, a: 1}
-  LabelOffColor: {r: 0, g: 0, b: 0, a: 0.39215687}
-  BorderOnColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 1}
-  BorderOffColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 0.39215687}
 --- !u!1 &1414102233
 GameObject:
   m_ObjectHideFlags: 0
@@ -13034,10 +12968,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Key: 105
-  LabelOnColor: {r: 0, g: 0, b: 0, a: 1}
-  LabelOffColor: {r: 0, g: 0, b: 0, a: 0.39215687}
-  BorderOnColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 1}
-  BorderOffColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 0.39215687}
 --- !u!1 &1514688872
 GameObject:
   m_ObjectHideFlags: 0
@@ -13703,10 +13633,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Key: 122
-  LabelOnColor: {r: 0, g: 0, b: 0, a: 1}
-  LabelOffColor: {r: 0, g: 0, b: 0, a: 0.39215687}
-  BorderOnColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 1}
-  BorderOffColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 0.39215687}
 --- !u!1 &1552701748
 GameObject:
   m_ObjectHideFlags: 0
@@ -13796,10 +13722,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Key: 114
-  LabelOnColor: {r: 0, g: 0, b: 0, a: 1}
-  LabelOffColor: {r: 0, g: 0, b: 0, a: 0.39215687}
-  BorderOnColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 1}
-  BorderOffColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 0.39215687}
 --- !u!1 &1552881931
 GameObject:
   m_ObjectHideFlags: 0
@@ -14090,10 +14012,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Key: 107
-  LabelOnColor: {r: 0, g: 0, b: 0, a: 1}
-  LabelOffColor: {r: 0, g: 0, b: 0, a: 0.39215687}
-  BorderOnColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 1}
-  BorderOffColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 0.39215687}
 --- !u!1 &1598600602
 GameObject:
   m_ObjectHideFlags: 0
@@ -14786,10 +14704,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Key: 112
-  LabelOnColor: {r: 0, g: 0, b: 0, a: 1}
-  LabelOffColor: {r: 0, g: 0, b: 0, a: 0.39215687}
-  BorderOnColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 1}
-  BorderOffColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 0.39215687}
 --- !u!1 &1785801762
 GameObject:
   m_ObjectHideFlags: 0
@@ -16024,10 +15938,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Key: 116
-  LabelOnColor: {r: 0, g: 0, b: 0, a: 1}
-  LabelOffColor: {r: 0, g: 0, b: 0, a: 0.39215687}
-  BorderOnColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 1}
-  BorderOffColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 0.39215687}
 --- !u!1 &1907746256
 GameObject:
   m_ObjectHideFlags: 0
@@ -16418,6 +16328,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1968113158}
+  - component: {fileID: 1968113161}
   - component: {fileID: 1968113160}
   - component: {fileID: 1968113159}
   m_Layer: 5
@@ -16486,6 +16397,51 @@ MonoBehaviour:
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 0
   m_ChildControlHeight: 0
+--- !u!114 &1968113161
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1968113157}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8a61a4ce803b1e4cb873a439d602758, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LabelOnColor: {r: 0, g: 0, b: 0, a: 1}
+  LabelOffColor: {r: 0, g: 0, b: 0, a: 0.39215687}
+  BorderOnColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 1}
+  BorderOffColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 0.39215687}
+  OnTime: 0.1
+  keys:
+  - {fileID: 2081339294}
+  - {fileID: 2057332475}
+  - {fileID: 2043723752}
+  - {fileID: 1552701752}
+  - {fileID: 1904262484}
+  - {fileID: 389666662}
+  - {fileID: 1183749582}
+  - {fileID: 1508041235}
+  - {fileID: 923623167}
+  - {fileID: 1781180676}
+  - {fileID: 991452350}
+  - {fileID: 1029705654}
+  - {fileID: 160271385}
+  - {fileID: 1362109117}
+  - {fileID: 482855486}
+  - {fileID: 940561641}
+  - {fileID: 140383329}
+  - {fileID: 1577170492}
+  - {fileID: 2074770552}
+  - {fileID: 1225679681}
+  - {fileID: 1405808625}
+  - {fileID: 1068152357}
+  - {fileID: 188534398}
+  - {fileID: 838133811}
+  - {fileID: 710478685}
+  - {fileID: 398769359}
+  - {fileID: 1549964444}
 --- !u!1 &1969177542
 GameObject:
   m_ObjectHideFlags: 0
@@ -17175,10 +17131,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Key: 101
-  LabelOnColor: {r: 0, g: 0, b: 0, a: 1}
-  LabelOffColor: {r: 0, g: 0, b: 0, a: 0.39215687}
-  BorderOnColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 1}
-  BorderOffColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 0.39215687}
 --- !u!1 &2044820980
 GameObject:
   m_ObjectHideFlags: 0
@@ -17444,10 +17396,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Key: 119
-  LabelOnColor: {r: 0, g: 0, b: 0, a: 1}
-  LabelOffColor: {r: 0, g: 0, b: 0, a: 0.39215687}
-  BorderOnColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 1}
-  BorderOffColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 0.39215687}
 --- !u!1 &2074770548
 GameObject:
   m_ObjectHideFlags: 0
@@ -17537,10 +17485,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Key: 108
-  LabelOnColor: {r: 0, g: 0, b: 0, a: 1}
-  LabelOffColor: {r: 0, g: 0, b: 0, a: 0.39215687}
-  BorderOnColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 1}
-  BorderOffColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 0.39215687}
 --- !u!1 &2081339290
 GameObject:
   m_ObjectHideFlags: 0
@@ -17630,10 +17574,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Key: 113
-  LabelOnColor: {r: 0, g: 0, b: 0, a: 1}
-  LabelOffColor: {r: 0, g: 0, b: 0, a: 0.39215687}
-  BorderOnColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 1}
-  BorderOffColor: {r: 0.20784315, g: 0.7725491, b: 0.20784315, a: 0.39215687}
 --- !u!1 &2098727243
 GameObject:
   m_ObjectHideFlags: 0
