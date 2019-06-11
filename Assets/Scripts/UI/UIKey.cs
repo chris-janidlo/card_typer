@@ -24,31 +24,10 @@ public class UIKey : MonoBehaviour
 
         label.text = Key.ToChar().ToString();
         
-        setActiveState(false);
+        SetActiveState(false);
     }
 
-    public void Press ()
-    {
-        if (pressRef != null)
-        {
-            StopCoroutine(pressRef);
-        }
-
-        StartCoroutine(pressRef = pressRoutine());
-    }
-
-    IEnumerator pressRoutine ()
-    {
-        setActiveState(true);
-
-        yield return new WaitForSeconds(parent.OnTime);
-        
-        setActiveState(false);
-
-        pressRef = null;
-    }
-
-    void setActiveState (bool value)
+    public void SetActiveState (bool value)
     {
         border.color = value ? parent.BorderOnColor : parent.BorderOffColor;
         label.color = value ? parent.LabelOnColor : parent.LabelOffColor;

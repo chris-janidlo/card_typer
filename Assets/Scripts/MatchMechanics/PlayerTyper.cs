@@ -11,19 +11,19 @@ public class PlayerTyper : LocalTyper
 {
     void OnGUI ()
     {
-        if (!AcceptingInput) return;
-
         Event e = Event.current;
 
-        if (!e.isKey || e.type != EventType.KeyDown) return;
+        if (!e.isKey) return;
 
         KeyCode key = e.keyCode;
 
-        UIKeyboard.Keys[key].Press();
+        // filter out events with valid character but invalid keyCode (https://docs.unity3d.com/ScriptReference/EventType.KeyDown.html). also filter out non-input keys
+        if (e.keyCode == KeyCode.None || !key.IsAcceptableInput(true)) return;
 
-        if (key.IsAcceptableInput(true))
-        {
-            typeKey(key, e.shift);
-        }
+        UIKeyboard.Keys[key].SetActiveState(e.type == EventType.KeyDown);
+
+        if (!AcceptingInput || e.type != EventType.KeyDown) return;
+
+        typeKey(key, e.shift);
     }
 }
