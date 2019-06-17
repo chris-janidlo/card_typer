@@ -47,7 +47,7 @@ public class UIKey : MonoBehaviour
                     return "←";
                 
                 case KeyCode.Return:
-                    return "↩";
+                    return "return";
 
                 default:
                     throw new System.Exception($"unexpected keycode {key}");
