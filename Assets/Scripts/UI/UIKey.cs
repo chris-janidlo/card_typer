@@ -22,7 +22,7 @@ public class UIKey : MonoBehaviour
         border = GetComponent<Image>();
         label = GetComponentInChildren<TextMeshProUGUI>();
 
-        label.text = Key.ToChar().ToString();
+        label.text = getKeyLabel(Key);
         
         SetActiveState(false);
     }
@@ -31,5 +31,27 @@ public class UIKey : MonoBehaviour
     {
         border.color = value ? parent.BorderOnColor : parent.BorderOffColor;
         label.color = value ? parent.LabelOnColor : parent.LabelOffColor;
+    }
+
+    string getKeyLabel (KeyCode key)
+    {
+        if (key.IsAcceptableInput(false))
+        {
+            return key.ToChar().ToString();
+        }
+        else
+        {
+            switch (key)
+            {
+                case KeyCode.Backspace:
+                    return "←";
+                
+                case KeyCode.Return:
+                    return "↩";
+
+                default:
+                    throw new System.Exception($"unexpected keycode {key}");
+            }
+        }
     }
 }
