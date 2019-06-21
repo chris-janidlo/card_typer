@@ -25,6 +25,7 @@ ExportedObj/
 *.booproj
 *.svd
 *.pdb
+!/Assets/LiteNetLib/LiteNetLib.pdb
 
 # Unity3D generated meta files
 *.pidb.meta
