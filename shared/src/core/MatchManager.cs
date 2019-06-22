@@ -1,0 +1,128 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+
+namespace CTShared
+{
+public class MatchManager
+{
+    public event Action OnTypePhaseStart, OnTypePhaseEnd, OnDrawPhaseStart, OnDrawPhaseEnd;
+    public event Action<float> OnTypePhaseTick;
+
+    public const float TypingCountdownTime = 3;
+
+    public float TypingTime;
+
+    public Agent Player1, Player2;
+
+    public float TypingTimer { get; private set; }
+    public float CountdownTimer { get; private set; }
+    public float TypingTimeLeftPercent => TypingTimer / TypingTime;
+
+    bool inDrawPhase, inPreTypingPhase, inTypingPhase;
+    bool player1Ready, player2Ready;
+
+    public MatchManager (string player1DeckText, string player2DeckText)
+    {
+        Player1 = new Agent(player1DeckText);
+        Player2 = new Agent(player2DeckText);
+        startDrawPhase();
+    }
+
+    public void Tick (float dt)
+    {
+        if (inPreTypingPhase)
+        {
+            CountdownTimer -= dt;
+            if (CountdownTimer <= 0)
+            {
+                startTypePhase();
+            }
+        }
+
+        if (inTypingPhase)
+        {
+            if (OnTypePhaseTick != null) OnTypePhaseTick(dt);
+
+            TypingTimer -= dt;
+            if (TypingTimer <= 0)
+            {
+                endTypePhase();
+            }
+        }
+    }
+
+    public void ReadyUp (Agent agent)
+    {
+        if (!inDrawPhase) return;
+
+        if (agent == Player1)
+        {
+            player1Ready = true;
+        }
+        else if (agent == Player2)
+        {
+            player2Ready = true;
+        }
+        else
+        {
+            throw new Exception($"unexpected agent {agent}");
+        }
+
+        if (player1Ready && player2Ready)
+        {
+            endDrawPhase();
+        }
+    }
+
+    void startDrawPhase ()
+    {
+        inDrawPhase = true;
+
+        Player1.DrawNewHand();
+        Player2.DrawNewHand();
+
+        player1Ready = false;
+        player2Ready = false;
+
+        if (OnDrawPhaseStart != null) OnDrawPhaseStart();
+    }
+
+    void endDrawPhase ()
+    {
+        inDrawPhase = false;
+
+        if (OnDrawPhaseEnd != null) OnDrawPhaseEnd();
+
+        startTypePhase();
+    }
+
+    void startPreTypePhase ()
+    {
+        inPreTypingPhase = true;
+        CountdownTimer = TypingCountdownTime;
+    }
+
+    void startTypePhase ()
+    {
+        inPreTypingPhase = false;
+        inTypingPhase = true;
+        TypingTimer = TypingTime;
+
+        if (OnTypePhaseStart != null) OnTypePhaseStart();
+
+        Player1.CardsCastedThisTurn = 0;
+        Player2.CardsCastedThisTurn = 0;
+
+    }
+
+    void endTypePhase ()
+    {
+        inTypingPhase = false;
+
+        if (OnTypePhaseEnd != null) OnTypePhaseEnd();
+
+        startDrawPhase();
+    }
+}
+}
