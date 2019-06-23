@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 
 namespace CTShared
 {
@@ -21,20 +22,18 @@ public abstract class Card
 
     protected MatchManager manager => Owner.Manager;
 
-    // TODO:
     public static Card FromName (string name, Agent owner)
     {
-        Card card = null;
-        card.initialize();
+        Type t = Type.GetType("CTShared.Cards." + name);
+        Card card = (Card) t.GetConstructor(null).Invoke(null);
 
+        card.initialize();
         card.Owner = owner;
 
         return null;
     }
 
-    protected Card ()
-    {
-    }
+    protected Card () {}
 
     public void DoBehavior (MatchManager manager, Agent caster)
     {

@@ -3,7 +3,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace CTShared.Cards.FourteenNinetyTwo
+namespace CTShared.Cards
 {
 
 using Keys = List<KeyboardKey>;
