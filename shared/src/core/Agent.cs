@@ -20,10 +20,43 @@ public class Agent
     public readonly Deck Deck;
     public readonly Keyboard Keyboard;
 
-    public int MaxHealth, Shield;
-
-    public int HandSize = 7;
     public List<Card> Play;
+
+    int _maxHealth = 100;
+    public int MaxHealth
+    {
+        get => _maxHealth;
+        set
+        {
+            _maxHealth = Math.Max(0, value);
+            Health = Math.Min(Health, value);
+
+            if (value <= 0)
+            {
+                if (OnDeath != null) OnDeath();
+            }
+        }
+    }
+
+    int _shield;
+    public int Shield
+    {
+        get => _shield;
+        set
+        {
+            _shield = Math.Max(0, value);
+        }
+    }
+
+    int _handSize = 7;
+    public int HandSize
+    {
+        get => _handSize;
+        set
+        {
+            _handSize = Math.Max(1, value);
+        }
+    }
 
     public int Health { get; protected set; }
     
