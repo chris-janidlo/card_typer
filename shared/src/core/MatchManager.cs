@@ -6,7 +6,7 @@ namespace CTShared
 {
 public class MatchManager
 {
-    public event Action OnTypePhaseStart, OnTypePhaseEnd, OnDrawPhaseStart, OnDrawPhaseEnd;
+    public event Action OnPreTypePhaseStart, OnTypePhaseStart, OnTypePhaseEnd, OnDrawPhaseStart, OnDrawPhaseEnd;
     public event Action<float> OnTypePhaseTick;
 
     public const float TypingTime = 10;
@@ -111,13 +111,15 @@ public class MatchManager
 
         if (OnDrawPhaseEnd != null) OnDrawPhaseEnd();
 
-        startTypePhase();
+        startPreTypePhase();
     }
 
     void startPreTypePhase ()
     {
         inPreTypingPhase = true;
         CountdownTimer = TypingCountdownTime;
+
+        if (OnPreTypePhaseStart != null) OnPreTypePhaseStart();
     }
 
     void startTypePhase ()
