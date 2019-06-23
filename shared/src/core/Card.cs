@@ -4,12 +4,14 @@ namespace CTShared
 {
 public abstract class Card
 {
-    public delegate void CastEvent (Card card, MatchManager manager, Agent caster);
+    public delegate void CastEvent (Card card, Agent caster);
     public static event CastEvent BeforeCast, AfterCast;
     public static bool CastLock;
 
     // the actual word in the poem that this is shadowing
     public string Word;
+
+    public Agent Owner { get; protected set; }
 
     public abstract string PartOfSpeech { get; }
     public abstract string Definition { get; }
@@ -17,28 +19,33 @@ public abstract class Card
 
     public abstract int Burn { get; }
 
+    protected MatchManager manager => Owner.Manager;
+
     // TODO:
-    public static Card FromName (string name)
+    public static Card FromName (string name, Agent owner)
     {
         Card card = null;
         card.initialize();
+
+        card.Owner = owner;
+
         return null;
     }
 
-    private Card ()
+    protected Card ()
     {
     }
 
     public void DoBehavior (MatchManager manager, Agent caster)
     {
-        if (BeforeCast != null) BeforeCast(this, manager, caster);
+        if (BeforeCast != null) BeforeCast(this, caster);
 
-        if (!CastLock) behaviorImplementation(manager, caster);
+        if (!CastLock) behaviorImplementation(caster);
 
-        if (AfterCast != null) AfterCast(this, manager, caster);
+        if (AfterCast != null) AfterCast(this, caster);
     }
 
-    protected abstract void behaviorImplementation (MatchManager manager, Agent caster);
+    protected abstract void behaviorImplementation (Agent caster);
 
     protected virtual void initialize () {}
 }

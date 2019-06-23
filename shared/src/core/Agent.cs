@@ -75,7 +75,7 @@ public class Agent
         Manager = manager;
         manager.OnTypePhaseStart += startTypePhase;
 
-        Deck = new Deck(deckText);
+        Deck = new Deck(deckText, this);
         Keyboard = new Keyboard();
     }
 

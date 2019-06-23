@@ -19,6 +19,8 @@ public class MatchManager
     public float CountdownTimer { get; private set; }
     public float TypingTimeLeftPercent => TypingTimer / TypingTime;
 
+    public int CardsCastedThisTurn => Player1.CardsCastedThisTurn + Player2.CardsCastedThisTurn;
+
     bool inDrawPhase, inPreTypingPhase, inTypingPhase;
     bool player1Ready, player2Ready;
 

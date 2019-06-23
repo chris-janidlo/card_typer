@@ -12,6 +12,8 @@ public class Deck
     List<Card> _cards;
     public ReadOnlyCollection<Card> Cards => _cards.AsReadOnly();
 
+    public Agent Owner { get; private set; }
+
     List<Card> hand, drawPile, discardPile;
     public ReadOnlyCollection<Card> Hand => hand.AsReadOnly();
     public ReadOnlyCollection<Card> DrawPile => drawPile.AsReadOnly();
@@ -21,11 +23,13 @@ public class Deck
 
     Random rand;
 
-    public Deck (string bracketedText)
+    public Deck (string bracketedText, Agent owner)
     {
+        Owner = owner;
+
         rand = new Random();
         _cards = new List<Card>();
-            discardPile = new List<Card>();
+        discardPile = new List<Card>();
 
         string currentText = "";
         bool scanningCard = bracketedText[0] == '{';
@@ -46,7 +50,7 @@ public class Deck
                     var split = currentText.Split(':');
                     if (split.Count() != 2) throw new Exception("expected exactly one :");
 
-                    Card card = Card.FromName(split[1]);
+                    Card card = Card.FromName(split[1], owner);
                     card.Word = split[0];
                     _cards.Add(card);
 
