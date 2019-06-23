@@ -5,10 +5,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Assertions;
+using CTShared;
 using TMPro;
 using crass;
 
-public abstract class LocalTyper : ITyper
+public abstract class LocalTyper : MonoBehaviour
 {
     public Agent GoodGuy, BadGuy;
     public Image TyperBar;
