@@ -104,6 +104,39 @@ public class Agent
         }
     }
 
+    public void DrawNewHand ()
+    {
+        Deck.DrawNewHand(HandSize);
+    }
+
+    public void SetHealth (int newValue)
+    {
+        IncrementHealth(newValue - Health);
+    }
+
+    public void IncrementHealth (int delta)
+    {
+        if (delta == 0) return;
+
+        int shieldedDelta = delta;
+
+        if (delta < 0 && Shield > 0)
+        {
+            shieldedDelta = Math.Min(0, Shield + delta);
+            Shield = Math.Max(0, Shield + delta);
+        }
+
+        Health += shieldedDelta;
+
+        if (OnHealthChanged != null) OnHealthChanged(shieldedDelta);
+
+        if (Health <= 0)
+        {
+            var temp = OnDeath;
+            if (temp != null) temp();
+        }
+    }
+
     void startTypePhase ()
     {
         TypingProgress = "";
@@ -159,39 +192,6 @@ public class Agent
 
         TypingProgress = "";
         Play.Remove(toCast);
-    }
-
-    public void DrawNewHand ()
-    {
-        Deck.DrawNewHand(HandSize);
-    }
-
-    public void SetHealth (int newValue)
-    {
-        IncrementHealth(newValue - Health);
-    }
-
-    public void IncrementHealth (int delta)
-    {
-        if (delta == 0) return;
-
-        int shieldedDelta = delta;
-
-        if (delta < 0 && Shield > 0)
-        {
-            shieldedDelta = Math.Min(0, Shield + delta);
-            Shield = Math.Max(0, Shield + delta);
-        }
-
-        Health += shieldedDelta;
-
-        if (OnHealthChanged != null) OnHealthChanged(shieldedDelta);
-
-        if (Health <= 0)
-        {
-            var temp = OnDeath;
-            if (temp != null) temp();
-        }
     }
 }
 }
