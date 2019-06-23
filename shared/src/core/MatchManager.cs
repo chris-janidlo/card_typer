@@ -9,11 +9,10 @@ public class MatchManager
     public event Action OnTypePhaseStart, OnTypePhaseEnd, OnDrawPhaseStart, OnDrawPhaseEnd;
     public event Action<float> OnTypePhaseTick;
 
+    public const float TypingTime = 10;
     public const float TypingCountdownTime = 3;
 
-    public float TypingTime;
-
-    public Agent Player1, Player2;
+    public readonly Agent Player1, Player2;
 
     public float TypingTimer { get; private set; }
     public float CountdownTimer { get; private set; }
