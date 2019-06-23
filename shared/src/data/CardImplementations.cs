@@ -370,7 +370,6 @@ public class Prince : Card
 
 	public override int Burn => 5;
 
-	int luxGain = 4;
 	Keys keys = new Keys {
 		KeyboardKey.P,
 		KeyboardKey.R,
