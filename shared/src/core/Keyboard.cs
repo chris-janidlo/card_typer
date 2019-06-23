@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Reflection;
 using System.Collections;
@@ -348,7 +348,7 @@ public class Keyboard : IEnumerable<KeyState>
 
 public enum KeyStateType
 {
-    Active, Deactivated, Sticky, Delayed
+    Active, Deactivated, Sticky
 }
 
 [Serializable]
@@ -358,6 +358,5 @@ public class KeyState
     public KeyStateType Type;
 	public int EnergyLevel;
     public int StickyPressesRemaining;
-    public float DelaySeconds;
 }
 }
