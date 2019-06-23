@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -6,28 +7,125 @@ namespace CTShared
 {
 public class Agent
 {
+    public delegate void KeyPressedEvent (KeyboardKey key, KeyStateType status);
+
     public event Action OnDeath;
     public event Action<int> OnHealthChanged;
+    public event Action<bool> OnAttemptedCast;
 
+    public event KeyPressedEvent OnKeyPressed;
+    public event Action OnEmptyDelete;
+
+    public readonly MatchManager Manager;
     public readonly Deck Deck;
     public readonly Keyboard Keyboard;
 
     public int MaxHealth, Shield;
 
-    public int HandSize = 7, CardsCastedThisTurn;
+    public int HandSize = 7;
     public List<Card> Play;
 
-    public int LettersTypedThisTurn, LettersAccuratelyTypedThisTurn;
-
     public int Health { get; protected set; }
+    
+    public string TypingProgress { get; protected set; }
+    public int CardsCastedThisTurn { get; protected set; }
+    
+    public int LettersTypedThisTurn { get; protected set; }
+    public int LettersAccuratelyTypedThisTurn { get; protected set; }
+    
     public float AccuracyThisTurn => (float) LettersAccuratelyTypedThisTurn / LettersTypedThisTurn;
 
-    public Agent (string deckText)
+    public Agent (MatchManager manager, string deckText)
     {
         Health = MaxHealth;
 
+        Manager = manager;
+        manager.OnTypePhaseStart += startTypePhase;
+
         Deck = new Deck(deckText);
         Keyboard = new Keyboard();
+    }
+
+    public void PressKey (KeyboardKey key, bool shiftIsPressed)
+    {
+        KeyState state = Keyboard[key];
+
+        if (OnKeyPressed != null) OnKeyPressed(key, state.Type);
+
+        switch (state.Type)
+        {
+            case KeyStateType.Active:
+                typeKey(key, shiftIsPressed);
+                break;
+
+            case KeyStateType.Deactivated:
+                break;
+
+            case KeyStateType.Sticky:
+                state.StickyPressesRemaining--;
+                if (state.StickyPressesRemaining <= 0)
+                {
+                    state.Type = KeyStateType.Active;
+                }
+                break;
+        }
+    }
+
+    void startTypePhase ()
+    {
+        TypingProgress = "";
+        CardsCastedThisTurn = 0;
+        LettersTypedThisTurn = 0;
+        LettersAccuratelyTypedThisTurn = 0;
+    }
+
+    void typeKey (KeyboardKey key, bool shiftIsPressed)
+    {
+        LettersTypedThisTurn++;
+
+        switch (key)
+        {
+            case KeyboardKey.Space:
+            case KeyboardKey.Return:
+                LettersTypedThisTurn++;
+                tryCastSpell();
+                break;
+
+            case KeyboardKey.Backspace:
+                if (TypingProgress.Length > 0)
+                {
+                    TypingProgress = TypingProgress.Substring(0, TypingProgress.Length - 1);
+                }
+                else
+                {
+                    if (OnEmptyDelete != null) OnEmptyDelete();
+                }
+                break;
+            
+            default:
+                TypingProgress += key.ToChar(shiftIsPressed);
+                LettersTypedThisTurn++;
+                if (Play.Any(c => c.Word.StartsWith(TypingProgress)))
+                {
+                    LettersAccuratelyTypedThisTurn++;
+                }
+                break;
+        }
+    }
+
+    void tryCastSpell ()
+    {
+        Card toCast = Play.FirstOrDefault(c => c.Word.Equals(TypingProgress));
+
+        if (OnAttemptedCast != null) OnAttemptedCast(toCast != null);
+
+        if (toCast == null) return;
+
+        toCast.DoBehavior(Manager, this);
+        CardsCastedThisTurn++;
+
+        TypingProgress = "";
+        Play.Remove(toCast);
     }
 
     public void DrawNewHand ()

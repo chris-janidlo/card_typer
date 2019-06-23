@@ -24,8 +24,8 @@ public class MatchManager
 
     public MatchManager (string player1DeckText, string player2DeckText)
     {
-        Player1 = new Agent(player1DeckText);
-        Player2 = new Agent(player2DeckText);
+        Player1 = new Agent(this, player1DeckText);
+        Player2 = new Agent(this, player2DeckText);
         startDrawPhase();
     }
 
@@ -75,6 +75,22 @@ public class MatchManager
         }
     }
 
+    public Agent GetEnemyOf (Agent agent)
+    {
+        if (agent == Player1)
+        {
+            return Player2;
+        }
+        else if (agent == Player2)
+        {
+            return Player1;
+        }
+        else
+        {
+            throw new Exception($"unexpected agent {agent}");            
+        }
+    }
+
     void startDrawPhase ()
     {
         inDrawPhase = true;
@@ -110,10 +126,6 @@ public class MatchManager
         TypingTimer = TypingTime;
 
         if (OnTypePhaseStart != null) OnTypePhaseStart();
-
-        Player1.CardsCastedThisTurn = 0;
-        Player2.CardsCastedThisTurn = 0;
-
     }
 
     void endTypePhase ()

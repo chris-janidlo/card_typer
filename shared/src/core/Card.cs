@@ -4,7 +4,7 @@ namespace CTShared
 {
 public abstract class Card
 {
-    public delegate void CastEvent (Card card, MatchManager manager, Agent caster, Agent enemy);
+    public delegate void CastEvent (Card card, MatchManager manager, Agent caster);
     public static event CastEvent BeforeCast, AfterCast;
     public static bool CastLock;
 
@@ -29,20 +29,16 @@ public abstract class Card
     {
     }
 
-    public void DoBehavior (MatchManager manager, Agent caster, Agent enemy)
+    public void DoBehavior (MatchManager manager, Agent caster)
     {
-        if (BeforeCast != null) BeforeCast(this, manager, caster, enemy);
+        if (BeforeCast != null) BeforeCast(this, manager, caster);
 
-        if (!CastLock)
-        {
-            behaviorImplementation(manager, caster, enemy);
-            caster.CardsCastedThisTurn++;
-        }
+        if (!CastLock) behaviorImplementation(manager, caster);
 
-        if (AfterCast != null) AfterCast(this, manager, caster, enemy);
+        if (AfterCast != null) AfterCast(this, manager, caster);
     }
 
-    protected abstract void behaviorImplementation (MatchManager manager, Agent caster, Agent enemy);
+    protected abstract void behaviorImplementation (MatchManager manager, Agent caster);
 
     protected virtual void initialize () {}
 }
