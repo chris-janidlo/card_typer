@@ -463,7 +463,7 @@ public class Sunset : Card
 
 	protected override void behaviorImplementation (Agent caster)
 	{
-		if (manager.TypingTime <= time)
+		if (manager.TypingTimer <= time)
 		{
 			float damage = (float) Math.Pow(maxDamage, caster.AccuracyThisTurn);
 			manager.GetEnemyOf(caster).IncrementHealth(-(int) damage);
