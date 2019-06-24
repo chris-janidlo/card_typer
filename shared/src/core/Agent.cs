@@ -11,10 +11,9 @@ public class Agent
 
     public event Action OnDeath;
     public event Action<int> OnHealthChanged;
-    public event Action<bool> OnAttemptedCast;
 
+    public event Action<string> OnAttemptedCast;
     public event KeyPressedEvent OnKeyPressed;
-    public event Action OnEmptyDelete;
 
     public readonly MatchManager Manager;
     public readonly Deck Deck;
@@ -162,10 +161,6 @@ public class Agent
                 {
                     TypingProgress = TypingProgress.Substring(0, TypingProgress.Length - 1);
                 }
-                else
-                {
-                    if (OnEmptyDelete != null) OnEmptyDelete();
-                }
                 break;
             
             default:
@@ -183,7 +178,7 @@ public class Agent
     {
         Card toCast = Play.FirstOrDefault(c => c.Word.Equals(TypingProgress));
 
-        if (OnAttemptedCast != null) OnAttemptedCast(toCast != null);
+        OnAttemptedCast(toCast?.Word ?? "");
 
         if (toCast == null) return;
 

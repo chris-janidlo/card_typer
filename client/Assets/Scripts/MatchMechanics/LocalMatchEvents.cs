@@ -43,6 +43,5 @@ public class LocalMatchEvents : MatchEvents
         manPlay.OnHealthChanged += thisPlay.OnHealthChanged.Invoke;
         manPlay.OnAttemptedCast += thisPlay.OnAttemptedCast.Invoke;
         manPlay.OnKeyPressed += thisPlay.OnKeyPressed.Invoke;
-        manPlay.OnEmptyDelete += thisPlay.OnEmptyDelete.Invoke;
     }
 }

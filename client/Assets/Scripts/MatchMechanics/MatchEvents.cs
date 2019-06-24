@@ -11,10 +11,9 @@ public abstract class MatchEvents : Singleton<MatchEvents>
 	{
 		public UnityEvent OnDeath;
 		public IntEvent OnHealthChanged;
-		public BoolEvent OnAttemptedCast;
 
 		public KeyPressedEvent OnKeyPressed;
-		public UnityEvent OnEmptyDelete;
+		public StringEvent OnAttemptedCast;
 	}
 
     public UnityEvent OnPreTypePhaseStart, OnTypePhaseStart, OnTypePhaseEnd, OnDrawPhaseStart, OnDrawPhaseEnd;
@@ -40,7 +39,7 @@ public class IntEvent : UnityEvent<int> {}
 public class FloatEvent : UnityEvent<float> {}
 
 [Serializable]
-public class BoolEvent : UnityEvent<bool> {}
+public class StringEvent : UnityEvent<string> {}
 
 [Serializable]
 public class KeyPressedEvent : UnityEvent<KeyboardKey, KeyStateType> {}
