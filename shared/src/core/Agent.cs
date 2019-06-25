@@ -7,6 +7,8 @@ namespace CTShared
 {
 public class Agent
 {
+    public const int StartingMaxHealth = 100;
+
     public delegate void KeyPressedEvent (KeyboardKey key, KeyStateType status);
 
     public event Action OnDeath;
@@ -21,7 +23,7 @@ public class Agent
 
     public List<Card> Play;
 
-    int _maxHealth = 100;
+    int _maxHealth = StartingMaxHealth;
     public int MaxHealth
     {
         get => _maxHealth;
