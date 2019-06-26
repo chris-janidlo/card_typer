@@ -48,7 +48,13 @@ public class Abhor : Card
 
 	protected override void behaviorImplementation (Agent caster)
 	{
-		Action<int> reflector = d => manager.GetEnemyOf(caster).IncrementHealth((int) (d * reflectMult));
+		Action<int> reflector = d =>
+		{
+			if (d >= 0) return;
+			var enemy = manager.GetEnemyOf(caster);
+			enemy.IncrementHealth((int) (d * reflectMult));
+		};
+
         caster.OnHealthChanged += reflector;
         CardUtils.DoAfterTime(manager, () => caster.OnHealthChanged -= reflector, reflectTime);
 	}
