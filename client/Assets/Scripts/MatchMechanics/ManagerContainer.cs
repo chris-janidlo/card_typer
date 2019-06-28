@@ -6,7 +6,8 @@ using crass;
 
 public abstract class ManagerContainer : Singleton<ManagerContainer>
 {
-	public abstract MatchManager Manager { get; }
+	protected MatchManager manager;
+	public static MatchManager Manager => Instance.manager;
 
 	protected void Awake ()
 	{
