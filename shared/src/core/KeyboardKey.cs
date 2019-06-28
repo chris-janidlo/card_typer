@@ -33,7 +33,7 @@ public static class KeyboardKeyExtensions
         }
     }
 
-    public static bool IsAcceptableInput (this KeyboardKey key, AcceptableKeyboardKeyFlags flags = AcceptableKeyboardKeyFlags.Alphabetical | AcceptableKeyboardKeyFlags.Punctuation)
+    public static bool IsAcceptableInput (this KeyboardKey key, AcceptableKeyboardKeyFlags flags = AcceptableKeyboardKeyFlags.AllNonFunctional)
     {
         bool output = false;
 
@@ -65,6 +65,11 @@ public static class KeyboardKeyExtensions
 [Flags]
 public enum AcceptableKeyboardKeyFlags
 {
-    Alphabetical, Punctuation, Functional
+    Alphabetical = 1 << 0,
+    Punctuation = 1 << 1,
+    Functional = 1 << 2,
+
+    AllNonFunctional = Alphabetical | Punctuation,
+    Everything = AllNonFunctional | Functional
 }
 }
