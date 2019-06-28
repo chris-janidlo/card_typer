@@ -21,10 +21,10 @@ public class TypingDisplay : MonoBehaviour
 
 	void Start ()
 	{
-		var mgr = MatchEvents.Instance;
+		var mgr = ManagerContainer.Manager;
 
-		mgr.OnTypePhaseStart.AddListener(startPhase);
-		mgr.OnTypePhaseEnd.AddListener(endPhase);
+		mgr.OnTypePhaseStart += startPhase;
+		mgr.OnTypePhaseEnd += endPhase;
 	}
 
 	public void SetPlay (List<Card> _play)

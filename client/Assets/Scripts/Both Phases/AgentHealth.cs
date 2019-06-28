@@ -12,11 +12,11 @@ public class AgentHealth : MonoBehaviour
 
 	int currentHealthDisplay, targetHealthDisplay, oldHealthDisplay;
 
-	public void Initialize (MatchEvents.AgentEvents agent)
+	public void Initialize (Agent agent)
 	{
 		targetHealthDisplay = Agent.StartingMaxHealth;
 
-		agent.OnHealthChanged.AddListener(changeHealth);
+		agent.OnHealthChanged += changeHealth;
 	}
 
 	void Update ()
@@ -27,7 +27,7 @@ public class AgentHealth : MonoBehaviour
 	void changeHealth (int newHealth)
 	{
 		oldHealthDisplay = targetHealthDisplay;
-		targetHealthDisplay = newHealth;
+		targetHealthDisplay += newHealth;
 
 		currentHealthDisplay = oldHealthDisplay;
 

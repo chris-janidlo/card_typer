@@ -13,10 +13,10 @@ public class CardQueue : MonoBehaviour
 
 	List<TextMeshProUGUI> displays = new List<TextMeshProUGUI>();
 
-	public void Initialize (MatchEvents.AgentEvents agent)
+	public void Initialize (Agent agent)
 	{
-		agent.OnAttemptedCast.AddListener(castCard);
-		MatchEvents.Instance.OnTypePhaseEnd.AddListener(clearQueue);
+		agent.OnAttemptedCast += castCard;
+		ManagerContainer.Manager.OnTypePhaseEnd += clearQueue;
 	}
 
 	public void SetPlay (List<Card> play)
