@@ -53,9 +53,11 @@ public class MatchManager
         }
     }
 
-    public void ReadyUp (Agent agent)
+    public void ReadyUp (Agent agent, List<Card> play)
     {
         if (!inDrawPhase) return;
+
+        agent.Play = play;
 
         if (agent == Player1)
         {
