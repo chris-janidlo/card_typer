@@ -3,8 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using crass;
+using CTShared;
 using TMPro;
+using crass;
 
 public class Tooltip : Singleton<Tooltip>
 {
