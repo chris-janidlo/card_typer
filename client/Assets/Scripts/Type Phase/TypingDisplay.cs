@@ -43,7 +43,7 @@ public class TypingDisplay : MonoBehaviour
 		ProgressDisplay.enabled = false;
 	}
 
-	public void Type (KeyboardKey key)
+	public void Type (KeyboardKey key, bool shiftIsPressed)
 	{
 		switch (key)
 		{
@@ -57,7 +57,7 @@ public class TypingDisplay : MonoBehaviour
 				break;
 			
 			default:
-				addLetter(key.ToChar());
+				addLetter(key.ToChar(shiftIsPressed));
 				break;
 		}
 	}
