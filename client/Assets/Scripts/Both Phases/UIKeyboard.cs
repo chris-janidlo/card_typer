@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using CTShared;
 
 public class UIKeyboard : MonoBehaviour
 {
@@ -11,7 +12,7 @@ public class UIKeyboard : MonoBehaviour
 	[SerializeField]
 	private List<UIKey> keys;
 
-    public Dictionary<KeyCode, UIKey> Keys;
+    public Dictionary<KeyboardKey, UIKey> Keys;
 
     void Start ()
     {

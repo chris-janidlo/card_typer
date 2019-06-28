@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using CTShared;
 using TMPro;
 
 public class UIKey : MonoBehaviour
 {
-    public KeyCode Key;
+    public KeyboardKey Key;
 
     Image border;
     TextMeshProUGUI label;
@@ -33,9 +34,9 @@ public class UIKey : MonoBehaviour
         label.color = value ? parent.LabelOnColor : parent.LabelOffColor;
     }
 
-    string getKeyLabel (KeyCode key)
+    string getKeyLabel (KeyboardKey key)
     {
-        if (key.IsAcceptableInput(false))
+        if (key.IsAcceptableInput())
         {
             return key.ToChar().ToString();
         }
@@ -43,10 +44,10 @@ public class UIKey : MonoBehaviour
         {
             switch (key)
             {
-                case KeyCode.Backspace:
+                case KeyboardKey.Backspace:
                     return "←";
                 
-                case KeyCode.Return:
+                case KeyboardKey.Return:
                     return "return";
 
                 default:
