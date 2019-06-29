@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using CTShared;
 using TMPro;
 
@@ -10,6 +11,7 @@ public class TypingDisplay : MonoBehaviour
 {
 	public TagPair BadLetterTag;
 	public TextMeshProUGUI ProgressDisplay;
+	public Image Line;
 
 	List<Card> play;
 
@@ -25,6 +27,8 @@ public class TypingDisplay : MonoBehaviour
 
 		mgr.OnTypePhaseStart += startPhase;
 		mgr.OnTypePhaseEnd += endPhase;
+
+		endPhase();
 	}
 
 	public void SetPlay (List<Card> _play)
@@ -36,11 +40,13 @@ public class TypingDisplay : MonoBehaviour
 	{
 		progress = "";
 		ProgressDisplay.enabled = true;
+		Line.enabled = true;
 	}
 
 	void endPhase ()
 	{
 		ProgressDisplay.enabled = false;
+		Line.enabled = false;
 	}
 
 	public void Type (KeyboardKey key, bool shiftIsPressed)
