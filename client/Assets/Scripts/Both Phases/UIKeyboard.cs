@@ -7,7 +7,6 @@ using CTShared;
 public class UIKeyboard : MonoBehaviour
 {
     public Color LabelOnColor, LabelOffColor, BorderOnColor, BorderOffColor;
-    public float OnTime;
 
 	[SerializeField]
 	private List<UIKey> keys;
