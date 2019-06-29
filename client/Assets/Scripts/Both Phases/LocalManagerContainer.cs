@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using CTShared;
@@ -29,6 +30,13 @@ public class LocalManagerContainer : ManagerContainer
 
     public Agent Player => manager.Player1;
     public Agent Enemy => manager.Player2;
+
+    IEnumerator Start ()
+    {
+        // wait one frame so that other MonoBehaviours can subscribe in their Start methods
+        yield return null;
+        manager.Start();
+    }
 
     void Update ()
     {

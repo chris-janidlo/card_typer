@@ -20,6 +20,7 @@ public class MatchManager
 
     public int CardsCastedThisTurn => Player1.CardsCastedThisTurn + Player2.CardsCastedThisTurn;
 
+    bool started;
     bool inDrawPhase, inPreTypingPhase, inTypingPhase;
     bool player1Ready, player2Ready;
 
@@ -27,6 +28,16 @@ public class MatchManager
     {
         Player1 = new Agent(this, player1DeckText);
         Player2 = new Agent(this, player2DeckText);
+    }
+
+    public void Start ()
+    {
+        if (started)
+        {
+            throw new Exception("match is already started");
+        }
+
+        started = true;
         startDrawPhase();
     }
 
