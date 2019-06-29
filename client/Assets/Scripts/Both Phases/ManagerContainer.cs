@@ -17,5 +17,9 @@ public abstract class ManagerContainer : Singleton<ManagerContainer>
 		}
 
 		SingletonSetInstance(this, true);
+
+		initialize();
 	}
+
+	protected abstract void initialize ();
 }

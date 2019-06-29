@@ -30,7 +30,7 @@ public class LocalManagerContainer : ManagerContainer
     public Agent Player => manager.Player1;
     public Agent Enemy => manager.Player2;
 
-    void Start ()
+    protected override void initialize ()
     {
         manager = new MatchManager(playerDeck.text, enemyDeck.text);
 

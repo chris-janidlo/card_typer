@@ -51,7 +51,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b925a6c56a9f1784b99e8e50d480638b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HealthDisplay: {fileID: 0}
+  HealthDisplay: {fileID: 5687755402375299858}
   HealthUpdateTime: 0.5
 --- !u!33 &3507240383737160001
 MeshFilter:

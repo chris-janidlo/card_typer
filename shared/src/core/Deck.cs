@@ -9,27 +9,27 @@ namespace CTShared
 {
 public class Deck
 {
-    List<Card> _cards;
+    List<Card> _cards = new List<Card>();
     public ReadOnlyCollection<Card> Cards => _cards.AsReadOnly();
 
     public Agent Owner { get; private set; }
 
-    List<Card> hand, drawPile, discardPile;
+    List<Card> hand = new List<Card>(),
+               drawPile = new List<Card>(),
+               discardPile = new List<Card>();
+
     public ReadOnlyCollection<Card> Hand => hand.AsReadOnly();
     public ReadOnlyCollection<Card> DrawPile => drawPile.AsReadOnly();
     public ReadOnlyCollection<Card> DiscardPile => discardPile.AsReadOnly();
 
     public string BracketedText { get; private set; }
 
-    Random rand;
+    // TODO: seed this for client/server sync
+    Random rand = new Random();
 
     public Deck (string bracketedText, Agent owner)
     {
         Owner = owner;
-
-        rand = new Random();
-        _cards = new List<Card>();
-        discardPile = new List<Card>();
 
         string currentText = "";
         bool scanningCard = bracketedText[0] == '{';
@@ -62,6 +62,8 @@ public class Deck
                     break;
             }
         }
+
+        BracketedText = bracketedText;
     }
 
     public void DrawNewHand (int size)

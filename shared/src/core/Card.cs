@@ -25,12 +25,12 @@ public abstract class Card
     public static Card FromName (string name, Agent owner)
     {
         Type t = Type.GetType("CTShared.Cards." + name);
-        Card card = (Card) t.GetConstructor(null).Invoke(null);
+        Card card = (Card) t.GetConstructor(Type.EmptyTypes).Invoke(null);
 
-        card.initialize();
         card.Owner = owner;
+        card.initialize();
 
-        return null;
+        return card;
     }
 
     protected Card () {}
