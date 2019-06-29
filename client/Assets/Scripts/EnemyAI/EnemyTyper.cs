@@ -22,8 +22,8 @@ public class EnemyTyper : MonoBehaviour
     {
         recording = KeyboardInputRecord.Deserialize(SerializedRecording);
 
-        ManagerContainer.Manager.OnDrawPhaseStart += startPhase;
-        ManagerContainer.Manager.OnDrawPhaseEnd += endPhase;
+        ManagerContainer.Manager.OnTypePhaseStart += startPhase;
+        ManagerContainer.Manager.OnTypePhaseEnd += endPhase;
     }
 
     void Update ()
