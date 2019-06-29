@@ -7,6 +7,8 @@ using CTShared;
 
 public class EnemyDrawer : MonoBehaviour
 {
+    public TypingDisplay Typer;
+
     Deck deck;
 
     public void Initialize (Deck deck)
@@ -17,6 +19,9 @@ public class EnemyDrawer : MonoBehaviour
 
     void startPhase ()
     {
-        ManagerContainer.Manager.ReadyUp(deck.Owner, deck.Hand.ToList());
+        var play = deck.Hand.ToList();
+
+        Typer.SetPlay(play);
+        ManagerContainer.Manager.ReadyUp(deck.Owner, play);
     }
 }
