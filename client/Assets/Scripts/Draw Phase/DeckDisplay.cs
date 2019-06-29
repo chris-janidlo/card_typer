@@ -134,15 +134,17 @@ public class DeckDisplay : MonoBehaviour
 
         Action addWord = () => {
             Card card = null;
+            string word = currentText;
 
             if (scanningCard)
             {
                 card = deck.Cards[wordIndex++];
+                word = currentText.Split(':')[0];
             }
 
             TaggedText next = new TaggedText
             (
-                currentText,
+                word,
                 scanningCard ? TextStatus.InDrawPile : TextStatus.NotACard,
                 card
             );
