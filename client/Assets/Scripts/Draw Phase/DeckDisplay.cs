@@ -97,6 +97,7 @@ public class DeckDisplay : MonoBehaviour
     void startPhase ()
     {
         reTagText();
+        constructDeckString();
 
         handSelection = new List<Card>();
         selectedIndices = new List<int>();
