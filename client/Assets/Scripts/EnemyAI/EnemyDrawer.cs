@@ -1,23 +1,22 @@
 ﻿using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using CTShared;
 
-public class EnemyDrawer : IDrawer
+public class EnemyDrawer : MonoBehaviour
 {
-    public override int HandSize { get; set; } = 4;
+    Deck deck;
 
-    public override void InitializeGame () {}
-
-    public override void StartPhase (DecidedPlayCallback callback)
+    public void Initialize (Deck deck)
     {
-        var cards = new List<Card>
-        {
-            new WordLengthDamager { Word = "Grim" },
-            new WordLengthDamager { Word = "abhorred" },
-            new WordLengthDamager { Word = "hatred" },
-            new WordLengthDamager { Word = "heart" },
-        };
-        callback(cards);
+        this.deck = deck;
+        ManagerContainer.Manager.OnDrawPhaseStart += startPhase;
+    }
+
+    void startPhase ()
+    {
+        ManagerContainer.Manager.ReadyUp(deck.Owner, deck.Hand.ToList());
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using CTShared;
 
 #if UNITY_EDITOR
 public class KeyboardInputRecorder : MonoBehaviour
@@ -21,19 +22,23 @@ public class KeyboardInputRecorder : MonoBehaviour
 
         if (!e.isKey || e.type != EventType.KeyDown) return;
 
-        KeyCode key = e.keyCode;
+        KeyboardKey? maybeKey = e.keyCode.ToKeyboardKey();
 
-        if (key.IsAcceptableInput(true))
+        if (maybeKey == null) return;
+
+        var key = (KeyboardKey) maybeKey;
+
+        if (key.IsAcceptableInput(AcceptableKeyboardKeyFlags.Functional))
         {
             recording.AddInput(key, e.shift, Time.time - recordingStartTime);
         }
 
-        if (key.IsAcceptableInput(false))
+        if (key.IsAcceptableInput(AcceptableKeyboardKeyFlags.AllNonFunctional))
         {
             totalInput += key.ToChar(e.shift);
         }
 
-        if (key == KeyCode.Backspace)
+        if (key == KeyboardKey.Backspace)
         {
             totalInput = totalInput.Substring(0, totalInput.Length - 1);      
         }
@@ -89,7 +94,7 @@ public class KeyboardInputRecord
     [Serializable]
     public class MomentaryInput
     {
-        public KeyCode Key;
+        public KeyboardKey Key;
         public bool Uppercase;
         public float Time;
     }
@@ -106,7 +111,7 @@ public class KeyboardInputRecord
         Inputs = new List<MomentaryInput>();
     }
 
-    public void AddInput (KeyCode key, bool uppercase, float time)
+    public void AddInput (KeyboardKey key, bool uppercase, float time)
     {
         var next = new MomentaryInput { Key = key, Uppercase = uppercase, Time = time };
         Inputs.Add(next);
