@@ -45,6 +45,8 @@ public class TypingDisplay : MonoBehaviour
 				type(k, s);
 			}
 		};
+
+		agent.OnAttemptedCast += tryCast;
 	}
 
 	void startPhase ()
@@ -66,7 +68,7 @@ public class TypingDisplay : MonoBehaviour
 		{
 			case KeyboardKey.Return:
 			case KeyboardKey.Space:
-				progress = "";
+				// casting is covered in tryCast
 				break;
 			
 			case KeyboardKey.Backspace:
@@ -79,8 +81,22 @@ public class TypingDisplay : MonoBehaviour
 		}
 	}
 
+	void tryCast (string castWord)
+	{
+		if (castWord.Equals(""))
+		{
+			// TODO: no card to cast feedback
+		}
+		else
+		{
+			progress = "";
+		}
+	}
+
 	void deleteLetter ()
 	{
+		if (progress.Length == 0) return;
+
 		int delLen = 1;
 		if (progress[progress.Length - 1] == '>')
 		{
