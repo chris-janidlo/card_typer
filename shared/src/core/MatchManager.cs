@@ -28,6 +28,9 @@ public class MatchManager
     {
         Player1 = new Agent(this, player1DeckText);
         Player2 = new Agent(this, player2DeckText);
+
+        Player1.OnPlaySet += p => agentReady(Player1);
+        Player2.OnPlaySet += p => agentReady(Player2);
     }
 
     public void Start ()
@@ -64,11 +67,9 @@ public class MatchManager
         }
     }
 
-    public void ReadyUp (Agent agent, List<Card> play)
+    void agentReady (Agent agent)
     {
         if (!inDrawPhase) return;
-
-        agent.Play = play;
 
         if (agent == Player1)
         {

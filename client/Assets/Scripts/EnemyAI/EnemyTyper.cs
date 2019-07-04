@@ -5,7 +5,6 @@ using CTShared;
 
 public class EnemyTyper : MonoBehaviour
 {
-    public TypingDisplay Typer;
     public UIKeyboard UIKeyboard;
 
     public TextAsset SerializedRecording;
@@ -34,7 +33,6 @@ public class EnemyTyper : MonoBehaviour
         
         if (Time.time - startTime < next.Time) return;
 
-        Typer.Type(next.Key, next.Uppercase);
         agent.PressKey(next.Key, next.Uppercase);
 
         nextIndex++;

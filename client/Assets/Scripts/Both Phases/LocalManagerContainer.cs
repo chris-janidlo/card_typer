@@ -26,6 +26,9 @@ public class LocalManagerContainer : ManagerContainer
     private EnemyTyper enemyTyper;
 
     [SerializeField]
+    private TypingDisplay playerTypeBar, enemyTypeBar;
+
+    [SerializeField]
     private CardQueue playerCards, enemyCards;
 
     public Agent Player => manager.Player1;
@@ -55,6 +58,9 @@ public class LocalManagerContainer : ManagerContainer
 
         playerTyper.Initialize(Player);
         enemyTyper.Initialize(Enemy);
+
+        playerTypeBar.Initialize(Player);
+        enemyTypeBar.Initialize(Enemy);
 
         playerCards.Initialize(Player);
         enemyCards.Initialize(Enemy);

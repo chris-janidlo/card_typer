@@ -14,6 +14,7 @@ public class TypingDisplay : MonoBehaviour
 	public Image Line;
 
 	List<Card> play;
+	Agent agent;
 
 	string progress
 	{
@@ -31,9 +32,19 @@ public class TypingDisplay : MonoBehaviour
 		endPhase();
 	}
 
-	public void SetPlay (List<Card> _play)
+	public void Initialize (Agent agent)
 	{
-		play = _play;
+		this.agent = agent;
+
+		agent.OnPlaySet += p => play = p;
+
+		agent.OnKeyPressed += (k, s) =>
+		{
+			if (agent.Keyboard[k].Type == KeyStateType.Active)
+			{
+				type(k, s);
+			}
+		};
 	}
 
 	void startPhase ()
@@ -49,7 +60,7 @@ public class TypingDisplay : MonoBehaviour
 		Line.enabled = false;
 	}
 
-	public void Type (KeyboardKey key, bool shiftIsPressed)
+	void type (KeyboardKey key, bool shift)
 	{
 		switch (key)
 		{
@@ -63,7 +74,7 @@ public class TypingDisplay : MonoBehaviour
 				break;
 			
 			default:
-				addLetter(key.ToChar(shiftIsPressed));
+				addLetter(key.ToChar(shift));
 				break;
 		}
 	}

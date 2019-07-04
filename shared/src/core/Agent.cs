@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace CTShared
 {
@@ -9,10 +10,12 @@ public class Agent
 {
     public const int StartingMaxHealth = 100;
 
-    public delegate void KeyPressedEvent (KeyboardKey key, KeyStateType status);
+    public delegate void KeyPressedEvent (KeyboardKey key, bool shift);
 
     public event Action OnDeath;
     public event Action<int> OnHealthChanged;
+
+    public event Action<List<Card>> OnPlaySet;
 
     public event Action<string> OnAttemptedCast;
     public event KeyPressedEvent OnKeyPressed;
@@ -21,7 +24,8 @@ public class Agent
     public readonly Deck Deck;
     public readonly Keyboard Keyboard;
 
-    public List<Card> Play;
+    List<Card> play;
+    public ReadOnlyCollection<Card> Play => play.AsReadOnly();
 
     int _maxHealth = StartingMaxHealth;
     public int MaxHealth
@@ -80,16 +84,14 @@ public class Agent
         Keyboard = new Keyboard();
     }
 
-    public void PressKey (KeyboardKey key, bool shiftIsPressed)
+    public void PressKey (KeyboardKey key, bool shift)
     {
         KeyState state = Keyboard[key];
-
-        if (OnKeyPressed != null) OnKeyPressed(key, state.Type);
 
         switch (state.Type)
         {
             case KeyStateType.Active:
-                typeKey(key, shiftIsPressed);
+                typeKey(key, shift);
                 break;
 
             case KeyStateType.Deactivated:
@@ -103,11 +105,19 @@ public class Agent
                 }
                 break;
         }
+
+        if (OnKeyPressed != null) OnKeyPressed(key, shift);
     }
 
     public void DrawNewHand ()
     {
         Deck.DrawNewHand(HandSize);
+    }
+
+    public void SetPlay (List<Card> play)
+    {
+        this.play = play;
+        if (OnPlaySet != null) OnPlaySet(play);
     }
 
     public void SetHealth (int newValue)
@@ -168,7 +178,7 @@ public class Agent
             default:
                 TypingProgress += key.ToChar(shiftIsPressed);
                 LettersTypedThisTurn++;
-                if (Play.Any(c => c.Word.StartsWith(TypingProgress)))
+                if (play.Any(c => c.Word.StartsWith(TypingProgress)))
                 {
                     LettersAccuratelyTypedThisTurn++;
                 }
@@ -178,7 +188,7 @@ public class Agent
 
     void tryCastSpell ()
     {
-        Card toCast = Play.FirstOrDefault(c => c.Word.Equals(TypingProgress));
+        Card toCast = play.FirstOrDefault(c => c.Word.Equals(TypingProgress));
 
         OnAttemptedCast(toCast?.Word ?? "");
 
@@ -188,7 +198,7 @@ public class Agent
         CardsCastedThisTurn++;
 
         TypingProgress = "";
-        Play.Remove(toCast);
+        play.Remove(toCast);
     }
 }
 }

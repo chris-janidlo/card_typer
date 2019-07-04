@@ -43,7 +43,6 @@ public class DeckDisplay : MonoBehaviour
     public TagPair DiscardedCardTag, DrawnCardTag, CardTag, SelectedCardTag;
 
     [Header("UI")]
-    public TypingDisplay Typer;
     public float FadeInTime;
     public float FadeOutTime;
     public RectTransform ButtonContainer;
@@ -119,8 +118,7 @@ public class DeckDisplay : MonoBehaviour
 
     void onClickStart ()
     {
-        Typer.SetPlay(handSelection);
-        ManagerContainer.Manager.ReadyUp(deck.Owner, handSelection);
+        deck.Owner.SetPlay(handSelection);
 
         ButtonContainer.gameObject.SetActive(false);
         DeckText.CrossFadeAlpha(0, FadeOutTime, true);

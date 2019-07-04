@@ -15,15 +15,17 @@ public class CardQueue : MonoBehaviour
 
 	public void Initialize (Agent agent)
 	{
+		agent.OnPlaySet += setPlay;
 		agent.OnAttemptedCast += castCard;
 		ManagerContainer.Manager.OnTypePhaseEnd += clearQueue;
 	}
 
-	public void SetPlay (List<Card> play)
+	void setPlay (List<Card> play)
 	{
 		foreach (var card in play)
 		{
 			var display = Instantiate(DisplayPrefab);
+			display.text = card.Word;
 			display.transform.SetParent(DisplayContainer, false);
 			displays.Add(display);
 		}

@@ -9,7 +9,6 @@ using crass;
 
 public class PlayerTyper : MonoBehaviour
 {
-    public TypingDisplay Typer;
     public UIKeyboard UIKeyboard;
 
     Agent agent;
@@ -42,7 +41,6 @@ public class PlayerTyper : MonoBehaviour
         if (!acceptingInput || e.type != EventType.KeyDown) return;
 
         // TODO: key state feedback, hook up to agent.OnKeyPressed
-        Typer.Type(key, e.shift);
         agent.PressKey(key, e.shift);
     }
 
