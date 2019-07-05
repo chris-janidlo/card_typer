@@ -530,6 +530,8 @@ MonoBehaviour:
   enemyDrawer: {fileID: 1997566132}
   playerTyper: {fileID: 563637660}
   enemyTyper: {fileID: 1997566131}
+  playerTypeBar: {fileID: 306965350}
+  enemyTypeBar: {fileID: 128664317}
   playerCards: {fileID: 168269440622007427}
   enemyCards: {fileID: 898897026}
 --- !u!4 &66934700
@@ -4952,7 +4954,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 904eff2975b06224087f67405224c762, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Typer: {fileID: 306965350}
   UIKeyboard: {fileID: 1011195632}
 --- !u!1 &567253334
 GameObject:
@@ -13001,7 +13002,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae7fbd70096f145d09620d72b838c2e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Typer: {fileID: 128664317}
   UIKeyboard: {fileID: 500919710}
   SerializedRecording: {fileID: 4900000, guid: 0c757a16c057bee409da21cc682172cb, type: 3}
 --- !u!114 &1997566132
