@@ -15,8 +15,6 @@ public class UIKey : MonoBehaviour
 
     UIKeyboard parent;
 
-    IEnumerator pressRef;
-
     public void Initialize (UIKeyboard parent)
     {
         this.parent = parent;
