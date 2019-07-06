@@ -24,7 +24,7 @@ public class UIKey : MonoBehaviour
         border = GetComponent<Image>();
 
         label = GetComponentInChildren<TextMeshProUGUI>();
-        label.text = getKeyLabel(Key);
+        label.text = Key.ToLabel();
         label.gameObject.AddComponent<UIKeyHover>().Initialize(parent.Agent, Key);
         
         SetActiveState(false);
@@ -34,28 +34,6 @@ public class UIKey : MonoBehaviour
     {
         border.color = value ? parent.BorderOnColor : parent.BorderOffColor;
         label.color = value ? parent.LabelOnColor : parent.LabelOffColor;
-    }
-
-    string getKeyLabel (KeyboardKey key)
-    {
-        if (key.IsAcceptableInput())
-        {
-            return key.ToChar().ToString();
-        }
-        else
-        {
-            switch (key)
-            {
-                case KeyboardKey.Backspace:
-                    return "←";
-                
-                case KeyboardKey.Return:
-                    return "return";
-
-                default:
-                    throw new System.Exception($"unexpected keycode {key}");
-            }
-        }
     }
 }
 

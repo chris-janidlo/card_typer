@@ -33,6 +33,28 @@ public static class KeyboardKeyExtensions
         }
     }
 
+    public static string ToLabel (this KeyboardKey key)
+    {
+        if (key.IsAcceptableInput())
+        {
+            return key.ToChar().ToString();
+        }
+        else
+        {
+            switch (key)
+            {
+                case KeyboardKey.Backspace:
+                    return "←";
+                
+                case KeyboardKey.Return:
+                    return "return";
+
+                default:
+                    throw new System.Exception($"unexpected keycode {key}");
+            }
+        }
+    }
+
     public static bool IsAcceptableInput (this KeyboardKey key, AcceptableKeyboardKeyFlags flags = AcceptableKeyboardKeyFlags.AllNonFunctional)
     {
         bool output = false;

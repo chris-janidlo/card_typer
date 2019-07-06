@@ -13,7 +13,13 @@ public class Tooltip : Singleton<Tooltip>
     public float Delay;
     public TextMeshProUGUI ContentMirror;
 
-    public int TitleSize, PartOfSpeechBurnSize, DefinitionSize;
+    [Header("Card tooltip sizes")]
+    public int TitleSize;
+    public int PartOfSpeechBurnSize, DefinitionSize;
+
+    [Header("Key tooltip sizes")]
+    public int KeySize;
+    public int StatusSize;
 
     TextMeshProUGUI content;
     RectTransform rectTransform;
@@ -113,6 +119,30 @@ public class Tooltip : Singleton<Tooltip>
 
     string getText (KeyState key)
     {
-        return $"<size={TitleSize}>this is a key</size>";
+        string status = "";
+        
+        switch (key.Type)
+        {
+            case KeyStateType.Active:
+                status = "normal";
+                break;
+
+            case KeyStateType.Deactivated:
+                status = "deactivated";
+                break;
+
+            case KeyStateType.Sticky:
+                status = $"sticky ({key.StickyPressesRemaining} presses remaining)";
+                break;
+
+            default:
+                throw new Exception($"unexpected KeyStateType {key.Type}");
+        }
+
+        return
+            $"<align=center>" +
+            $"<size={KeySize}>{key.Key.ToLabel()}</size>\n" +
+            $"<size={StatusSize}>Status: {status}</size>" +
+            $"</align>";
     }
 }
