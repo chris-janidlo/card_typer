@@ -13,6 +13,8 @@ public class UIKeyboard : MonoBehaviour
 
     public Dictionary<KeyboardKey, UIKey> Keys;
 
+    public Agent Agent { get; private set; }
+
     void Start ()
     {
         Keys = keys.ToDictionary(k => k.Key);
@@ -21,5 +23,10 @@ public class UIKeyboard : MonoBehaviour
         {
             key.Initialize(this);
         }
+    }
+
+    public void Initialize (Agent agent)
+    {
+        Agent = agent;
     }
 }

@@ -11,95 +11,108 @@ public class Tooltip : Singleton<Tooltip>
 {
     public RectTransform Canvas;
     public float Delay;
-    public Color DamageColor;
+    public TextMeshProUGUI ContentMirror;
+
     public int TitleSize, PartOfSpeechBurnSize, DefinitionSize;
-    public TextMeshProUGUI ContentMirror, LeftBurn, RightBurn;
 
     TextMeshProUGUI content;
     RectTransform rectTransform;
 
-    TagPair damageTag;
-
-    Card currentCard;
-    IEnumerator setEnum;
-    bool hide = true, init = true, onLeftOfCursor;
+    object currentTool; // what we're hovering over
     
     void Awake ()
     {
         SingletonSetInstance(this, true);
         content = GetComponent<TextMeshProUGUI>();
         rectTransform = GetComponent<RectTransform>();
-        damageTag = new TagPair{ Start = $"<#{ColorUtility.ToHtmlStringRGB(DamageColor)}>", End = "</color>" };
 
-        SetCard(null);
-        init = false;
+        currentTool = 137; // so it's not equal to null and we clear out the display in the next call
+        setTool(null);
     }
 
     void Update ()
     {
-        onLeftOfCursor = rectTransform.anchoredPosition.x > 0;
-
         Vector3 pos;
         RectTransformUtility.ScreenPointToWorldPointInRectangle(Canvas, Input.mousePosition, CameraCache.Main, out pos);
         transform.position = pos;
 
         rectTransform.pivot = new Vector2
         (
-            onLeftOfCursor ? 1 : 0,
+            rectTransform.anchoredPosition.x > 0 ? 1 : 0,
             rectTransform.anchoredPosition.y > 0 ? 1 : 0            
         );
-
-        if (hide) return;
-
-        setBurn();
     }
 
-    public void SetCard (Card card)
+    public void ClearTool ()
     {
-        if (card == currentCard && !init) return;
+        setTool(null);
+    }
 
-        currentCard = card;
+    public void SetTool (Card card)
+    {
+        setTool(card);
+    }
 
-        hide = true;
+    public void SetTool (KeyState keyState)
+    {
+        setTool(keyState);
+    }
+
+    // the tooltip shows info on a tool
+    void setTool (object tool)
+    {
+        // Debug.Log(tool.GetType().Name);
+        if (tool == currentTool) return;
+
+        currentTool = tool;
+
         content.enabled = false;
         ContentMirror.text = "";
-        LeftBurn.text = "";
-        RightBurn.text = "";
 
-        if (setEnum != null)
-        {
-            StopCoroutine(setEnum);
-            setEnum = null;
-        }
+        StopAllCoroutines();
 
-        if (card == null) return;
+        if (tool == null) return;
 
-        setEnum = setRoutine(card);
-        StartCoroutine(setEnum);
+        StartCoroutine(setRoutine(tool));
     }
 
-    IEnumerator setRoutine (Card card)
+    IEnumerator setRoutine (object tool)
     {
         yield return new WaitForSeconds(Delay);
-        
-        hide = false;
+
+        string contentText = "";
+
+        switch (tool)
+        {
+            case Card c:
+                contentText = getText(c);
+                break;
+
+            case KeyState k:
+                contentText = getText(k);
+                break;
+
+            default:
+                throw new NotImplementedException($"the type {tool.GetType().Name} is not currently supported for tooltips");
+        }
 
         content.enabled = true;
-        content.text =
-            $"<align=\"center\"><b><size={TitleSize}>{card.Word}</size></b>\n" +
-            $"<i><size={PartOfSpeechBurnSize}>{card.PartOfSpeech}</size></i></align>\n" +
-            $"<align=\"left\"><size={DefinitionSize}><b>meaning</b> {card.Definition} " +
-            $"<b>usage</b> {card.EffectText}</size></align>";
 
-        ContentMirror.text = content.text;
-
-        setBurn();
+        content.text = contentText;
+        ContentMirror.text = contentText;
     }
 
-    void setBurn ()
+    string getText (Card card)
     {
-        string burn = damageTag.Wrap(currentCard.Burn.ToString());
-        LeftBurn.text = onLeftOfCursor ? burn : "";
-        RightBurn.text = onLeftOfCursor ? "" : burn;
+        return
+            $"<align=\"center\"><b><size={TitleSize}>{card.Word}</size></b>\n" +
+            $"<i><size={PartOfSpeechBurnSize}>{card.PartOfSpeech} · <b>{card.Burn.ToString()}</b></size></i></align>\n" +
+            $"<align=\"left\"><size={DefinitionSize}><b>meaning</b> {card.Definition} " +
+            $"<b>usage</b> {card.EffectText}</size></align>";
+    }
+
+    string getText (KeyState key)
+    {
+        return $"<size={TitleSize}>this is a key</size>";
     }
 }

@@ -11,6 +11,9 @@ public class LocalManagerContainer : ManagerContainer
     private AgentHealth playerHealth, enemyHealth;
 
     [SerializeField]
+    private UIKeyboard playerKeyboard, enemyKeyboard;
+
+    [SerializeField]
     private TextAsset playerDeck, enemyDeck;
 
     [SerializeField]
@@ -52,6 +55,9 @@ public class LocalManagerContainer : ManagerContainer
 
         playerHealth.Initialize(Player);
         enemyHealth.Initialize(Enemy);
+
+        playerKeyboard.Initialize(Player);
+        enemyKeyboard.Initialize(Enemy);
 
         playerDrawer.Initialize(Player.Deck);
         enemyDrawer.Initialize(Enemy.Deck);

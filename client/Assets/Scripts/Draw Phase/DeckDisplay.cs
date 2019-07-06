@@ -57,6 +57,8 @@ public class DeckDisplay : MonoBehaviour
 
     LinkTag linkTag = new LinkTag { ID = "taggedtext" };
 
+    Card previousHover;
+
     void Start ()
     {
         ManagerContainer.Manager.OnDrawPhaseStart += startPhase;
@@ -73,7 +75,15 @@ public class DeckDisplay : MonoBehaviour
         TaggedText hoveredText = hoverI > 0 ? taggedTexts[hoverI] : null;
         Card hover = hoveredText?.Card;
 
-        Tooltip.Instance.SetCard(hover);
+        // only set the tooltip if one of the following is true:
+            // hover is not null but previousHover is null
+            // hover is null but previousHover is not null
+        // this way we only set the tooltip if the thing we're hovering over just changed, never setting the tooltip to null extraneously
+        if (hover != null || previousHover != null)
+        {
+            Tooltip.Instance.SetTool(hover);
+            previousHover = hover;
+        }
 
         if (hover != null && deck.Hand.Contains(hover) && !selectedIndices.Contains(hoverI) && Input.GetMouseButtonUp(0))
         {
