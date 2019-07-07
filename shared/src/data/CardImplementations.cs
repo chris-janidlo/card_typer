@@ -363,6 +363,9 @@ public class Priest : Card
 		for (int i = 0; i < healed; i++)
 		{
 			var illKeys = caster.Keyboard.Where(s => s.Type != KeyStateType.Active).ToList();
+
+			if (illKeys.Count == 0) return;
+
 			illKeys[rand.Next(illKeys.Count)].Type = KeyStateType.Active;
 		}
 	}
