@@ -325,6 +325,8 @@ public class Lock : Card
 
 	protected override void behaviorImplementation (Agent caster)
 	{
+		if (lastCast == null) return; // this is the first spell cast this turn
+
 		// capture the relevant information from lastCast and lastCaster so that (when its time to disable) we disable what they were when we cast the spell, not what they are `time` seconds after casting it
 		Keys keys = lastCast.Word.Select(c => c.ToKeyboardKey()).ToList();
 		Agent lastCasterCapture = lastCaster;
