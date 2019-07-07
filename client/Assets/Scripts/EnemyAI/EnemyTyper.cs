@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using System;
+using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using CTShared;
@@ -6,57 +8,53 @@ using CTShared;
 public class EnemyTyper : MonoBehaviour
 {
     public UIKeyboard UIKeyboard;
+    public int WordsPerMinute;
 
-    public TextAsset SerializedRecording;
+    public float SecondsPerCharacter => 12f / WordsPerMinute;
 
     Agent agent;
-    KeyboardInputRecord recording;
+    List<Card> play;
 
-    bool acceptingInput;
-
-    float startTime;
-    int nextIndex;
+    IEnumerator typeEnum;
 
     void Start ()
     {
-        recording = KeyboardInputRecord.Deserialize(SerializedRecording);
-
         ManagerContainer.Manager.OnTypePhaseStart += startPhase;
         ManagerContainer.Manager.OnTypePhaseEnd += endPhase;
-    }
-
-    void Update ()
-    {
-        if (!acceptingInput) return;
-
-        var next = recording.Inputs[nextIndex];
-        
-        if (Time.time - startTime < next.Time) return;
-
-        agent.PressKey(next.Key, next.Uppercase);
-
-        nextIndex++;
-
-        if (nextIndex >= recording.Inputs.Count)
-        {
-            acceptingInput = false;
-        }
     }
 
     public void Initialize (Agent agent)
     {
         this.agent = agent;
+
+        agent.OnPlaySet += p => play = p;
     }
 
     void startPhase ()
     {
-        acceptingInput = true;
-        startTime = Time.time;
-        nextIndex = 0;
+        typeEnum = typeRoutine();
+        StartCoroutine(typeEnum);
     }
 
     void endPhase ()
     {
-        acceptingInput = false;
+        StopCoroutine(typeEnum);
+    }
+
+    IEnumerator typeRoutine ()
+    {
+        string input = String.Join(" ", play.Select(c => c.Word)) + " ";
+
+        foreach (char c in input)
+        {
+            var key = c.ToKeyboardKey();
+
+            agent.PressKey(key, Char.IsUpper(c));
+            UIKeyboard.Keys[key].SetActiveState(true);
+
+            yield return new WaitForSeconds(SecondsPerCharacter);
+
+            UIKeyboard.Keys[key].SetActiveState(false);
+        }
     }
 }
