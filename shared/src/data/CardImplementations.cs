@@ -10,6 +10,7 @@ using Keys = List<KeyboardKey>;
 
 public static class CardUtils
 {
+	// FIXME: how do we handle turn ends? should action always trigger, never trigger, or sometimes trigger if the turn ends before the timer has completed?
     public static void DoAfterTime (MatchManager manager, Action action, float time)
     {
 		Action<float> onTick = null;
