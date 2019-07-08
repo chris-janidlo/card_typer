@@ -2,10 +2,14 @@
 using System.Threading;
 using LiteNetLib;
 using LiteNetLib.Utils;
+using CTShared;
 
-class Program
+public class Program
 {
     public static int Port = 9050;
+
+    MatchManager manager;
+    NetPeer player1Peer, player2Peer;
 
     static void Main (string[] args)
     {
