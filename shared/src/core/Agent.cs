@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
@@ -193,6 +193,9 @@ public class Agent
         OnAttemptedCast(toCast?.Word ?? "");
 
         if (toCast == null) return;
+
+        // space bar and return are considered accurate presses if they're used to cast a spell
+        LettersAccuratelyTypedThisTurn++;
 
         toCast.DoBehavior(Manager, this);
         CardsCastedThisTurn++;
