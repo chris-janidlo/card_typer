@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
@@ -443,16 +443,14 @@ public class Refuse : Card
 	protected override void behaviorImplementation (Agent caster)
 	{
 		CastEvent beforeCast = null, afterCast = null;
-		int length = 0;
 
 		beforeCast = (card, agent) => {
-			length = card.Word.Length;
 			CastLock = true;
 			BeforeCast -= beforeCast;
 		};
 
 		afterCast = (card, agent) => {
-			manager.GetEnemyOf(caster).IncrementHealth(-length * damageMult);
+			manager.GetEnemyOf(caster).IncrementHealth(-card.Word.Length * damageMult);
 			CastLock = false;
 			AfterCast -= afterCast;
 		};
