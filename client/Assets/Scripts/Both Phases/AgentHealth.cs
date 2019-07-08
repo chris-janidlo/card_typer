@@ -8,28 +8,34 @@ using TMPro;
 public class AgentHealth : MonoBehaviour
 {
 	public TextMeshProUGUI HealthDisplay;
+	public TextMeshProUGUI ShieldDisplay;
 	public float HealthUpdateTime;
 
-	int currentHealthDisplay, targetHealthDisplay, oldHealthDisplay;
+	int currentHealthAmountDisplay, targetHealthAmount, oldHealthAmount;
+	Agent agent;
 
 	public void Initialize (Agent agent)
 	{
-		targetHealthDisplay = Agent.StartingMaxHealth;
+		this.agent = agent;
+
+		targetHealthAmount = Agent.StartingMaxHealth;
+		currentHealthAmountDisplay = targetHealthAmount;
 
 		agent.OnHealthChanged += changeHealth;
 	}
 
 	void Update ()
 	{
-		HealthDisplay.text = currentHealthDisplay.ToString();
+		HealthDisplay.text = currentHealthAmountDisplay.ToString();
+		ShieldDisplay.text = agent.Shield.ToString();
 	}
 
-	void changeHealth (int newHealth)
+	void changeHealth (int healthDelta)
 	{
-		oldHealthDisplay = targetHealthDisplay;
-		targetHealthDisplay += newHealth;
+		oldHealthAmount = targetHealthAmount;
+		targetHealthAmount += healthDelta;
 
-		currentHealthDisplay = oldHealthDisplay;
+		currentHealthAmountDisplay = oldHealthAmount;
 
 		StopAllCoroutines();
 		StartCoroutine(healthUpdateRoutine());
@@ -41,12 +47,12 @@ public class AgentHealth : MonoBehaviour
 
 		while (timer < HealthUpdateTime)
 		{
-			currentHealthDisplay = (int) Mathf.Lerp(oldHealthDisplay, targetHealthDisplay, timer / HealthUpdateTime);
+			currentHealthAmountDisplay = (int) Mathf.Lerp(oldHealthAmount, targetHealthAmount, timer / HealthUpdateTime);
 
-			timer -= Time.deltaTime;
+			timer += Time.deltaTime;
 			yield return null;
 		}
 
-		currentHealthDisplay = targetHealthDisplay;
+		currentHealthAmountDisplay = targetHealthAmount;
 	}
 }
