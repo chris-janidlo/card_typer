@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
@@ -296,7 +296,7 @@ public class Hound : Card
 
 	public override int Burn => 5;
 
-	public int damage = 1;
+	public int damage = 10;
 
 	protected override void behaviorImplementation (Agent caster)
 	{
