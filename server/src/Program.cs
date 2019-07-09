@@ -47,9 +47,10 @@ public class Program
 
     void closeServer (object sender, ConsoleCancelEventArgs args)
     {
+        Console.WriteLine("Cleaning up server resources...");
+
         server.Stop();
 
-        Console.ReadKey(true);
         Console.WriteLine("Server stopped.");
     }
 
