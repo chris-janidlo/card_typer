@@ -105,6 +105,16 @@ public class Program
     void handlePeerDisconnected (NetPeer peer, DisconnectInfo disconnectInfo)
     {
         Console.WriteLine(nicePeerString(peer) + " has disconnected for reason " + disconnectInfo.Reason.ToString());
+
+        // in the future, would probably prefer trying to reconnect here or do something with the disconnection. for prototyping's sake, we're just gonna clear out the peer so we can keep the server running while testing
+        if (peer == player1Peer)
+        {
+            player1Peer = null;
+        }
+        else
+        {
+            player2Peer = null;
+        }
     }
 
     string nicePeerString (NetPeer peer)
