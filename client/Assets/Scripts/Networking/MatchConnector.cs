@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using LiteNetLib;
@@ -38,18 +39,26 @@ public class MatchConnector : MonoBehaviour
 
     void handlePacket (NetPeer peer, NetPacketReader reader, DeliveryMethod deliveryMethod)
     {
-        PacketType type = (PacketType) reader.GetInt();
+        PacketType type;
+
+        try
+        {
+            type = PacketUtils.GetType(reader);
+        }
+        catch (ArgumentException e)
+        {
+            Debug.LogError($"received malformed packet; error: {e.Message}");
+            throw;
+        }
 
         switch (type)
         {
             case PacketType.ServerReadyToReceiveDeck:
                 Debug.Log("sending server our deck");
 
-                NetDataWriter writer = new NetDataWriter();
-                writer.Put((int) PacketType.ClientDeckRegistration);
-                writer.Put(DeckAsset.text);
-
-                server.Send(writer, DeliveryMethod.ReliableOrdered);
+                ClientDeckRegistrationPacket pkt =
+                    new ClientDeckRegistrationPacket().WithDeck(DeckAsset.text);
+                server.Send(pkt.ToWriter(), DeliveryMethod.ReliableOrdered);
                 break;
             
             default:

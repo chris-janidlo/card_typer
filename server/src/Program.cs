@@ -97,9 +97,8 @@ public class Program
         }
         Console.WriteLine(nicePeerString(peer) + " has connected");
 
-        NetDataWriter writer = new NetDataWriter();
-        writer.Put((int) PacketType.ServerReadyToReceiveDeck);
-        peer.Send(writer, DeliveryMethod.ReliableOrdered);
+        ServerReadyToReceiveDeckPacket pkt = new ServerReadyToReceiveDeckPacket();
+        peer.Send(pkt.ToWriter(), DeliveryMethod.ReliableOrdered);
 
         Console.WriteLine("now waiting for their deck...");
     }
@@ -123,24 +122,34 @@ public class Program
 
     void handlePacket (NetPeer peer, NetPacketReader reader, DeliveryMethod deliveryMethod)
     {
-        PacketType type = (PacketType) reader.GetInt();
+        PacketType type;
+
+        try
+        {
+            type = PacketUtils.GetType(reader);
+        }
+        catch (ArgumentException e)
+        {
+            Console.Error.WriteLine($"received malformed packet from {nicePeerString(peer)}; error: {e.Message}");
+            return;
+        }
 
         switch (type)
         {
             case PacketType.ClientDeckRegistration:
                 Console.Write("got deck from ");
 
-                var deck = reader.GetString();
+                ClientDeckRegistrationPacket pkt = ClientDeckRegistrationPacket.FromReader(reader);
 
                 // TODO: check that deck is valid
                 if (peer == player1Peer)
                 {
-                    player1DeckStaging = deck;
+                    player1DeckStaging = pkt.DeckText;
                     Console.WriteLine("player 1");
                 }
                 else
                 {
-                    player2DeckStaging = deck;
+                    player2DeckStaging = pkt.DeckText;
                     Console.WriteLine("player 2");
                 }
 
