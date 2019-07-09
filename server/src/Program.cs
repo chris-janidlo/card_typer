@@ -81,12 +81,10 @@ public class Program
         if (player1Peer == null)
         {
             player1Peer = peer;
-            Console.WriteLine($"player 1 (ID: {peer.Id}) has connected");
         }
         else if (player2Peer == null)
         {
             player2Peer = peer;
-            Console.WriteLine($"player 2 (ID: {peer.Id}) has connected");
         }
         else
         {
@@ -94,11 +92,17 @@ public class Program
             peer.Disconnect();
             return;
         }
+        Console.WriteLine(nicePeerString(peer) + " has connected");
 
         NetDataWriter writer = new NetDataWriter();
         writer.Put((int) PacketType.ServerReadyToReceiveDeck);
         peer.Send(writer, DeliveryMethod.ReliableOrdered);
 
         Console.WriteLine("now waiting for their deck...");
+    }
+
+    string nicePeerString (NetPeer peer)
+    {
+        return $"player {(peer == player1Peer ? "1" : "2")}: ID {peer.Id}, endpoint: {peer.EndPoint}";
     }
 }
