@@ -7,6 +7,7 @@ using crass;
 
 public class LocalManagerContainer : ManagerContainer
 {
+#pragma warning disable CS0649 // suppress 'never assigned to' warning since these are assigned in the inspector
     [SerializeField]
     private AgentHealth playerHealth, enemyHealth;
 
@@ -33,6 +34,7 @@ public class LocalManagerContainer : ManagerContainer
 
     [SerializeField]
     private CardQueue playerCards, enemyCards;
+#pragma warning restore CS0649
 
     public Agent Player => manager.Player1;
     public Agent Enemy => manager.Player2;

@@ -8,8 +8,10 @@ public class UIKeyboard : MonoBehaviour
 {
     public Color LabelOnColor, LabelOffColor, BorderOnColor, BorderOffColor;
 
+#pragma warning disable CS0649 // disable 'never assigned to' warning since this is assigned in the inspector
 	[SerializeField]
 	private List<UIKey> keys;
+#pragma warning restore CS0649
 
     public Dictionary<KeyboardKey, UIKey> Keys;
 
