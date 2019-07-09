@@ -1,0 +1,3 @@
+this is here because Unity handles symlink directories really weirdly. in the project menu, for some reason it shows subdirectories of symlink dirs as being underneath the alphabetically closest folder that comes earlier than the symlink dir (which is why this is named without underscores)
+
+so this isn't here for any functionality, just quality of life in the Unity editor
