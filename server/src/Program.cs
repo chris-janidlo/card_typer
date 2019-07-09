@@ -7,8 +7,6 @@ using CTShared.Networking;
 
 public class Program
 {
-    public const int Port = 9050;
-
     NetManager server;
 
     NetPeer player1Peer, player2Peer;
@@ -32,8 +30,8 @@ public class Program
         listener.ConnectionRequestEvent += handleConnectionRequest;
         listener.PeerConnectedEvent += handlePeerConnected;
 
-        server.Start(Port);
-        Console.WriteLine($"Server started on port {Port}. Press any key to stop it.");
+        server.Start(NetworkConstants.ServerPort);
+        Console.WriteLine($"Server started on port {NetworkConstants.ServerPort}. Press any key to stop it.");
     }
 
     void serverLoop ()
@@ -59,8 +57,16 @@ public class Program
 
         if (player1Peer == null || player2Peer == null)
         {
-            request.Accept();
-            Console.WriteLine("accepted");
+            request.AcceptIfKey(NetworkConstants.VersionNumberConnectionKey);
+
+            if (request.Result == ConnectionRequestResult.Accept)
+            {
+                Console.WriteLine("accepted");
+            }
+            else
+            {
+                Console.WriteLine($"rejected because the key did not match \"{NetworkConstants.VersionNumberConnectionKey}\"");
+            }
         }
         else
         {
