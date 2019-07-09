@@ -19,7 +19,6 @@ public class Program
         Program main = new Program();
         main.initializeServer();
         main.serverLoop();
-        main.closeServer();
     }
 
     void initializeServer ()
@@ -31,19 +30,21 @@ public class Program
         listener.PeerConnectedEvent += handlePeerConnected;
 
         server.Start(NetworkConstants.ServerPort);
-        Console.WriteLine($"Server started on port {NetworkConstants.ServerPort}. Press any key to stop it.");
+        Console.WriteLine($"Server started on port {NetworkConstants.ServerPort}. Press ctrl-c to stop it.");
     }
 
     void serverLoop ()
     {
-        while (!Console.KeyAvailable)
+        Console.CancelKeyPress += closeServer;
+
+        while (true)
         {
             server.PollEvents();
             Thread.Sleep(15);
         }
     }
 
-    void closeServer ()
+    void closeServer (object sender, ConsoleCancelEventArgs args)
     {
         server.Stop();
 
