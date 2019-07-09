@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using LiteNetLib;
+using LiteNetLib.Utils;
 using CTShared.Networking;
 
 public class MatchConnector : MonoBehaviour
@@ -10,6 +11,7 @@ public class MatchConnector : MonoBehaviour
     public TextAsset DeckAsset;
 
     NetManager client;
+    NetPeer server;
 
     void Start ()
     {
@@ -21,7 +23,7 @@ public class MatchConnector : MonoBehaviour
         listener.NetworkReceiveEvent += handlePacket;
 
         client.Start();
-        client.Connect(IP, NetworkConstants.ServerPort, NetworkConstants.VersionNumberConnectionKey);
+        server = client.Connect(IP, NetworkConstants.ServerPort, NetworkConstants.VersionNumberConnectionKey);
     }
 
     void Update ()
@@ -41,7 +43,13 @@ public class MatchConnector : MonoBehaviour
         switch (type)
         {
             case PacketType.ServerReadyToReceiveDeck:
-                Debug.Log("got server ready to receive deck");
+                Debug.Log("sending server our deck");
+
+                NetDataWriter writer = new NetDataWriter();
+                writer.Put((int) PacketType.ClientDeckRegistration);
+                writer.Put(DeckAsset.text);
+
+                server.Send(writer, DeliveryMethod.ReliableOrdered);
                 break;
             
             default:

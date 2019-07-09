@@ -29,6 +29,7 @@ public class Program
         listener.ConnectionRequestEvent += handleConnectionRequest;
         listener.PeerConnectedEvent += handlePeerConnected;
         listener.PeerDisconnectedEvent += handlePeerDisconnected;
+        listener.NetworkReceiveEvent += handlePacket;
 
         server.Start(NetworkConstants.ServerPort);
         Console.WriteLine($"Server started on port {NetworkConstants.ServerPort}. Press ctrl-c to stop it.");
@@ -111,11 +112,51 @@ public class Program
         if (peer == player1Peer)
         {
             player1Peer = null;
+            player1DeckStaging = null;
         }
         else
         {
             player2Peer = null;
+            player2DeckStaging = null;
         }
+    }
+
+    void handlePacket (NetPeer peer, NetPacketReader reader, DeliveryMethod deliveryMethod)
+    {
+        PacketType type = (PacketType) reader.GetInt();
+
+        switch (type)
+        {
+            case PacketType.ClientDeckRegistration:
+                Console.Write("got deck from ");
+
+                var deck = reader.GetString();
+
+                // TODO: check that deck is valid
+                if (peer == player1Peer)
+                {
+                    player1DeckStaging = deck;
+                    Console.WriteLine("player 1");
+                }
+                else
+                {
+                    player2DeckStaging = deck;
+                    Console.WriteLine("player 2");
+                }
+
+                if (player1DeckStaging != null && player2DeckStaging != null)
+                {
+                    // TODO: start match
+                }
+
+                break;
+
+            default:
+                Console.Error.WriteLine($"unexpected packet type {type}");
+                break;
+        }
+
+        reader.Recycle();
     }
 
     string nicePeerString (NetPeer peer)

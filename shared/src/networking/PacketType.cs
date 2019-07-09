@@ -2,6 +2,7 @@ namespace CTShared.Networking
 {
 public enum PacketType
 {
-	ServerReadyToReceiveDeck
+	ServerReadyToReceiveDeck,
+	ClientDeckRegistration
 }
 }
