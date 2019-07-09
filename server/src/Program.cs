@@ -28,6 +28,7 @@ public class Program
 
         listener.ConnectionRequestEvent += handleConnectionRequest;
         listener.PeerConnectedEvent += handlePeerConnected;
+        listener.PeerDisconnectedEvent += handlePeerDisconnected;
 
         server.Start(NetworkConstants.ServerPort);
         Console.WriteLine($"Server started on port {NetworkConstants.ServerPort}. Press ctrl-c to stop it.");
@@ -99,6 +100,11 @@ public class Program
         peer.Send(writer, DeliveryMethod.ReliableOrdered);
 
         Console.WriteLine("now waiting for their deck...");
+    }
+
+    void handlePeerDisconnected (NetPeer peer, DisconnectInfo disconnectInfo)
+    {
+        Console.WriteLine(nicePeerString(peer) + " has disconnected for reason " + disconnectInfo.Reason.ToString());
     }
 
     string nicePeerString (NetPeer peer)
