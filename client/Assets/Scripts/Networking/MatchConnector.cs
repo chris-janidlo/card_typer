@@ -16,6 +16,8 @@ public class MatchConnector : MonoBehaviour
         EventBasedNetListener listener = new EventBasedNetListener();
         client = new NetManager(listener);
 
+        listener.PeerConnectedEvent += peer => Debug.Log("connected to server");
+        listener.PeerDisconnectedEvent += handleDisconnect;
         listener.NetworkReceiveEvent += handlePacket;
 
         client.Start();
@@ -48,5 +50,10 @@ public class MatchConnector : MonoBehaviour
         }
 
         reader.Recycle();
+    }
+
+    void handleDisconnect (NetPeer peer, DisconnectInfo disconnectInfo)
+    {
+        Debug.Log($"disconnected from server: {disconnectInfo.Reason.ToString()}. socket error: {disconnectInfo.SocketErrorCode.ToString()}");
     }
 }
