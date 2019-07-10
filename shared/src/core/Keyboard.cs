@@ -342,6 +342,7 @@ public class Keyboard : IEnumerable<KeyState>
 
     FieldInfo getField (KeyboardKey key)
     {
+		// FIXME: key can come from untrusted source, potential security flaw
         return this.GetType().GetField($"{key.ToString()}State", BindingFlags.Instance | BindingFlags.NonPublic);
     }
 }
