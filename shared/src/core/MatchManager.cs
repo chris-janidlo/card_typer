@@ -37,7 +37,7 @@ public class MatchManager
     {
         if (started)
         {
-            throw new Exception("match is already started");
+            throw new InvalidOperationException("match is already started");
         }
 
         started = true;
@@ -67,6 +67,22 @@ public class MatchManager
         }
     }
 
+    internal Agent GetEnemyOf (Agent agent)
+    {
+        if (agent == Player1)
+        {
+            return Player2;
+        }
+        else if (agent == Player2)
+        {
+            return Player1;
+        }
+        else
+        {
+            throw new Exception($"unexpected agent {agent}");            
+        }
+    }
+
     void agentReady (Agent agent)
     {
         if (!inDrawPhase) return;
@@ -87,22 +103,6 @@ public class MatchManager
         if (player1Ready && player2Ready)
         {
             endDrawPhase();
-        }
-    }
-
-    public Agent GetEnemyOf (Agent agent)
-    {
-        if (agent == Player1)
-        {
-            return Player2;
-        }
-        else if (agent == Player2)
-        {
-            return Player1;
-        }
-        else
-        {
-            throw new Exception($"unexpected agent {agent}");            
         }
     }
 

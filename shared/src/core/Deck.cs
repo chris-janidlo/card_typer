@@ -27,7 +27,7 @@ public class Deck
     // TODO: seed this for client/server sync
     Random rand = new Random();
 
-    public Deck (string bracketedText, Agent owner)
+    internal Deck (string bracketedText, Agent owner)
     {
         Owner = owner;
 
@@ -66,7 +66,7 @@ public class Deck
         BracketedText = bracketedText;
     }
 
-    public void DrawNewHand (int size)
+    internal void DrawNewHand (int size)
     {
         discardPile.AddRange(hand);
 

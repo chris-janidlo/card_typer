@@ -73,7 +73,7 @@ public class Agent
     
     public float AccuracyThisTurn => (float) LettersAccuratelyTypedThisTurn / LettersTypedThisTurn;
 
-    public Agent (MatchManager manager, string deckText)
+    internal Agent (MatchManager manager, string deckText)
     {
         Health = MaxHealth;
 
@@ -109,23 +109,23 @@ public class Agent
         if (OnKeyPressed != null) OnKeyPressed(key, shift);
     }
 
-    public void DrawNewHand ()
+    internal void DrawNewHand ()
     {
         Deck.DrawNewHand(HandSize);
     }
 
-    public void SetPlay (List<Card> play)
+    internal void SetPlay (List<Card> play)
     {
         this.play = play;
         if (OnPlaySet != null) OnPlaySet(play);
     }
 
-    public void SetHealth (int newValue)
+    internal void SetHealth (int newValue)
     {
         IncrementHealth(newValue - Health);
     }
 
-    public void IncrementHealth (int delta)
+    internal void IncrementHealth (int delta)
     {
         if (delta == 0) return;
 

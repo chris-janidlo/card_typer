@@ -35,7 +35,7 @@ public abstract class Card
 
     protected Card () {}
 
-    public void DoBehavior (MatchManager manager, Agent caster)
+    internal void DoBehavior (MatchManager manager, Agent caster)
     {
         if (BeforeCast != null) BeforeCast(this, caster);
 

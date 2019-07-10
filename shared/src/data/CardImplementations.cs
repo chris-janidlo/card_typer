@@ -8,7 +8,7 @@ namespace CTShared.Cards
 
 using Keys = List<KeyboardKey>;
 
-public static class CardUtils
+internal static class CardUtils
 {
 	// FIXME: how do we handle turn ends? should action always trigger, never trigger, or sometimes trigger if the turn ends before the timer has completed?
     public static void DoAfterTime (MatchManager manager, Action action, float time)
@@ -36,7 +36,7 @@ public static class CardUtils
     }
 }
 
-public class Abhor : Card
+internal class Abhor : Card
 {
 	public override string PartOfSpeech => "verb";
 	public override string Definition => "detest; loathe; abominate; despise; hate";
@@ -61,7 +61,7 @@ public class Abhor : Card
 	}
 }
 
-public class Anchorage : Card
+internal class Anchorage : Card
 {
 	public override string PartOfSpeech => "noun";
 	public override string Definition => "a port; a source of assurance; a dwelling place of a religious refuse";
@@ -78,7 +78,7 @@ public class Anchorage : Card
 	}
 }
 
-public class Ancient : Card
+internal class Ancient : Card
 {
 	public override string PartOfSpeech => "adjective";
 	public override string Definition => "having the qualities of age; old-fashioned; antique";
@@ -116,7 +116,7 @@ public class Ancient : Card
 	}
 }
 
-public class Barrier : Card
+internal class Barrier : Card
 {
 	public override string PartOfSpeech => "noun";
 	public override string Definition => "a circumstance or obstacle that keeps people apart or prevents progress";
@@ -147,7 +147,7 @@ public class Barrier : Card
 	}
 }
 
-public class Bulwark : Card
+internal class Bulwark : Card
 {
 	public override string PartOfSpeech => "noun";
 	public override string Definition => "a strong support";
@@ -179,7 +179,7 @@ public class Bulwark : Card
 	}
 }
 
-public class Devise : Card
+internal class Devise : Card
 {
 	public override string PartOfSpeech => "verb";
 	public override string Definition => "plan or contrive in the mind";
@@ -195,7 +195,7 @@ public class Devise : Card
 	}
 }
 
-public class Flaming : Card
+internal class Flaming : Card
 {
 	public override string PartOfSpeech => "adjective";
 	public override string Definition => "passionate, violent, used as an intensifier";
@@ -230,7 +230,7 @@ public class Flaming : Card
 	}
 }
 
-public class Grim : Card
+internal class Grim : Card
 {
 	public override string PartOfSpeech => "adjective";
 	public override string Definition => "lacking genuine levity";
@@ -259,7 +259,7 @@ public class Grim : Card
 	}
 }
 
-public class Heart : Card
+internal class Heart : Card
 {
 	public override string PartOfSpeech => "noun";
 	public override string Definition => "courage or enthusiasm";
@@ -288,7 +288,7 @@ public class Heart : Card
 	}
 }
 
-public class Hound : Card
+internal class Hound : Card
 {
 	public override string PartOfSpeech => "verb";
 	public override string Definition => "pursue tenaciously, doglike";
@@ -304,7 +304,7 @@ public class Hound : Card
 	}
 }
 
-public class Lock : Card
+internal class Lock : Card
 {
 	public override string PartOfSpeech => "verb";
 	public override string Definition => "fasten by a key or combination";
@@ -344,7 +344,7 @@ public class Lock : Card
 	}
 }
 
-public class Priest : Card
+internal class Priest : Card
 {
 	public override string PartOfSpeech => "noun";
 	public override string Definition => "one especially consecrated to the service of divinity";
@@ -374,7 +374,7 @@ public class Priest : Card
 	}
 }
 
-public class Prince : Card
+internal class Prince : Card
 {
 	public override string PartOfSpeech => "noun";
 	public override string Definition => "of a royal family, a nonreigning male member";
@@ -407,7 +407,7 @@ public class Prince : Card
 	}
 }
 
-public class Prophet : Card
+internal class Prophet : Card
 {
 	public override string PartOfSpeech => "noun";
 	public override string Definition => "spokesperson";
@@ -430,7 +430,7 @@ public class Prophet : Card
 	}
 }
 
-public class Refuse : Card
+internal class Refuse : Card
 {
 	public override string PartOfSpeech => "verb";
 	public override string Definition => "decline to accept; express determination to not do something";
@@ -460,7 +460,7 @@ public class Refuse : Card
 	}
 }
 
-public class Sunset : Card
+internal class Sunset : Card
 {
 	public override string PartOfSpeech => "noun";
 	public override string Definition => "the apparent descent of the sun";
@@ -481,7 +481,7 @@ public class Sunset : Card
 	}
 }
 
-public class Sword : Card
+internal class Sword : Card
 {
 	public override string PartOfSpeech => "noun";
 	public override string Definition => "military power, violence, destruction, one of the tarot suits";
@@ -497,7 +497,7 @@ public class Sword : Card
 	}
 }
 
-public class TwoFaced : Card
+internal class TwoFaced : Card
 {
 	public override string PartOfSpeech => "adjective";
 	public override string Definition => "deceitful";
@@ -512,7 +512,7 @@ public class TwoFaced : Card
 	}
 }
 
-public class Unveil : Card
+internal class Unveil : Card
 {
 	public override string PartOfSpeech => "verb";
 	public override string Definition => "to make something clear";
@@ -534,7 +534,7 @@ public class Unveil : Card
 	}
 }
 
-public class Weary : Card
+internal class Weary : Card
 {
 	public override string PartOfSpeech => "adjective";
 	public override string Definition => "tired";
@@ -554,7 +554,7 @@ public class Weary : Card
 	}
 }
 
-public class Year : Card
+internal class Year : Card
 {
 	public override string PartOfSpeech => "noun";
 	public override string Definition => "a period of approximately the same length in other calendars";
@@ -583,7 +583,7 @@ public class Year : Card
 	}
 }
 
-public class Zealot : Card
+internal class Zealot : Card
 {
 	public override string PartOfSpeech => "noun";
 	public override string Definition => "one marked by fervant partisanship";
