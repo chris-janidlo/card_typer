@@ -80,7 +80,15 @@ public class Agent
         Manager = manager;
         manager.OnTypePhaseStart += startTypePhase;
 
-        Deck = new Deck(deckText, this);
+        try
+        {
+            Deck = new Deck(deckText, this);
+        }
+        catch (Exception e)
+        {
+            throw new ArgumentException("error when parsing deck", e);
+        }
+
         Keyboard = new Keyboard();
     }
 

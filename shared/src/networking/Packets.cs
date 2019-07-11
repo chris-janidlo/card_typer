@@ -6,6 +6,7 @@ namespace CTShared.Networking
 {
 public enum PacketType
 {
+	ErrorMessage,
 	ServerReadyToReceiveDeck,
 	ClientDeckRegistration
 }
@@ -59,6 +60,33 @@ public abstract class IPacket<T> where T : IPacket<T>, new()
 }
 
 
+
+public class ErrorMessagePacket : IPacket<ErrorMessagePacket>
+{
+	public override PacketType Type => PacketType.ErrorMessage;
+
+	public string Message { get; private set; }
+
+	public ErrorMessagePacket () {}
+
+	public ErrorMessagePacket (string message)
+	{
+		Message = message;
+	}
+
+	protected override void getPacketData (NetPacketReader reader)
+	{
+		Message = reader.GetString();
+	}
+
+	protected override void writePacketData (NetDataWriter writer)
+	{
+		writer.Put(Message);
+	}
+}
+
+
+
 public class ServerReadyToReceiveDeckPacket : IPacket<ServerReadyToReceiveDeckPacket>
 {
 	public override PacketType Type => PacketType.ServerReadyToReceiveDeck;
@@ -74,16 +102,19 @@ public class ServerReadyToReceiveDeckPacket : IPacket<ServerReadyToReceiveDeckPa
 	}
 }
 
+
+
 public class ClientDeckRegistrationPacket : IPacket<ClientDeckRegistrationPacket>
 {
 	public override PacketType Type => PacketType.ClientDeckRegistration;
 
 	public string DeckText { get; private set; }
 
-	public ClientDeckRegistrationPacket WithDeck (string text)
+	public ClientDeckRegistrationPacket () {}
+
+	public ClientDeckRegistrationPacket (string text)
 	{
 		DeckText = text;
-		return this;
 	}
 
 	protected override void getPacketData (NetPacketReader reader)

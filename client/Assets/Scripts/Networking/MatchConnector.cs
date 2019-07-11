@@ -56,8 +56,7 @@ public class MatchConnector : MonoBehaviour
             case PacketType.ServerReadyToReceiveDeck:
                 Debug.Log("sending server our deck");
 
-                ClientDeckRegistrationPacket pkt =
-                    new ClientDeckRegistrationPacket().WithDeck(DeckAsset.text);
+                ClientDeckRegistrationPacket pkt = new ClientDeckRegistrationPacket(DeckAsset.text);
                 server.Send(pkt.ToWriter(), DeliveryMethod.ReliableOrdered);
                 break;
             

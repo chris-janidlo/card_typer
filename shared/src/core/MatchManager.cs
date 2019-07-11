@@ -26,8 +26,23 @@ public class MatchManager
 
     public MatchManager (string player1DeckText, string player2DeckText)
     {
-        Player1 = new Agent(this, player1DeckText);
-        Player2 = new Agent(this, player2DeckText);
+        try
+        {
+            Player1 = new Agent(this, player1DeckText);
+        }
+        catch (ArgumentException e)
+        {
+            throw new ArgumentException("error when parsing player 1's deck", e.InnerException);
+        }
+
+        try
+        {
+            Player2 = new Agent(this, player2DeckText);
+        }
+        catch (ArgumentException e)
+        {
+            throw new ArgumentException("error when parsing player 2's deck", e.InnerException);
+        }
 
         Player1.OnPlaySet += p => agentReady(Player1);
         Player2.OnPlaySet += p => agentReady(Player2);

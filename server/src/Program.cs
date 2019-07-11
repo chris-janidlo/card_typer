@@ -155,7 +155,7 @@ public class Program
 
                 if (player1DeckStaging != null && player2DeckStaging != null)
                 {
-                    // TODO: start match
+                    startMatch();
                 }
 
                 break;
@@ -171,5 +171,25 @@ public class Program
     string nicePeerString (NetPeer peer)
     {
         return $"player {(peer == player1Peer ? "1" : "2")}: ID {peer.Id}, endpoint: {peer.EndPoint}";
+    }
+
+    void startMatch ()
+    {
+        try
+        {
+            manager = new MatchManager(player1DeckStaging, player2DeckStaging);
+        }
+        catch (ArgumentException e)
+        {
+            Console.Error.WriteLine(e.Message);
+
+            var message = new ErrorMessagePacket("server received invalid deck");
+
+            player1Peer.Send(message.ToWriter(), DeliveryMethod.ReliableOrdered);
+            player1Peer.Disconnect();
+
+            player2Peer.Send(message.ToWriter(), DeliveryMethod.ReliableOrdered);
+            player2Peer.Disconnect();
+        }
     }
 }
