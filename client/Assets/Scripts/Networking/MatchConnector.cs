@@ -59,7 +59,9 @@ public class MatchConnector : MonoBehaviour
                 ClientDeckRegistrationPacket pkt = new ClientDeckRegistrationPacket(DeckAsset.text);
                 server.Send(pkt.ToWriter(), DeliveryMethod.ReliableOrdered);
                 break;
-            
+
+            // TODO: handle bad deck disconnection
+
             default:
                 Debug.LogError($"unexpected packet type {type}");
                 break;
