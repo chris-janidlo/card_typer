@@ -27,6 +27,7 @@ public class Deck
     // TODO: seed this for client/server sync
     Random rand = new Random();
 
+    // FIXME: major security flaw here; we're taking untrustworthy strings, interpreting them, and executing code based on their values
     internal Deck (string bracketedText, Agent owner)
     {
         Owner = owner;
