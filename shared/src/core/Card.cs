@@ -22,6 +22,7 @@ public abstract class Card
 
     protected MatchManager manager => Owner.Manager;
 
+    // FIXME: change Type.GetType call to some kind of dictionary call, for security purposes
     public static Card FromName (string name, Agent owner)
     {
         Type t = Type.GetType("CTShared.Cards." + name);
