@@ -7,6 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using System;
 using System.Collections.Generic;
 
 namespace CTShared
@@ -78,6 +79,77 @@ public partial class Keyboard : IEnumerable<KeyState>
 		yield return XState;
 		yield return YState;
 		yield return ZState;
+	}
+
+	KeyState getState (KeyboardKey key)
+	{
+		switch (key)
+		{
+			case KeyboardKey.Space:
+				return SpaceState;
+			case KeyboardKey.Dash:
+				return DashState;
+			case KeyboardKey.Apostrophe:
+				return ApostropheState;
+			case KeyboardKey.Backspace:
+				return BackspaceState;
+			case KeyboardKey.Return:
+				return ReturnState;
+			case KeyboardKey.A:
+				return AState;
+			case KeyboardKey.B:
+				return BState;
+			case KeyboardKey.C:
+				return CState;
+			case KeyboardKey.D:
+				return DState;
+			case KeyboardKey.E:
+				return EState;
+			case KeyboardKey.F:
+				return FState;
+			case KeyboardKey.G:
+				return GState;
+			case KeyboardKey.H:
+				return HState;
+			case KeyboardKey.I:
+				return IState;
+			case KeyboardKey.J:
+				return JState;
+			case KeyboardKey.K:
+				return KState;
+			case KeyboardKey.L:
+				return LState;
+			case KeyboardKey.M:
+				return MState;
+			case KeyboardKey.N:
+				return NState;
+			case KeyboardKey.O:
+				return OState;
+			case KeyboardKey.P:
+				return PState;
+			case KeyboardKey.Q:
+				return QState;
+			case KeyboardKey.R:
+				return RState;
+			case KeyboardKey.S:
+				return SState;
+			case KeyboardKey.T:
+				return TState;
+			case KeyboardKey.U:
+				return UState;
+			case KeyboardKey.V:
+				return VState;
+			case KeyboardKey.W:
+				return WState;
+			case KeyboardKey.X:
+				return XState;
+			case KeyboardKey.Y:
+				return YState;
+			case KeyboardKey.Z:
+				return ZState;
+			default:
+				throw new ArgumentException($"unexpected KeyboardKey {key}");
+		}
 	}
 }
 }

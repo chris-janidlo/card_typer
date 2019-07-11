@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using System.Reflection;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -15,11 +13,7 @@ public partial class Keyboard : IEnumerable<KeyState>
 		return GetEnumerator();
 	}
 
-	public KeyState this[KeyboardKey key]
-	{
-		get { return (KeyState) getField(key).GetValue(this); }
-		set { if (!Locked) getField(key).SetValue(this, value); }
-	}
+	public KeyState this[KeyboardKey key] => getState(key);
 
 	// TODO: insanely hard coded; maybe do something like https://stackoverflow.com/q/2120646
 	public List<KeyState> GetSurroundingKeys (KeyboardKey key)
@@ -270,12 +264,6 @@ public partial class Keyboard : IEnumerable<KeyState>
 	{
 		return GetSurroundingKeys(state.Key);
 	}
-
-    FieldInfo getField (KeyboardKey key)
-    {
-		// FIXME: key can come from untrusted source, potential security flaw
-        return this.GetType().GetField($"{key.ToString()}State", BindingFlags.Instance | BindingFlags.NonPublic);
-    }
 }
 
 public enum KeyStateType
