@@ -1,3 +1,6 @@
 [submodule "Assets/Scripts/spellbook"]
 	path = Assets/Scripts/spellbook
 	url = https://github.com/crassSandwich/spellbook-unity
+[submodule "client/Assets/Scripts/spellbook-unity"]
+	path = client/Assets/Scripts/spellbook-unity
+	url = https://github.com/crassSandwich/spellbook-unity
