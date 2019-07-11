@@ -143,6 +143,7 @@ public class MatchManager
         startPreTypePhase();
     }
 
+    // countdown before true type phase
     void startPreTypePhase ()
     {
         inPreTypingPhase = true;
