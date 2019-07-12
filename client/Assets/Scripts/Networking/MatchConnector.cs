@@ -12,16 +12,21 @@ public class MatchConnector : MonoBehaviour
     public TextAsset DeckAsset;
 
     NetManager client;
+    NetPacketProcessor packetProcessor;
     NetPeer server;
 
     void Start ()
     {
         EventBasedNetListener listener = new EventBasedNetListener();
         client = new NetManager(listener);
+        packetProcessor = PacketUtils.CreateNetPacketProcessor();
 
         listener.PeerConnectedEvent += peer => Debug.Log("connected to server");
         listener.PeerDisconnectedEvent += handleDisconnect;
         listener.NetworkReceiveEvent += handlePacket;
+
+        packetProcessor.SubscribeReusable<ServerReadyToReceiveDeckPacket>(handleServerReadyToReceiveDeck);
+        // TODO: handle bad deck disconnection
 
         client.Start();
         server = client.Connect(IP, NetworkConstants.ServerPort, NetworkConstants.VersionNumberConnectionKey);
@@ -39,35 +44,12 @@ public class MatchConnector : MonoBehaviour
 
     void handlePacket (NetPeer peer, NetPacketReader reader, DeliveryMethod deliveryMethod)
     {
-        PacketType type;
+        packetProcessor.ReadAllPackets(reader);
+    }
 
-        try
-        {
-            type = PacketUtils.GetType(reader);
-        }
-        catch (ArgumentException e)
-        {
-            Debug.LogError($"received malformed packet; error: {e.Message}");
-            throw;
-        }
-
-        switch (type)
-        {
-            case PacketType.ServerReadyToReceiveDeck:
-                Debug.Log("sending server our deck");
-
-                ClientDeckRegistrationPacket pkt = new ClientDeckRegistrationPacket(DeckAsset.text);
-                server.Send(pkt.ToWriter(), DeliveryMethod.ReliableOrdered);
-                break;
-
-            // TODO: handle bad deck disconnection
-
-            default:
-                Debug.LogError($"unexpected packet type {type}");
-                break;
-        }
-
-        reader.Recycle();
+    void handleServerReadyToReceiveDeck (ServerReadyToReceiveDeckPacket packet)
+    {
+        packetProcessor.Send(server, new ClientDeckRegistrationPacket(DeckAsset.text), DeliveryMethod.ReliableOrdered);
     }
 
     void handleDisconnect (NetPeer peer, DisconnectInfo disconnectInfo)

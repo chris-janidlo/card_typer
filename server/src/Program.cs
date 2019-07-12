@@ -8,6 +8,7 @@ using CTShared.Networking;
 public class Program
 {
     NetManager server;
+    NetPacketProcessor packetProcessor;
 
     NetPeer player1Peer, player2Peer;
     string player1DeckStaging, player2DeckStaging;
@@ -25,11 +26,14 @@ public class Program
     {
         EventBasedNetListener listener = new EventBasedNetListener();
         server = new NetManager(listener);
+        packetProcessor = PacketUtils.CreateNetPacketProcessor();
 
         listener.ConnectionRequestEvent += handleConnectionRequest;
         listener.PeerConnectedEvent += handlePeerConnected;
         listener.PeerDisconnectedEvent += handlePeerDisconnected;
         listener.NetworkReceiveEvent += handlePacket;
+
+        packetProcessor.SubscribeReusable<ClientDeckRegistrationPacket, NetPeer>(handleClientDeck);
 
         server.Start(NetworkConstants.ServerPort);
         Console.WriteLine($"Server started on port {NetworkConstants.ServerPort}. Press ctrl-c to stop it.");
@@ -97,8 +101,7 @@ public class Program
         }
         Console.WriteLine(nicePeerString(peer) + " has connected");
 
-        ServerReadyToReceiveDeckPacket pkt = new ServerReadyToReceiveDeckPacket();
-        peer.Send(pkt.ToWriter(), DeliveryMethod.ReliableOrdered);
+        packetProcessor.Send(peer, new ServerReadyToReceiveDeckPacket(), DeliveryMethod.ReliableOrdered);
 
         Console.WriteLine("now waiting for their deck...");
     }
@@ -122,50 +125,28 @@ public class Program
 
     void handlePacket (NetPeer peer, NetPacketReader reader, DeliveryMethod deliveryMethod)
     {
-        PacketType type;
+        packetProcessor.ReadAllPackets(reader, peer);
+    }
 
-        try
+    void handleClientDeck (ClientDeckRegistrationPacket packet, NetPeer peer)
+    {
+        Console.Write("got deck from ");
+
+        if (peer == player1Peer)
         {
-            type = PacketUtils.GetType(reader);
+            player1DeckStaging = packet.DeckText;
+            Console.WriteLine("player 1");
         }
-        catch (ArgumentException e)
+        else
         {
-            Console.Error.WriteLine($"received malformed packet from {nicePeerString(peer)}; error: {e.Message}");
-            return;
-        }
-
-        switch (type)
-        {
-            case PacketType.ClientDeckRegistration:
-                Console.Write("got deck from ");
-
-                ClientDeckRegistrationPacket pkt = ClientDeckRegistrationPacket.FromReader(reader);
-
-                // TODO: check that deck is valid
-                if (peer == player1Peer)
-                {
-                    player1DeckStaging = pkt.DeckText;
-                    Console.WriteLine("player 1");
-                }
-                else
-                {
-                    player2DeckStaging = pkt.DeckText;
-                    Console.WriteLine("player 2");
-                }
-
-                if (player1DeckStaging != null && player2DeckStaging != null)
-                {
-                    startMatch();
-                }
-
-                break;
-
-            default:
-                Console.Error.WriteLine($"unexpected packet type {type}");
-                break;
+            player2DeckStaging = packet.DeckText;
+            Console.WriteLine("player 2");
         }
 
-        reader.Recycle();
+        if (player1DeckStaging != null && player2DeckStaging != null)
+        {
+            startMatch();
+        }
     }
 
     string nicePeerString (NetPeer peer)
@@ -185,10 +166,10 @@ public class Program
 
             var message = new ErrorMessagePacket("server received invalid deck");
 
-            player1Peer.Send(message.ToWriter(), DeliveryMethod.ReliableOrdered);
+            packetProcessor.Send(player1Peer, message, DeliveryMethod.ReliableOrdered);
             player1Peer.Disconnect();
 
-            player2Peer.Send(message.ToWriter(), DeliveryMethod.ReliableOrdered);
+            packetProcessor.Send(player2Peer, message, DeliveryMethod.ReliableOrdered);
             player2Peer.Disconnect();
         }
     }
