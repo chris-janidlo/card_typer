@@ -8,7 +8,6 @@ using CTShared.Networking;
 public class Program
 {
     NetManager server;
-    NetPacketProcessor packetProcessor;
 
     NetPeer player1Peer, player2Peer;
     string player1DeckStaging, player2DeckStaging;
@@ -26,14 +25,13 @@ public class Program
     {
         EventBasedNetListener listener = new EventBasedNetListener();
         server = new NetManager(listener);
-        packetProcessor = PacketUtils.CreateNetPacketProcessor();
 
         listener.ConnectionRequestEvent += handleConnectionRequest;
         listener.PeerConnectedEvent += handlePeerConnected;
         listener.PeerDisconnectedEvent += handlePeerDisconnected;
-        listener.NetworkReceiveEvent += handlePacket;
+        listener.NetworkReceiveEvent += PacketProcessor.ReadAllPackets;
 
-        packetProcessor.SubscribeReusable<ClientDeckRegistrationPacket, NetPeer>(handleClientDeck);
+        PacketProcessor.Subscribe<ClientDeckRegistrationPacket>(handleClientDeck);
 
         server.Start(NetworkConstants.ServerPort);
         Console.WriteLine($"Server started on port {NetworkConstants.ServerPort}. Press ctrl-c to stop it.");
@@ -101,7 +99,7 @@ public class Program
         }
         Console.WriteLine(nicePeerString(peer) + " has connected");
 
-        packetProcessor.Send(peer, new ServerReadyToReceiveDeckPacket(), DeliveryMethod.ReliableOrdered);
+        PacketProcessor.Send(peer, new ServerReadyToReceiveDeckPacket(), DeliveryMethod.ReliableOrdered);
 
         Console.WriteLine("now waiting for their deck...");
     }
@@ -121,11 +119,6 @@ public class Program
             player2Peer = null;
             player2DeckStaging = null;
         }
-    }
-
-    void handlePacket (NetPeer peer, NetPacketReader reader, DeliveryMethod deliveryMethod)
-    {
-        packetProcessor.ReadAllPackets(reader, peer);
     }
 
     void handleClientDeck (ClientDeckRegistrationPacket packet, NetPeer peer)
@@ -166,10 +159,10 @@ public class Program
 
             var message = new ErrorMessagePacket("server received invalid deck");
 
-            packetProcessor.Send(player1Peer, message, DeliveryMethod.ReliableOrdered);
+            PacketProcessor.Send(player1Peer, message, DeliveryMethod.ReliableOrdered);
             player1Peer.Disconnect();
 
-            packetProcessor.Send(player2Peer, message, DeliveryMethod.ReliableOrdered);
+            PacketProcessor.Send(player2Peer, message, DeliveryMethod.ReliableOrdered);
             player2Peer.Disconnect();
         }
     }

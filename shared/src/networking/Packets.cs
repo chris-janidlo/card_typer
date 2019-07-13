@@ -1,78 +1,64 @@
-using System;
-using LiteNetLib;
 using LiteNetLib.Utils;
 
 namespace CTShared.Networking
 {
-public static class PacketUtils
-{
-	// creates processor and registers anything that needs to be registered
-	public static NetPacketProcessor CreateNetPacketProcessor ()
-	{
-		var proc = new NetPacketProcessor();
-
-		return proc;
-	}
-}
+// this file is for basic message packets; packets that don't represent code/gameplay objects, but instead represent client-server communication
 
 
-
-public class ErrorMessagePacket : INetSerializable
+public class ErrorMessagePacket : IPacket
 {
 	public string Message { get; set; }
-
-	public ErrorMessagePacket () {}
 
 	public ErrorMessagePacket (string message)
 	{
 		Message = message;
 	}
 
-	public void Serialize (NetDataWriter writer)
-	{
-		writer.Put(Message);
-	}
+	internal ErrorMessagePacket () {}
 
-	public void Deserialize (NetDataReader reader)
+	internal override void Deserialize (NetDataReader reader)
 	{
 		Message = reader.GetString();
 	}
+
+	internal override void Serialize (NetDataWriter writer)
+	{
+		writer.Put(Message);
+	}
 }
 
 
-
-public class ServerReadyToReceiveDeckPacket : INetSerializable
+public class ServerReadyToReceiveDeckPacket : IPacket
 {
-	public void Serialize (NetDataWriter writer)
+	internal override void Serialize (NetDataWriter writer)
 	{
 		// packet has no data
 	}
 
-	public void Deserialize (NetDataReader reader)
+	internal override void Deserialize (NetDataReader reader)
 	{
 		// packet has no data
 	}
 }
 
 
-
-public class ClientDeckRegistrationPacket : INetSerializable
+public class ClientDeckRegistrationPacket : IPacket
 {
 	public string DeckText { get; set; }
-
-	public ClientDeckRegistrationPacket() {}
 
 	public ClientDeckRegistrationPacket (string text)
 	{
 		DeckText = text;
 	}
 
-	public void Serialize (NetDataWriter writer)
+	internal ClientDeckRegistrationPacket() {}
+
+	internal override void Serialize (NetDataWriter writer)
 	{
 		writer.Put(DeckText);
 	}
 
-	public void Deserialize (NetDataReader reader)
+	internal override void Deserialize (NetDataReader reader)
 	{
 		DeckText = reader.GetString();
 	}

@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using LiteNetLib;
-using LiteNetLib.Utils;
 using CTShared.Networking;
 
 public class MatchConnector : MonoBehaviour
@@ -12,20 +11,18 @@ public class MatchConnector : MonoBehaviour
     public TextAsset DeckAsset;
 
     NetManager client;
-    NetPacketProcessor packetProcessor;
     NetPeer server;
 
     void Start ()
     {
         EventBasedNetListener listener = new EventBasedNetListener();
         client = new NetManager(listener);
-        packetProcessor = PacketUtils.CreateNetPacketProcessor();
 
         listener.PeerConnectedEvent += peer => Debug.Log("connected to server");
         listener.PeerDisconnectedEvent += handleDisconnect;
-        listener.NetworkReceiveEvent += handlePacket;
+        listener.NetworkReceiveEvent += PacketProcessor.ReadAllPackets;
 
-        packetProcessor.SubscribeReusable<ServerReadyToReceiveDeckPacket>(handleServerReadyToReceiveDeck);
+        PacketProcessor.Subscribe<ServerReadyToReceiveDeckPacket>(handleServerReadyToReceiveDeck);
         // TODO: handle bad deck disconnection
 
         client.Start();
@@ -42,14 +39,9 @@ public class MatchConnector : MonoBehaviour
         client.Stop();
     }
 
-    void handlePacket (NetPeer peer, NetPacketReader reader, DeliveryMethod deliveryMethod)
+    void handleServerReadyToReceiveDeck (ServerReadyToReceiveDeckPacket packet, NetPeer peer)
     {
-        packetProcessor.ReadAllPackets(reader);
-    }
-
-    void handleServerReadyToReceiveDeck (ServerReadyToReceiveDeckPacket packet)
-    {
-        packetProcessor.Send(server, new ClientDeckRegistrationPacket(DeckAsset.text), DeliveryMethod.ReliableOrdered);
+        PacketProcessor.Send(server, new ClientDeckRegistrationPacket(DeckAsset.text), DeliveryMethod.ReliableOrdered);
     }
 
     void handleDisconnect (NetPeer peer, DisconnectInfo disconnectInfo)
