@@ -159,11 +159,19 @@ public class Program
 
             var message = new ErrorMessagePacket("server received invalid deck");
 
-            PacketProcessor.Send(player1Peer, message, DeliveryMethod.ReliableOrdered);
-            player1Peer.Disconnect();
+            sendToBoth(message, DeliveryMethod.ReliableOrdered);
 
-            PacketProcessor.Send(player2Peer, message, DeliveryMethod.ReliableOrdered);
+            player1Peer.Disconnect();
             player2Peer.Disconnect();
         }
+
+        // TODO: tell players whether they're player 1 or 2
+        sendToBoth(manager, DeliveryMethod.ReliableOrdered);
+    }
+
+    void sendToBoth (IPacket packet, DeliveryMethod deliveryMethod)
+    {
+        PacketProcessor.Send(player2Peer, packet, deliveryMethod);
+        PacketProcessor.Send(player2Peer, packet, deliveryMethod);
     }
 }

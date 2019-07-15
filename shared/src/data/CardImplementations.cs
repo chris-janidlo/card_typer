@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using LiteNetLib.Utils;
 
 namespace CTShared.Cards
 {
@@ -313,23 +314,43 @@ internal class Lock : Card
 	public override int Burn => 7;
 
 	float time = 4;
-	Card lastCast;
+	string lastCastWord;
 	Agent lastCaster;
+
+	internal override void Deserialize (NetDataReader reader)
+	{
+		lastCastWord = reader.GetString();
+		bool wasMe = reader.GetBool();
+		if (wasMe)
+		{
+			lastCaster = Owner;
+		}
+		else
+		{
+			lastCaster = manager.GetEnemyOf(Owner);
+		}
+	}
+
+	internal override void Serialize (NetDataWriter writer)
+	{
+		writer.Put(lastCastWord);
+		writer.Put(lastCaster == Owner);
+	}
 
 	protected override void initialize ()
 	{
 		AfterCast += (casted, agent) => {
-			lastCast = casted;
+			lastCastWord = casted.Word;
 			lastCaster = agent;
 		};
 	}
 
 	protected override void behaviorImplementation (Agent caster)
 	{
-		if (lastCast == null) return; // this is the first spell cast this turn
+		if (lastCastWord == null) return; // this is the first spell cast this turn
 
 		// capture the relevant information from lastCast and lastCaster so that (when its time to disable) we disable what they were when we cast the spell, not what they are `time` seconds after casting it
-		Keys keys = lastCast.Word.Select(c => c.ToKeyboardKey()).ToList();
+		Keys keys = lastCastWord.Select(c => c.ToKeyboardKey()).ToList();
 		Agent lastCasterCapture = lastCaster;
 
 		Action<bool> setActiveState = flag => {
@@ -384,14 +405,24 @@ internal class Prince : Card
 		KeyboardKey.E
 	};
 
-	int cycle = 0;
+	byte cycle = 0;
+
+	internal override void Deserialize (NetDataReader reader)
+	{
+		cycle = reader.GetByte();
+	}
+
+	internal override void Serialize (NetDataWriter writer)
+	{
+		writer.Put(cycle);
+	}
 
 	protected override void behaviorImplementation (Agent caster)
 	{
 		var enemy = manager.GetEnemyOf(caster);
 		var key = keys[cycle];
 
-		cycle = (cycle + 1) % keys.Count;
+		cycle = (byte) ((cycle + 1) % keys.Count);
 
 		enemy.Keyboard[key].Type = KeyStateType.Deactivated;
 	}
@@ -577,21 +608,29 @@ internal class Zealot : Card
 {
 	public override string PartOfSpeech => "noun";
 	public override string Definition => "one marked by fervant partisanship";
-	public override string EffectText => $"concentrate all of your keyboard's energy into the last key you typed before casting this spell";
+	public override string EffectText => $"concentrate all of your keyboard's energy into the last key you used to cast a spell before casting this one";
 
 	public override int Burn => 2;
 
-	Dictionary<Agent, KeyboardKey> lastLettersTyped = new Dictionary<Agent, KeyboardKey>();
+	KeyboardKey? lastKey;
+
+	internal override void Deserialize (NetDataReader reader)
+	{
+		// TODO: how to serialize nullable
+	}
+
+	internal override void Serialize (NetDataWriter writer)
+	{
+		// TODO: how to serialize nullable
+	}
 
 	protected override void initialize ()
 	{
 		AfterCast += (card, agent) => {
-			var key = card.Word[card.Word.Length - 1].ToKeyboardKey();
-			lastLettersTyped[agent] = key;
-		};
-
-		manager.OnTypePhaseStart += () => {
-			lastLettersTyped = new Dictionary<Agent, KeyboardKey>();
+			if (agent == Owner)
+			{
+				lastKey = card.Word[card.Word.Length - 1].ToKeyboardKey();
+			}
 		};
 	}
 
@@ -605,10 +644,9 @@ internal class Zealot : Card
 			state.EnergyLevel = 0;
 		}
 
-		KeyboardKey key;
-		if (lastLettersTyped.TryGetValue(caster, out key))
+		if (lastKey != null)
 		{
-			caster.Keyboard[key].EnergyLevel = total;
+			caster.Keyboard[(KeyboardKey) lastKey].EnergyLevel = total;
 		}
 	}
 }

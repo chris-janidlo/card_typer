@@ -3,11 +3,12 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text.RegularExpressions;
+using CTShared.Networking;
+using LiteNetLib.Utils;
 
 namespace CTShared
 {
-public class Deck
+public class Deck : IPacket
 {
     List<Card> _cards = new List<Card>();
     public ReadOnlyCollection<Card> Cards => _cards.AsReadOnly();
@@ -82,5 +83,73 @@ public class Deck
             drawPile.RemoveAt(index);
         }
     }
+
+    internal override void Deserialize (NetDataReader reader)
+    {
+        BracketedText = reader.GetString();
+
+        drawPile = new List<Card>();
+        hand = new List<Card>();
+        discardPile = new List<Card>();
+
+        foreach (var card in _cards)
+        {
+            card.Deserialize(reader); // get any internal state
+
+            switch ((CardStatus) reader.GetByte())
+            {
+                case CardStatus.DrawPile:
+                    drawPile.Add(card);
+                    break;
+                
+                case CardStatus.Hand:
+                    hand.Add(card);
+                    break;
+
+                case CardStatus.DiscardPile:
+                    discardPile.Add(card);
+                    break;
+                
+                default:
+                    throw new ParseException("packet contains byte that is not an expected CardStatus");
+            }
+        }
+    }
+
+    internal override void Serialize (NetDataWriter writer)
+    {
+        writer.Put(BracketedText);
+
+        foreach (var card in _cards)
+        {
+            card.Serialize(writer); // get any internal state
+
+            byte status;
+            
+            if (drawPile.Contains(card))
+            {
+                status = (byte) CardStatus.DrawPile;
+            }
+            else if (hand.Contains(card))
+            {
+                status = (byte) CardStatus.Hand;
+            }
+            else if (discardPile.Contains(card))
+            {
+                status = (byte) CardStatus.DiscardPile;
+            }
+            else
+            {
+                throw new InvalidOperationException($"card {card.Word} is unexpectedly not in draw pile, hand, or discard pile");
+            }
+
+            writer.Put(status);
+        }
+    }
+}
+
+public enum CardStatus : byte
+{
+    DrawPile, Hand, DiscardPile
 }
 }

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Reflection;
+using CTShared.Networking;
+using LiteNetLib.Utils;
 
 namespace CTShared
 {
-public abstract class Card
+public abstract class Card : IPacket
 {
     public delegate void CastEvent (Card card, Agent caster);
     public static event CastEvent BeforeCast, AfterCast;
@@ -43,6 +45,16 @@ public abstract class Card
         if (!CastLock) behaviorImplementation(caster);
 
         if (AfterCast != null) AfterCast(this, caster);
+    }
+
+    internal override void Deserialize (NetDataReader reader)
+    {
+        // assume most cards have no internal state to serialize
+    }
+
+    internal override void Serialize (NetDataWriter writer)
+    {
+        // assume most cards have no internal state to serialize
     }
 
     protected abstract void behaviorImplementation (Agent caster);

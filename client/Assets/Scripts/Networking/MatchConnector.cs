@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using LiteNetLib;
+using CTShared;
 using CTShared.Networking;
 
 public class MatchConnector : MonoBehaviour
@@ -23,7 +24,7 @@ public class MatchConnector : MonoBehaviour
         listener.NetworkReceiveEvent += PacketProcessor.ReadAllPackets;
 
         PacketProcessor.Subscribe<ServerReadyToReceiveDeckPacket>(handleServerReadyToReceiveDeck);
-        // TODO: handle bad deck disconnection
+        PacketProcessor.Subscribe<MatchManager>(handleManagerPacket);
 
         client.Start();
         server = client.Connect(IP, NetworkConstants.ServerPort, NetworkConstants.VersionNumberConnectionKey);
@@ -44,8 +45,16 @@ public class MatchConnector : MonoBehaviour
         PacketProcessor.Send(server, new ClientDeckRegistrationPacket(DeckAsset.text), DeliveryMethod.ReliableOrdered);
     }
 
+    void handleManagerPacket (MatchManager packet, NetPeer peer)
+    {
+        Debug.Log("got MatchManager");
+        Debug.Log(packet.Player1.Deck.BracketedText);
+        Debug.Log(packet.Player2.Deck.BracketedText);
+    }
+
     void handleDisconnect (NetPeer peer, DisconnectInfo disconnectInfo)
     {
         Debug.Log($"disconnected from server: {disconnectInfo.Reason.ToString()}. socket error: {disconnectInfo.SocketErrorCode.ToString()}");
+        // TODO: handle bad deck disconnection
     }
 }

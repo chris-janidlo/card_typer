@@ -3,10 +3,12 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using CTShared.Networking;
+using LiteNetLib.Utils;
 
 namespace CTShared
 {
-public class Agent
+public class Agent : IPacket 
 {
     public const int StartingMaxHealth = 100;
 
@@ -27,13 +29,15 @@ public class Agent
     List<Card> play;
     public ReadOnlyCollection<Card> Play => play.AsReadOnly();
 
-    int _maxHealth = StartingMaxHealth;
+    // following values are bytes for serialization's sake, even though semantically we'd rather think of them as ints
+
+    byte _maxHealth = StartingMaxHealth;
     public int MaxHealth
     {
         get => _maxHealth;
         set
         {
-            _maxHealth = Math.Max(0, value);
+            _maxHealth = (byte) Math.Max(0, value);
             Health = Math.Min(Health, value);
 
             if (value <= 0)
@@ -43,33 +47,67 @@ public class Agent
         }
     }
 
-    int _shield;
+    byte _shield;
     public int Shield
     {
         get => _shield;
         set
         {
-            _shield = Math.Max(0, value);
+            _shield = (byte) Math.Max(0, value);
         }
     }
 
-    int _handSize = 7;
+    byte _handSize = 7;
     public int HandSize
     {
         get => _handSize;
         set
         {
-            _handSize = Math.Max(1, value);
+            _handSize = (byte) Math.Max(1, value);
         }
     }
 
-    public int Health { get; protected set; }
-    
+    byte _health;
+    public int Health
+    {
+        get => _health;
+        protected set
+        {
+            _health = (byte) value;
+        }
+    }
+
+    byte _cardsCasted;
+    public int CardsCastedThisTurn
+    {
+        get => _cardsCasted;
+        protected set
+        {
+            _cardsCasted = (byte) value;
+        }
+    }
+
+    byte _lettersTyped;
+    public int LettersTypedThisTurn
+    {
+        get => _lettersTyped;
+        protected set
+        {
+            _lettersTyped = (byte) value;
+        }
+    }
+
+    byte _lettersAccuratelyTyped;
+    public int LettersAccuratelyTypedThisTurn
+    {
+        get => _lettersAccuratelyTyped;
+        protected set
+        {
+            _lettersAccuratelyTyped = (byte) value;
+        }
+    }
+
     public string TypingProgress { get; protected set; }
-    public int CardsCastedThisTurn { get; protected set; }
-    
-    public int LettersTypedThisTurn { get; protected set; }
-    public int LettersAccuratelyTypedThisTurn { get; protected set; }
     
     public float AccuracyThisTurn => (float) LettersAccuratelyTypedThisTurn / LettersTypedThisTurn;
 
@@ -115,6 +153,40 @@ public class Agent
         }
 
         if (OnKeyPressed != null) OnKeyPressed(key, shift);
+    }
+
+    internal override void Deserialize (NetDataReader reader)
+    {
+        _maxHealth = reader.GetByte();
+        _health = reader.GetByte();
+        _shield = reader.GetByte();
+
+        _handSize = reader.GetByte();
+        _cardsCasted = reader.GetByte();
+
+        _lettersTyped = reader.GetByte();
+        _lettersAccuratelyTyped = reader.GetByte();
+
+        Keyboard.Deserialize(reader);
+
+        Deck.Deserialize(reader);
+    }
+
+    internal override void Serialize (NetDataWriter writer)
+    {
+        writer.Put(_maxHealth);
+        writer.Put(_health);
+        writer.Put(_shield);
+
+        writer.Put(_handSize);
+        writer.Put(_cardsCasted);
+
+        writer.Put(_lettersTyped);
+        writer.Put(_lettersAccuratelyTyped);
+
+        Keyboard.Serialize(writer);
+
+        Deck.Serialize(writer);
     }
 
     internal void DrawNewHand ()

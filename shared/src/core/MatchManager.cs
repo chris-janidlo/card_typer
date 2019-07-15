@@ -108,13 +108,23 @@ public class MatchManager : IPacket
     internal override void Deserialize (NetDataReader reader)
     {
         // TODO: get random state
-        throw new NotImplementedException();
+        // TODO: get event state
+
+        TypingTimer = reader.GetFloat();
+
+        Player1.Deserialize(reader);
+        Player2.Deserialize(reader);
     }
 
     internal override void Serialize (NetDataWriter writer)
     {
         // TODO: set random state
-        throw new NotImplementedException();
+        // TODO: set event state
+
+        writer.Put(TypingTimer);
+
+        Player1.Serialize(writer);
+        Player2.Serialize(writer);
     }
 
     void agentReady (Agent agent)

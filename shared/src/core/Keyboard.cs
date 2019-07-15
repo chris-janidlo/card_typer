@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using CTShared.Networking;
+using LiteNetLib.Utils;
 
 namespace CTShared
 {
-public partial class Keyboard : IEnumerable<KeyState>
+public partial class Keyboard : IPacket, IEnumerable<KeyState>
 {
 	public bool Locked;
 
@@ -264,9 +266,31 @@ public partial class Keyboard : IEnumerable<KeyState>
 	{
 		return GetSurroundingKeys(state.Key);
 	}
+
+	internal override void Deserialize (NetDataReader reader)
+	{
+		foreach (var state in this)
+		{
+			state.Key = (KeyboardKey) reader.GetByte();
+			state.Type = (KeyStateType) reader.GetByte();
+			state.EnergyLevel = reader.GetByte();
+			state.StickyPressesRemaining = reader.GetByte();
+		}
+	}
+
+	internal override void Serialize (NetDataWriter writer)
+	{
+		foreach (var state in this)
+		{
+			writer.Put((byte) state.Key);
+			writer.Put((byte) state.Type);
+			writer.Put((byte) state.EnergyLevel);
+			writer.Put((byte) state.StickyPressesRemaining);
+		}
+	}
 }
 
-public enum KeyStateType
+public enum KeyStateType : byte
 {
     Active, Deactivated, Sticky
 }
@@ -276,7 +300,7 @@ public class KeyState
 {
 	public KeyboardKey Key;
     public KeyStateType Type;
-	public int EnergyLevel;
-    public int StickyPressesRemaining;
+	// serialized as bytes, since neither will be greater than 255, but we keep them as ints because semantically they are integer numbers
+	public int EnergyLevel, StickyPressesRemaining;
 }
 }
