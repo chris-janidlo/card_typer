@@ -51,6 +51,7 @@ public class Deck : IPacket
                     Card card = Card.FromName(split[1], owner);
                     card.Word = split[0];
                     _cards.Add(card);
+                    drawPile.Add(card);
 
                     currentText = "";
                     break;
