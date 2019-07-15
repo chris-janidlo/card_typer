@@ -24,9 +24,6 @@ public class Deck
 
     public string BracketedText { get; private set; }
 
-    // TODO: seed this for client/server sync
-    Random rand = new Random();
-
     internal Deck (string bracketedText, Agent owner)
     {
         Owner = owner;
@@ -80,7 +77,7 @@ public class Deck
                 discardPile = new List<Card>();
             }
 
-            int index = rand.Next(drawPile.Count);
+            int index = Owner.Manager.Rand.Next(drawPile.Count);
             hand.Add(drawPile[index]);
             drawPile.RemoveAt(index);
         }

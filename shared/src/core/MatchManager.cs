@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using CTShared.Networking;
+using LiteNetLib.Utils;
 
 namespace CTShared
 {
-public class MatchManager
+public class MatchManager : IPacket
 {
     public event Action OnPreTypePhaseStart, OnTypePhaseStart, OnTypePhaseEnd, OnDrawPhaseStart, OnDrawPhaseEnd;
     public event Action<float> OnTypePhaseTick;
@@ -19,6 +21,8 @@ public class MatchManager
     public float TypingTimeLeftPercent => TypingTimer / TypingTime;
 
     public int CardsCastedThisTurn => Player1.CardsCastedThisTurn + Player2.CardsCastedThisTurn;
+
+    internal readonly Random Rand;
 
     bool started;
     bool inDrawPhase, inPreTypingPhase, inTypingPhase;
@@ -47,6 +51,9 @@ public class MatchManager
         Player1.OnPlaySet += p => agentReady(Player1);
         Player2.OnPlaySet += p => agentReady(Player2);
     }
+
+    // for packet serialization
+    internal MatchManager () {}
 
     public void Start ()
     {
@@ -96,6 +103,18 @@ public class MatchManager
         {
             throw new Exception($"unexpected agent {agent}");            
         }
+    }
+
+    internal override void Deserialize (NetDataReader reader)
+    {
+        // TODO: get random state
+        throw new NotImplementedException();
+    }
+
+    internal override void Serialize (NetDataWriter writer)
+    {
+        // TODO: set random state
+        throw new NotImplementedException();
     }
 
     void agentReady (Agent agent)

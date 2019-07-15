@@ -348,18 +348,11 @@ internal class Priest : Card
 {
 	public override string PartOfSpeech => "noun";
 	public override string Definition => "one especially consecrated to the service of divinity";
-	public override string EffectText => $"clear {healed} random status effect{(healed == 1 ? "" : "s")} from your keyboard";
+	public override string EffectText => $"clear {healed} status effect{(healed == 1 ? "" : "s")} from your keyboard";
 
 	public override int Burn => 5;
 
-	int healed = 1;
-
-	Random rand;
-
-	protected override void initialize ()
-	{
-		rand = new Random();
-	}
+	int healed = 3;
 
 	protected override void behaviorImplementation (Agent caster)
 	{
@@ -369,7 +362,7 @@ internal class Priest : Card
 
 			if (illKeys.Count == 0) return;
 
-			illKeys[rand.Next(illKeys.Count)].Type = KeyStateType.Active;
+			illKeys[0].Type = KeyStateType.Active;
 		}
 	}
 }
@@ -391,17 +384,14 @@ internal class Prince : Card
 		KeyboardKey.E
 	};
 
-	Random rand;
-
-	protected override void initialize ()
-	{
-		rand = new Random();
-	}
+	int cycle = 0;
 
 	protected override void behaviorImplementation (Agent caster)
 	{
 		var enemy = manager.GetEnemyOf(caster);
-		var key = keys[rand.Next(keys.Count)];
+		var key = keys[cycle];
+
+		cycle = (cycle + 1) % keys.Count;
 
 		enemy.Keyboard[key].Type = KeyStateType.Deactivated;
 	}
