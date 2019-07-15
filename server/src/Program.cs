@@ -171,7 +171,7 @@ public class Program
 
     void sendToBoth (IPacket packet, DeliveryMethod deliveryMethod)
     {
-        PacketProcessor.Send(player2Peer, packet, deliveryMethod);
+        PacketProcessor.Send(player1Peer, packet, deliveryMethod);
         PacketProcessor.Send(player2Peer, packet, deliveryMethod);
     }
 }
