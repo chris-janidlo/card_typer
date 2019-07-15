@@ -269,6 +269,8 @@ public partial class Keyboard : IPacket, IEnumerable<KeyState>
 
 	internal override void Deserialize (NetDataReader reader)
 	{
+		Locked = reader.GetBool();
+
 		foreach (var state in this)
 		{
 			state.Key = (KeyboardKey) reader.GetByte();
@@ -280,6 +282,8 @@ public partial class Keyboard : IPacket, IEnumerable<KeyState>
 
 	internal override void Serialize (NetDataWriter writer)
 	{
+		writer.Put(Locked);
+
 		foreach (var state in this)
 		{
 			writer.Put((byte) state.Key);
