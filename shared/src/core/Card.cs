@@ -5,7 +5,7 @@ using LiteNetLib.Utils;
 
 namespace CTShared
 {
-public abstract class Card : Packet
+public abstract partial class Card : Packet
 {
     public delegate void CastEvent (Card card, Agent caster);
     public static event CastEvent BeforeCast, AfterCast;
@@ -24,10 +24,11 @@ public abstract class Card : Packet
 
     protected MatchManager manager => Owner.Manager;
 
-    // FIXME: change Type.GetType call to some kind of dictionary call, for security purposes
-    public static Card FromName (string name, Agent owner)
+    protected Card () {}
+
+    internal static Card FromName (string name, Agent owner)
     {
-        Type t = Type.GetType("CTShared.Cards." + name);
+        Type t = namesToCards[name];
         Card card = (Card) t.GetConstructor(Type.EmptyTypes).Invoke(null);
 
         card.Owner = owner;
@@ -35,8 +36,6 @@ public abstract class Card : Packet
 
         return card;
     }
-
-    protected Card () {}
 
     internal void DoBehavior (MatchManager manager, Agent caster)
     {
