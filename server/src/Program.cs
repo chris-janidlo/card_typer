@@ -169,7 +169,7 @@ public class Program
         sendToBoth(manager, DeliveryMethod.ReliableOrdered);
     }
 
-    void sendToBoth (IPacket packet, DeliveryMethod deliveryMethod)
+    void sendToBoth<T> (T packet, DeliveryMethod deliveryMethod) where T : IPacket
     {
         PacketProcessor.Send(player1Peer, packet, deliveryMethod);
         PacketProcessor.Send(player2Peer, packet, deliveryMethod);
