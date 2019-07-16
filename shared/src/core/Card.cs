@@ -5,7 +5,7 @@ using LiteNetLib.Utils;
 
 namespace CTShared
 {
-public abstract class Card : IPacket
+public abstract class Card : Packet
 {
     public delegate void CastEvent (Card card, Agent caster);
     public static event CastEvent BeforeCast, AfterCast;

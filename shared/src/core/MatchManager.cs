@@ -6,7 +6,7 @@ using LiteNetLib.Utils;
 
 namespace CTShared
 {
-public class MatchManager : IPacket
+public class MatchManager : Packet
 {
     public event Action OnPreTypePhaseStart, OnTypePhaseStart, OnTypePhaseEnd, OnDrawPhaseStart, OnDrawPhaseEnd;
     public event Action<float> OnTypePhaseTick;

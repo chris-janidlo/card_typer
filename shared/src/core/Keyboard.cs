@@ -6,7 +6,7 @@ using LiteNetLib.Utils;
 
 namespace CTShared
 {
-public partial class Keyboard : IPacket, IEnumerable<KeyState>
+public partial class Keyboard : Packet, IEnumerable<KeyState>
 {
 	public bool Locked;
 

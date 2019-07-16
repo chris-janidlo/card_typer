@@ -18,26 +18,26 @@ public static class PacketProcessor
 		public static ulong ID;
 	}
 
-	static class constructorCache<T> where T : IPacket
+	static class constructorCache<T> where T : Packet
 	{
 		public static bool Initialized;
 		public static Func<T> Constructor;
 	}
 
-	public delegate void PacketReceivedEvent<T> (T packet, NetPeer sender) where T : IPacket;
+	public delegate void PacketReceivedEvent<T> (T packet, NetPeer sender) where T : Packet;
 
 	delegate void callbackDelegate (NetPeer peer, NetDataReader reader);
 
 	static readonly Dictionary<ulong, callbackDelegate> callbacks = new Dictionary<ulong, callbackDelegate>();
 	static readonly NetDataWriter writer = new NetDataWriter();
 
-	public static void SetConstructor<T> (Func<T> constructor) where T : IPacket
+	public static void SetConstructor<T> (Func<T> constructor) where T : Packet
 	{
 		constructorCache<T>.Constructor = constructor;
 		constructorCache<T>.Initialized = true;
 	}
 
-	public static void Subscribe<T> (PacketReceivedEvent<T> onReceive) where T : IPacket
+	public static void Subscribe<T> (PacketReceivedEvent<T> onReceive) where T : Packet
 	{
 		Func<T> constructor;
 
@@ -70,7 +70,7 @@ public static class PacketProcessor
 		ReadAllPackets(peer, reader);
 	}
 
-	public static void Send<T> (NetPeer peer, T packet, DeliveryMethod deliveryMethod) where T : IPacket
+	public static void Send<T> (NetPeer peer, T packet, DeliveryMethod deliveryMethod) where T : Packet
 	{
 		writer.Reset();
 		writer.Put(getHash<T>());
@@ -113,7 +113,7 @@ public static class PacketProcessor
 		return action;
 	}
 
-	static void tryGetConstructor<T> () where T : IPacket
+	static void tryGetConstructor<T> () where T : Packet
 	{
 		var type = (typeof (T));
 

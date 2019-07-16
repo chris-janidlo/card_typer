@@ -8,7 +8,7 @@ using LiteNetLib.Utils;
 
 namespace CTShared
 {
-public class Deck : IPacket
+public class Deck : Packet
 {
     List<Card> _cards = new List<Card>();
     public ReadOnlyCollection<Card> Cards => _cards.AsReadOnly();

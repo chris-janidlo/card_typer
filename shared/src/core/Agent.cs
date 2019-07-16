@@ -8,7 +8,7 @@ using LiteNetLib.Utils;
 
 namespace CTShared
 {
-public class Agent : IPacket 
+public class Agent : Packet 
 {
     public const int StartingMaxHealth = 100;
 

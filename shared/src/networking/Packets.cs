@@ -5,7 +5,7 @@ namespace CTShared.Networking
 // this file is for basic message packets; packets that don't represent code/gameplay objects, but instead represent client-server communication
 
 
-public class ErrorMessagePacket : IPacket
+public class ErrorMessagePacket : Packet
 {
 	public string Message { get; set; }
 
@@ -28,7 +28,7 @@ public class ErrorMessagePacket : IPacket
 }
 
 
-public class ServerReadyToReceiveDeckPacket : IPacket
+public class ServerReadyToReceiveDeckPacket : Packet
 {
 	internal override void Serialize (NetDataWriter writer)
 	{
@@ -42,7 +42,7 @@ public class ServerReadyToReceiveDeckPacket : IPacket
 }
 
 
-public class ClientDeckRegistrationPacket : IPacket
+public class ClientDeckRegistrationPacket : Packet
 {
 	public string DeckText { get; set; }
 
