@@ -36,5 +36,8 @@ msbuild.wrn
 # auto generated code
 (auto generated)*
 
+# python cache files
+*.pyc
+
 # Visual Studio 2015
 .vs/

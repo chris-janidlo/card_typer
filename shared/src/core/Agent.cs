@@ -194,7 +194,7 @@ public class Agent : Packet
         Deck.DrawNewHand(HandSize);
     }
 
-    internal void SetPlay (List<Card> play)
+    public void SetPlay (List<Card> play)
     {
         this.play = play;
         if (OnPlaySet != null) OnPlaySet(play);

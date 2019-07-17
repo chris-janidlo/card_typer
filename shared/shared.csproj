@@ -9,13 +9,4 @@
     <PackageReference Include="System.Collections.Immutable" Version="1.5.0" />
   </ItemGroup>
 
-  <Target Name="GenerateCode" BeforeTargets="BeforeBuild">
-    <Exec
-      Command='py src/scripts/keyboardCodeGenerator.py "./src/core/(auto generated) Keyboard.cs"'
-    />
-    <Exec
-      Command='py ./src/scripts/cardCodeGenerator.py "./src/core/(auto generated) Card.cs" src/data/CardImplementations.cs'
-    />
-  </Target>
-
 </Project>
