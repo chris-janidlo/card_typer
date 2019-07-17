@@ -4,10 +4,10 @@ This project uses symlinks, so if you're on Windows, make sure you have symlink 
 
 Windows:
 
-	`git clone --recurse-submodules -c core.symlinks=true https://github.com/crassSandwich/card_typer`
+	git clone --recurse-submodules -c core.symlinks=true https://github.com/crassSandwich/card_typer
 
 *nix:
 
-	`git clone --recurse-submodules https://github.com/crassSandwich/card_typer`
+	git clone --recurse-submodules https://github.com/crassSandwich/card_typer
 
 After cloning, run `build.py` with Python 3 to generate some required source code files.
