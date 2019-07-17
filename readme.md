@@ -10,4 +10,4 @@ Windows:
 
 	git clone --recurse-submodules https://github.com/crassSandwich/card_typer
 
-After cloning, run `build.py` with Python 3 to generate some required source code files.
+After cloning, run `build.py` with Python 3 to generate required source code files.
