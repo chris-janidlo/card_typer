@@ -3,15 +3,13 @@
 from sys import argv
 import re
 
-# generates dictionary for Card class. creates (or overwrites) file named Card (auto generated).cs. Card must remain a partial class
-
-if len(argv) < 2:
-	print('need the files to scan')
-	quit()
+if len(argv) < 3:
+	print('usage: python cardCodeGenerator.py output_file input_file[s]')
+	quit(1)
 
 classes = []
 
-for name in argv[1:]:
+for name in argv[2:]:
 	with open(name, 'r') as file:
 		for line in file:
 			match = re.match(r'.*class ([A-Za-z]+) : Card', line)
@@ -52,5 +50,5 @@ public abstract partial class Card : Packet
 }}
 """
 
-file = open('Card (auto generated).cs', 'w')
+file = open(argv[1], 'w')
 file.write(output)

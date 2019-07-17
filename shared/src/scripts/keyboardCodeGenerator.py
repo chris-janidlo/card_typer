@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 
+from sys import argv
 from string import ascii_uppercase
 from itertools import chain
 
-# generates states for Keyboard class. creates (or overwrites) file named Keyboard (auto generated).cs. Keyboard must remain a partial class
+if len(argv) < 2:
+	print("usage: python keyboardCodeGenerator.py output_file")
+	quit(1)
 
 special_keys = ['Space', 'Dash', 'Apostrophe', 'Backspace', 'Return']
 
@@ -62,5 +65,5 @@ public partial class Keyboard : IEnumerable<KeyState>
 }}
 """
 
-file = open('Keyboard (auto generated).cs', 'w')
+file = open(argv[1], 'w')
 file.write(output)
