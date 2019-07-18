@@ -273,7 +273,6 @@ public partial class Keyboard : Packet, IEnumerable<KeyState>
 
 		foreach (var state in this)
 		{
-			state.Key = (KeyboardKey) reader.GetByte();
 			state.Type = (KeyStateType) reader.GetByte();
 			state.EnergyLevel = reader.GetByte();
 			state.StickyPressesRemaining = reader.GetByte();
@@ -286,7 +285,6 @@ public partial class Keyboard : Packet, IEnumerable<KeyState>
 
 		foreach (var state in this)
 		{
-			writer.Put((byte) state.Key);
 			writer.Put((byte) state.Type);
 			writer.Put((byte) state.EnergyLevel);
 			writer.Put((byte) state.StickyPressesRemaining);

@@ -95,7 +95,7 @@ public class Deck : Packet
     {
         BracketedText = reader.GetString();
 
-        int numCards = reader.GetInt();
+        int numCards = reader.GetByte();
 
         _cards = new List<Card>();
         drawPile = new List<Card>();
@@ -133,7 +133,8 @@ public class Deck : Packet
     {
         writer.Put(BracketedText);
 
-        writer.Put(Cards.Count);
+        // atm, don't expect to see over 255 cards in any deck
+        writer.Put((byte) Cards.Count);
 
         foreach (var card in _cards)
         {
