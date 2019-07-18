@@ -95,12 +95,14 @@ public class Deck : Packet
     {
         BracketedText = reader.GetString();
 
+        int numCards = reader.GetInt();
+
         _cards = new List<Card>();
         drawPile = new List<Card>();
         hand = new List<Card>();
         discardPile = new List<Card>();
 
-        for (int i = 0; i < reader.GetInt(); i++)
+        for (int i = 0; i < numCards; i++)
         {
             var card = Card.FromName(reader.GetString(), Owner);
             card.Deserialize(reader); // get any internal state
