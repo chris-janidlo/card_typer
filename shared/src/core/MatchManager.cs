@@ -53,7 +53,11 @@ public class MatchManager : Packet
     }
 
     // for packet serialization
-    internal MatchManager () {}
+    internal MatchManager ()
+    {
+        Player1 = new Agent();
+        Player2 = new Agent();
+    }
 
     public void Start ()
     {

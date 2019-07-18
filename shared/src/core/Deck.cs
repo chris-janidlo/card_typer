@@ -65,6 +65,9 @@ public class Deck : Packet
         BracketedText = bracketedText;
     }
 
+    // for packet serialization
+    internal Deck () {}
+
     internal void DrawNewHand (int size)
     {
         discardPile.AddRange(hand);

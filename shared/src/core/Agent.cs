@@ -130,6 +130,13 @@ public class Agent : Packet
         Keyboard = new Keyboard();
     }
 
+    // for packet serialization
+    internal Agent ()
+    {
+        Keyboard = new Keyboard();
+        Deck = new Deck();
+    }
+
     public void PressKey (KeyboardKey key, bool shift)
     {
         KeyState state = Keyboard[key];
