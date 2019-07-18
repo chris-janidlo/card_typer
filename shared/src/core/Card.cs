@@ -14,7 +14,10 @@ public abstract partial class Card : Packet
     // the actual word in the poem that this is shadowing
     public string Word;
 
-    public Agent Owner { get; protected set; }
+    // the name of the class
+    public string Name { get; private set; }
+
+    public Agent Owner { get; private set; }
 
     public abstract string PartOfSpeech { get; }
     public abstract string Definition { get; }
@@ -32,6 +35,7 @@ public abstract partial class Card : Packet
         Card card = (Card) t.GetConstructor(Type.EmptyTypes).Invoke(null);
 
         card.Owner = owner;
+        card.Name = name;
         card.initialize();
 
         return card;

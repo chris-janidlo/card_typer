@@ -134,7 +134,7 @@ public class Agent : Packet
     internal Agent ()
     {
         Keyboard = new Keyboard();
-        Deck = new Deck();
+        Deck = new Deck(this);
     }
 
     public void PressKey (KeyboardKey key, bool shift)

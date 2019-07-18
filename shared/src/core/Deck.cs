@@ -66,7 +66,10 @@ public class Deck : Packet
     }
 
     // for packet serialization
-    internal Deck () {}
+    internal Deck (Agent owner)
+    {
+        Owner = owner;
+    }
 
     internal void DrawNewHand (int size)
     {
@@ -92,13 +95,17 @@ public class Deck : Packet
     {
         BracketedText = reader.GetString();
 
+        _cards = new List<Card>();
         drawPile = new List<Card>();
         hand = new List<Card>();
         discardPile = new List<Card>();
 
-        foreach (var card in _cards)
+        for (int i = 0; i < reader.GetInt(); i++)
         {
+            var card = Card.FromName(reader.GetString(), Owner);
             card.Deserialize(reader); // get any internal state
+
+            _cards.Add(card);
 
             switch ((CardStatus) reader.GetByte())
             {
@@ -124,8 +131,11 @@ public class Deck : Packet
     {
         writer.Put(BracketedText);
 
+        writer.Put(Cards.Count);
+
         foreach (var card in _cards)
         {
+            writer.Put(card.Name);
             card.Serialize(writer); // get any internal state
 
             byte status;
