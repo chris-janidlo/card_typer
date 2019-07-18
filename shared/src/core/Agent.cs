@@ -131,8 +131,10 @@ public class Agent : Packet
     }
 
     // for packet serialization
-    internal Agent ()
+    internal Agent (MatchManager manager)
     {
+        Manager = manager;
+
         Keyboard = new Keyboard();
         Deck = new Deck(this);
     }

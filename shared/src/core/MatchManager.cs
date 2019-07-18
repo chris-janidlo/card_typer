@@ -55,8 +55,8 @@ public class MatchManager : Packet
     // for packet serialization
     internal MatchManager ()
     {
-        Player1 = new Agent();
-        Player2 = new Agent();
+        Player1 = new Agent(this);
+        Player2 = new Agent(this);
     }
 
     public void Start ()
