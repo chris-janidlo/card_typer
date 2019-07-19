@@ -134,6 +134,7 @@ public class Agent : Packet
     internal Agent (MatchManager manager)
     {
         Manager = manager;
+        manager.OnTypePhaseStart += startTypePhase;
 
         Keyboard = new Keyboard();
         Deck = new Deck(this);
