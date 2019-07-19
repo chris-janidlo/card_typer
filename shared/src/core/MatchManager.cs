@@ -111,7 +111,7 @@ public class MatchManager : Packet
 
     internal override void Deserialize (NetDataReader reader)
     {
-        // TODO: get event state
+        Card.CastLock = reader.GetBool();
 
         TypingTimer = reader.GetFloat();
 
@@ -121,7 +121,7 @@ public class MatchManager : Packet
 
     internal override void Serialize (NetDataWriter writer)
     {
-        // TODO: set event state
+        writer.Put(Card.CastLock);
 
         writer.Put(TypingTimer);
 

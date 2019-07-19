@@ -28,6 +28,7 @@ public class Deck : Packet
     internal Deck (string bracketedText, Agent owner)
     {
         Owner = owner;
+        subscribeEvents();
 
         string currentText = "";
         bool scanningCard = bracketedText[0] == '{';
@@ -69,6 +70,7 @@ public class Deck : Packet
     internal Deck (Agent owner)
     {
         Owner = owner;
+        subscribeEvents();
     }
 
     internal void DrawNewHand (int size)
@@ -161,6 +163,80 @@ public class Deck : Packet
             }
 
             writer.Put(status);
+        }
+    }
+
+    void subscribeEvents ()
+    {
+        var mgr = Owner.Manager;
+
+        mgr.OnTypePhaseStart += callStartType;
+        mgr.OnTypePhaseEnd += callEndType;
+        mgr.OnTypePhaseTick += callTickType;
+        mgr.OnDrawPhaseEnd += callEndDraw;
+
+        Owner.OnHealthChanged += d => callHealthChanged(Owner, d);
+        var enemy = mgr.GetEnemyOf(Owner);
+        enemy.OnHealthChanged += d => callHealthChanged(enemy, d);
+
+        Card.BeforeCast += callBeforeCast;
+        Card.AfterCast += callAfterCast;
+    }
+
+    // TODO: generalize?
+    void callStartType ()
+    {
+        foreach (var card in Cards)
+        {
+            card.OnTypePhaseStart();
+        }
+    }
+
+    void callEndType ()
+    {
+        foreach (var card in Cards)
+        {
+            card.OnTypePhaseEnd();
+        }
+    }
+
+    void callTickType (float dt)
+    {
+        foreach (var card in Cards)
+        {
+            card.OnTypePhaseTick(dt);
+        }
+    }
+
+    void callEndDraw ()
+    {
+        foreach (var card in Cards)
+        {
+            card.OnDrawPhaseEnd();
+        }
+    }
+
+    void callHealthChanged (Agent agent, int delta)
+    {
+        foreach (var card in Cards)
+        {
+            card.OnAgentHealthChanged(agent, delta);
+        }
+    }
+
+    void callBeforeCast (Card casted, Agent caster)
+    {
+        foreach (var card in Cards)
+        {
+            card.BeforeCardCast(casted, caster);
+        }
+    }
+
+    void callAfterCast (Card casted, Agent caster)
+    {
+        foreach (var card in Cards)
+        {
+            card.AfterCardCast(casted, caster);
         }
     }
 }

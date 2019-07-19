@@ -9,34 +9,6 @@ namespace CTShared.Cards
 
 using Keys = List<KeyboardKey>;
 
-internal static class CardUtils
-{
-	// FIXME: how do we handle turn ends? should action always trigger, never trigger, or sometimes trigger if the turn ends before the timer has completed?
-    public static void DoAfterTime (MatchManager manager, Action action, float time)
-    {
-		Action<float> onTick = null;
-		Action unsubscribe = null;
-        float timer = time;
-
-        onTick = dt => {
-            timer -= dt;
-            if (timer <= 0)
-            {
-                action();
-                unsubscribe();
-            }
-        };
-
-        unsubscribe = () => {
-            manager.OnTypePhaseTick -= onTick;
-            manager.OnTypePhaseEnd -= unsubscribe;
-        };
-
-        manager.OnTypePhaseTick += onTick;
-        manager.OnTypePhaseEnd += unsubscribe;
-    }
-}
-
 internal class Abhor : Card
 {
 	public override string PartOfSpeech => "verb";
@@ -45,20 +17,39 @@ internal class Abhor : Card
 
 	public override int Burn => 5;
 
+	// stats
 	float reflectTime = 3;
     float reflectMult = .9f;
 
-	protected override void behaviorImplementation (Agent caster)
-	{
-		Action<int> reflector = d =>
-		{
-			if (d >= 0) return;
-			var enemy = manager.GetEnemyOf(caster);
-			enemy.IncrementHealth((int) (d * reflectMult));
-		};
+	// state
+	float timeLeft;
 
-        caster.OnHealthChanged += reflector;
-        CardUtils.DoAfterTime(manager, () => caster.OnHealthChanged -= reflector, reflectTime);
+	internal override void Deserialize (NetDataReader reader)
+	{
+		timeLeft = reader.GetFloat();
+	}
+
+	internal override void Serialize (NetDataWriter writer)
+	{
+		writer.Put(timeLeft);
+	}
+
+	protected override void behaviorImplementation ()
+	{
+		timeLeft = reflectTime;
+	}
+
+	internal override void OnAgentHealthChanged (Agent agent, int delta)
+	{
+		if (timeLeft <= 0 || agent != Owner || delta >= 0) return;
+
+		var enemy = manager.GetEnemyOf(agent);
+		enemy.IncrementHealth((int) (delta * reflectMult));
+	}
+
+	internal override void OnTypePhaseTick (float dt)
+	{
+		timeLeft -= dt;
 	}
 }
 
@@ -70,12 +61,48 @@ internal class Anchorage : Card
 
 	public override int Burn => 4;
 
+	// stats
     int lockTime = 3;
 
-	protected override void behaviorImplementation (Agent caster)
+	// state
+	float timeLeft;
+	bool shouldUnlock;
+
+	internal override void Deserialize (NetDataReader reader)
 	{
-        caster.Keyboard.Locked = true;
-        CardUtils.DoAfterTime(manager, () => caster.Keyboard.Locked = false, lockTime);
+		timeLeft = reader.GetFloat();
+		shouldUnlock = reader.GetBool();
+	}
+
+	internal override void Serialize (NetDataWriter writer)
+	{
+		writer.Put(timeLeft);
+		writer.Put(shouldUnlock);
+	}
+
+	protected override void behaviorImplementation ()
+	{
+		if (!Owner.Keyboard.Locked)
+		{
+			timeLeft = lockTime;
+			shouldUnlock = true;
+		}
+	}
+
+	internal override void OnTypePhaseTick (float dt)
+	{
+		timeLeft -= dt;
+
+		// allow any number of other timed locks as long as they also follow this pattern
+		if (timeLeft > 0)
+		{
+			Owner.Keyboard.Locked = true;
+		}
+		else if (shouldUnlock)
+		{
+			Owner.Keyboard.Locked = false;
+			shouldUnlock = false;
+		}
 	}
 }
 
@@ -108,11 +135,11 @@ internal class Ancient : Card
     };
 	int energy = 1;
 
-	protected override void behaviorImplementation (Agent caster)
+	protected override void behaviorImplementation ()
 	{
 		foreach (var key in keys)
         {
-            caster.Keyboard[key].EnergyLevel += energy;
+            Owner.Keyboard[key].EnergyLevel += energy;
         }
 	}
 }
@@ -139,11 +166,11 @@ internal class Barrier : Card
 		KeyboardKey.P
 	};
 
-	protected override void behaviorImplementation (Agent caster)
+	protected override void behaviorImplementation ()
 	{
 		foreach (var key in keys)
 		{
-			caster.Shield += (int) (shield * caster.Keyboard[key].EnergyLevel);
+			Owner.Shield += (int) (shield * Owner.Keyboard[key].EnergyLevel);
 		}
 	}
 }
@@ -169,14 +196,14 @@ internal class Bulwark : Card
 		KeyboardKey.L
 	};
 
-	protected override void behaviorImplementation (Agent caster)
+	protected override void behaviorImplementation ()
 	{
 		float total = 0;
 		foreach (var key in keys)
 		{
-			total += caster.Keyboard[key].EnergyLevel * damage;
+			total += Owner.Keyboard[key].EnergyLevel * damage;
 		}
-		manager.GetEnemyOf(caster).IncrementHealth(-(int) total);
+		manager.GetEnemyOf(Owner).IncrementHealth(-(int) total);
 	}
 }
 
@@ -190,9 +217,9 @@ internal class Devise : Card
 
 	int damagePerCard = 3;
 
-	protected override void behaviorImplementation (Agent caster)
+	protected override void behaviorImplementation ()
 	{
-		manager.GetEnemyOf(caster).IncrementHealth(-manager.CardsCastedThisTurn * damagePerCard);
+		manager.GetEnemyOf(Owner).IncrementHealth(-manager.CardsCastedThisTurn * damagePerCard);
 	}
 }
 
@@ -204,30 +231,45 @@ internal class Flaming : Card
 
 	public override int Burn => 7;
 
+
+	// stats
 	string anA = "a";
 	string effectedPartOfSpeech = "noun";
 	int damage = 1;
-	
-	protected override void behaviorImplementation (Agent caster)
+
+	// state
+	bool primed;
+
+	internal override void Deserialize (NetDataReader reader)
 	{
-		Card.CastEvent burn = null;
-		Action unsubscribe = null;
+		primed = reader.GetBool();
+	}
 
-		unsubscribe = () => {
-			BeforeCast -= burn;
-			manager.OnTypePhaseEnd -= unsubscribe;
-		};
+	internal override void Serialize (NetDataWriter writer)
+	{
+		writer.Put(primed);
+	}
+	
+	protected override void behaviorImplementation ()
+	{
+		primed = true;
+	}
 
-		burn = (card, agent) => {
-			if (agent == caster && card.PartOfSpeech.Equals(effectedPartOfSpeech))
+	internal override void BeforeCardCast (Card card, Agent caster)
+	{
+		if (caster == Owner)
+		{
+			if (primed && card.PartOfSpeech.Equals(effectedPartOfSpeech))
 			{
-				manager.GetEnemyOf(caster).IncrementHealth(-damage);
+				manager.GetEnemyOf(Owner).IncrementHealth(-damage);
 			}
-			unsubscribe();
-		};
+			primed = false;
+		}
+	}
 
-		BeforeCast += burn;
-		manager.OnTypePhaseEnd += unsubscribe;
+	internal override void OnTypePhaseEnd ()
+	{
+		primed = false;
 	}
 }
 
@@ -251,11 +293,11 @@ internal class Grim : Card
 		KeyboardKey.Y
 	};
 
-	protected override void behaviorImplementation (Agent caster)
+	protected override void behaviorImplementation ()
 	{
 		foreach (var key in keys)
 		{
-			caster.Keyboard[key].EnergyLevel += energyGain;
+			Owner.Keyboard[key].EnergyLevel += energyGain;
 		}
 	}
 }
@@ -278,12 +320,12 @@ internal class Heart : Card
 		KeyboardKey.Y
 	};
 
-	protected override void behaviorImplementation (Agent caster)
+	protected override void behaviorImplementation ()
 	{
 		foreach (var key in keys)
 		{
-			var state = caster.Keyboard[key];
-			caster.IncrementHealth(state.EnergyLevel);
+			var state = Owner.Keyboard[key];
+			Owner.IncrementHealth(state.EnergyLevel);
 			state.EnergyLevel = 0;
 		}
 	}
@@ -299,9 +341,9 @@ internal class Hound : Card
 
 	public int damage = 10;
 
-	protected override void behaviorImplementation (Agent caster)
+	protected override void behaviorImplementation ()
 	{
-		manager.GetEnemyOf(caster).IncrementHealth((int) (-damage * manager.TypingTimeLeftPercent));
+		manager.GetEnemyOf(Owner).IncrementHealth((int) (-damage * manager.TypingTimeLeftPercent));
 	}
 }
 
@@ -313,13 +355,20 @@ internal class Lock : Card
 
 	public override int Burn => 7;
 
+	// stats
 	float time = 4;
+
+	// state
 	string lastCastWord;
 	Agent lastCaster;
+	float timer;
+	bool shouldReenable;
 
 	internal override void Deserialize (NetDataReader reader)
 	{
 		lastCastWord = reader.GetString();
+		timer = reader.GetFloat();
+		shouldReenable = reader.GetBool();
 		bool wasMe = reader.GetBool();
 		if (wasMe)
 		{
@@ -334,34 +383,48 @@ internal class Lock : Card
 	internal override void Serialize (NetDataWriter writer)
 	{
 		writer.Put(lastCastWord);
+		writer.Put(timer);
+		writer.Put(shouldReenable);
 		writer.Put(lastCaster == Owner);
 	}
 
-	protected override void initialize ()
-	{
-		AfterCast += (casted, agent) => {
-			lastCastWord = casted.Word;
-			lastCaster = agent;
-		};
-	}
-
-	protected override void behaviorImplementation (Agent caster)
+	protected override void behaviorImplementation ()
 	{
 		if (lastCastWord == null) return; // this is the first spell cast this turn
-
-		// capture the relevant information from lastCast and lastCaster so that (when its time to disable) we disable what they were when we cast the spell, not what they are `time` seconds after casting it
-		Keys keys = lastCastWord.Select(c => c.ToKeyboardKey()).ToList();
-		Agent lastCasterCapture = lastCaster;
-
-		Action<bool> setActiveState = flag => {
-			foreach (var key in keys)
-			{
-				lastCasterCapture.Keyboard[key].Type = flag ? KeyStateType.Active : KeyStateType.Deactivated;
-			}
-		};
+		if (timer > 0) return; // we're currently disabling things, and don't want to replace the current owner/word state
 
 		setActiveState(false);
-		CardUtils.DoAfterTime(manager, () => setActiveState(true), time);
+		timer = time;
+		shouldReenable = true;
+	}
+
+	void setActiveState (bool value)
+	{
+		Keys keys = lastCastWord.Select(c => c.ToKeyboardKey()).ToList();
+		foreach (var key in keys)
+		{
+			lastCaster.Keyboard[key].Type = value ? KeyStateType.Active : KeyStateType.Deactivated;
+		}
+	}
+
+	internal override void AfterCardCast (Card card, Agent caster)
+	{
+		lastCastWord = card.Word;
+		lastCaster = caster;
+	}
+
+	internal override void OnTypePhaseTick (float dt)
+	{
+		timer -= dt;
+
+		if (timer > 0)
+		{
+			setActiveState(false);
+		}
+		else if (shouldReenable)
+		{
+			setActiveState(true);
+		}
 	}
 }
 
@@ -375,15 +438,13 @@ internal class Priest : Card
 
 	int healed = 3;
 
-	protected override void behaviorImplementation (Agent caster)
+	protected override void behaviorImplementation ()
 	{
-		for (int i = 0; i < healed; i++)
+		var illKeys = Owner.Keyboard.Where(s => s.Type != KeyStateType.Active).ToList();
+
+		for (int i = 0; i < healed && i < illKeys.Count; i++)
 		{
-			var illKeys = caster.Keyboard.Where(s => s.Type != KeyStateType.Active).ToList();
-
-			if (illKeys.Count == 0) return;
-
-			illKeys[0].Type = KeyStateType.Active;
+			illKeys[i].Type = KeyStateType.Active;
 		}
 	}
 }
@@ -396,6 +457,7 @@ internal class Prince : Card
 
 	public override int Burn => 5;
 
+	// stats
 	Keys keys = new Keys {
 		KeyboardKey.P,
 		KeyboardKey.R,
@@ -405,6 +467,7 @@ internal class Prince : Card
 		KeyboardKey.E
 	};
 
+	// state
 	byte cycle = 0;
 
 	internal override void Deserialize (NetDataReader reader)
@@ -417,9 +480,9 @@ internal class Prince : Card
 		writer.Put(cycle);
 	}
 
-	protected override void behaviorImplementation (Agent caster)
+	protected override void behaviorImplementation ()
 	{
-		var enemy = manager.GetEnemyOf(caster);
+		var enemy = manager.GetEnemyOf(Owner);
 		var key = keys[cycle];
 
 		cycle = (byte) ((cycle + 1) % keys.Count);
@@ -436,18 +499,35 @@ internal class Prophet : Card
 
 	public override int Burn => 5;
 
+	// stats
 	int extraDraw = 1;
 
-	protected override void behaviorImplementation (Agent caster)
+	// state
+	bool inOverdraw;
+
+	internal override void Deserialize (NetDataReader reader)
 	{
-		caster.HandSize += extraDraw;
-		
-		Action reducer = null;
-		reducer = () => {
-			caster.HandSize -= extraDraw;
-			manager.OnDrawPhaseEnd -= reducer;
-		};
-		manager.OnDrawPhaseEnd += reducer;
+		inOverdraw = reader.GetBool();
+	}
+
+	internal override void Serialize (NetDataWriter writer)
+	{
+		writer.Put(inOverdraw);
+	}
+
+	protected override void behaviorImplementation ()
+	{
+		Owner.HandSize += extraDraw;
+		inOverdraw = true; 
+	}
+
+	internal override void OnDrawPhaseEnd ()
+	{
+		if (inOverdraw)
+		{
+			Owner.HandSize -= extraDraw;
+			inOverdraw = false;
+		}
 	}
 }
 
@@ -459,25 +539,46 @@ internal class Refuse : Card
 
 	public override int Burn => 10;
 
+	// stats
 	int damageMult = 2;
 
-	protected override void behaviorImplementation (Agent caster)
+	// state
+	bool beforeFlag, afterFlag;
+
+	internal override void Deserialize (NetDataReader reader)
 	{
-		CastEvent beforeCast = null, afterCast = null;
+		beforeFlag = reader.GetBool();
+		afterFlag = reader.GetBool();
+	}
 
-		beforeCast = (card, agent) => {
+	internal override void Serialize(NetDataWriter writer)
+	{
+		writer.Put(beforeFlag);
+		writer.Put(afterFlag);
+	}
+
+	protected override void behaviorImplementation ()
+	{
+		beforeFlag = true;
+	}
+
+	internal override void BeforeCardCast (Card card, Agent caster)
+	{
+		if (beforeFlag)
+		{
 			CastLock = true;
-			BeforeCast -= beforeCast;
-		};
+			beforeFlag = false;
+			afterFlag = true;
+		}
+	}
 
-		afterCast = (card, agent) => {
-			manager.GetEnemyOf(caster).IncrementHealth(-card.Word.Length * damageMult);
-			CastLock = false;
-			AfterCast -= afterCast;
-		};
-
-		BeforeCast += beforeCast;
-		AfterCast += afterCast;
+	internal override void AfterCardCast(Card card, Agent caster)
+	{
+		if (afterFlag)
+		{
+			manager.GetEnemyOf(Owner).IncrementHealth(-card.Word.Length * damageMult);
+			afterFlag = false;
+		}
 	}
 }
 
@@ -492,12 +593,12 @@ internal class Sunset : Card
 	float time = 1;
 	float maxDamage = 12;
 
-	protected override void behaviorImplementation (Agent caster)
+	protected override void behaviorImplementation ()
 	{
 		if (manager.TypingTimer <= time)
 		{
-			float damage = (float) Math.Pow(maxDamage, caster.AccuracyThisTurn);
-			manager.GetEnemyOf(caster).IncrementHealth(-(int) damage);
+			float damage = (float) Math.Pow(maxDamage, Owner.AccuracyThisTurn);
+			manager.GetEnemyOf(Owner).IncrementHealth(-(int) damage);
 		}
 	}
 }
@@ -512,9 +613,9 @@ internal class Sword : Card
 
 	int damage = 3;
 
-	protected override void behaviorImplementation (Agent caster)
+	protected override void behaviorImplementation ()
 	{
-		manager.GetEnemyOf(caster).IncrementHealth(-damage);
+		manager.GetEnemyOf(Owner).IncrementHealth(-damage);
 	}
 }
 
@@ -526,10 +627,10 @@ internal class TwoFaced : Card
 
     public override int Burn => 1;
 
-	protected override void behaviorImplementation (Agent caster)
+	protected override void behaviorImplementation ()
 	{
-		caster.Keyboard[KeyboardKey.Space].Type = KeyStateType.Deactivated;
-		manager.GetEnemyOf(caster).Keyboard[KeyboardKey.Space].Type = KeyStateType.Deactivated;
+		Owner.Keyboard[KeyboardKey.Space].Type = KeyStateType.Deactivated;
+		manager.GetEnemyOf(Owner).Keyboard[KeyboardKey.Space].Type = KeyStateType.Deactivated;
 	}
 }
 
@@ -543,11 +644,11 @@ internal class Unveil : Card
 
 	int healEnergy = 4;
 
-	protected override void behaviorImplementation (Agent caster)
+	protected override void behaviorImplementation ()
 	{
-		foreach (var state in caster.Keyboard.Where(s => s.Type != KeyStateType.Active))
+		foreach (var state in Owner.Keyboard.Where(s => s.Type != KeyStateType.Active))
 		{
-			if (caster.Keyboard.GetSurroundingKeys(state).Sum(s => s.EnergyLevel) >= healEnergy)
+			if (Owner.Keyboard.GetSurroundingKeys(state).Sum(s => s.EnergyLevel) >= healEnergy)
 			{
 				state.Type = KeyStateType.Active;
 			}
@@ -566,12 +667,12 @@ internal class Weary : Card
 	int minCast = 3;
 	int maxDamage = 10;
 
-	protected override void behaviorImplementation (Agent caster)
+	protected override void behaviorImplementation ()
 	{
 		if (manager.CardsCastedThisTurn < minCast) return;
 
 		float elapsed = 1 - manager.TypingTimeLeftPercent;
-		manager.GetEnemyOf(caster).IncrementHealth((int) (-maxDamage * elapsed));
+		manager.GetEnemyOf(Owner).IncrementHealth((int) (-maxDamage * elapsed));
 	}
 }
 
@@ -593,14 +694,14 @@ internal class Year : Card
 		KeyboardKey.R
 	};
 
-	protected override void behaviorImplementation (Agent caster)
+	protected override void behaviorImplementation ()
 	{
 		int total = 0;
 		foreach (var key in keys)
 		{
-			total += caster.Keyboard[key].EnergyLevel;
+			total += Owner.Keyboard[key].EnergyLevel;
 		}
-		manager.GetEnemyOf(caster).IncrementHealth((int) (damageMult * -total));
+		manager.GetEnemyOf(Owner).IncrementHealth((int) (damageMult * -total));
 	}
 }
 
@@ -612,41 +713,48 @@ internal class Zealot : Card
 
 	public override int Burn => 2;
 
-	KeyboardKey? lastKey;
+	bool keyIsSet;
+	KeyboardKey lastKey;
 
 	internal override void Deserialize (NetDataReader reader)
 	{
-		// TODO: how to serialize nullable
+		keyIsSet = reader.GetBool();
+		lastKey = (KeyboardKey) reader.GetByte();
 	}
 
 	internal override void Serialize (NetDataWriter writer)
 	{
-		// TODO: how to serialize nullable
+		writer.Put(keyIsSet);
+		writer.Put((byte) lastKey);
 	}
 
-	protected override void initialize ()
-	{
-		AfterCast += (card, agent) => {
-			if (agent == Owner)
-			{
-				lastKey = card.Word[card.Word.Length - 1].ToKeyboardKey();
-			}
-		};
-	}
-
-	protected override void behaviorImplementation (Agent caster)
+	protected override void behaviorImplementation ()
 	{
 		int total = 0;
 
-		foreach (var state in caster.Keyboard)
+		foreach (var state in Owner.Keyboard)
 		{
 			total += state.EnergyLevel;
 			state.EnergyLevel = 0;
 		}
 
-		if (lastKey != null)
+		if (keyIsSet)
 		{
-			caster.Keyboard[(KeyboardKey) lastKey].EnergyLevel = total;
+			Owner.Keyboard[(KeyboardKey) lastKey].EnergyLevel = total;
+		}
+	}
+
+	internal override void OnTypePhaseStart ()
+	{
+		keyIsSet = false;
+	}
+
+	internal override void AfterCardCast (Card card, Agent caster)
+	{
+		if (caster == Owner)
+		{
+			lastKey = card.Word[card.Word.Length - 1].ToKeyboardKey();
+			keyIsSet = true;
 		}
 	}
 }

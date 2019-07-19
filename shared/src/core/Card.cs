@@ -41,11 +41,11 @@ public abstract partial class Card : Packet
         return card;
     }
 
-    internal void DoBehavior (MatchManager manager, Agent caster)
+    internal void DoBehavior (Agent caster)
     {
         if (BeforeCast != null) BeforeCast(this, caster);
 
-        if (!CastLock) behaviorImplementation(caster);
+        if (!CastLock) behaviorImplementation();
 
         if (AfterCast != null) AfterCast(this, caster);
     }
@@ -60,8 +60,16 @@ public abstract partial class Card : Packet
         // assume most cards have no internal state to serialize
     }
 
-    protected abstract void behaviorImplementation (Agent caster);
+    protected abstract void behaviorImplementation ();
 
     protected virtual void initialize () {}
+
+    internal virtual void OnTypePhaseStart () {}
+    internal virtual void OnTypePhaseEnd () {}
+    internal virtual void OnDrawPhaseEnd () {}
+    internal virtual void OnTypePhaseTick (float dt) {}
+    internal virtual void OnAgentHealthChanged (Agent agent, int delta) {}
+    internal virtual void BeforeCardCast (Card card, Agent caster) {}
+    internal virtual void AfterCardCast (Card card, Agent caster) {}
 }
 }

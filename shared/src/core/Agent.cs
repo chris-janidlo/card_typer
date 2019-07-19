@@ -287,7 +287,7 @@ public class Agent : Packet
         // space bar and return are considered accurate presses if they're used to cast a spell
         LettersAccuratelyTypedThisTurn++;
 
-        toCast.DoBehavior(Manager, this);
+        toCast.DoBehavior(this);
         CardsCastedThisTurn++;
 
         TypingProgress = "";
