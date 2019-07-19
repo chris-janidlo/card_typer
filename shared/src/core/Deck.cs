@@ -28,7 +28,7 @@ public class Deck : Packet
     internal Deck (string bracketedText, Agent owner)
     {
         Owner = owner;
-        subscribeEvents();
+        owner.Manager.OnMatchStart += subscribeEvents;
 
         string currentText = "";
         bool scanningCard = bracketedText[0] == '{';
@@ -70,7 +70,7 @@ public class Deck : Packet
     internal Deck (Agent owner)
     {
         Owner = owner;
-        subscribeEvents();
+        owner.Manager.OnMatchStart += subscribeEvents;
     }
 
     internal void DrawNewHand (int size)

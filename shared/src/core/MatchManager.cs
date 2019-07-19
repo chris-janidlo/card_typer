@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using CTShared.Networking;
@@ -8,7 +8,7 @@ namespace CTShared
 {
 public class MatchManager : Packet
 {
-    public event Action OnPreTypePhaseStart, OnTypePhaseStart, OnTypePhaseEnd, OnDrawPhaseStart, OnDrawPhaseEnd;
+    public event Action OnMatchStart, OnPreTypePhaseStart, OnTypePhaseStart, OnTypePhaseEnd, OnDrawPhaseStart, OnDrawPhaseEnd;
     public event Action<float> OnTypePhaseTick;
 
     public const float TypingTime = 10;
@@ -67,6 +67,7 @@ public class MatchManager : Packet
         }
 
         started = true;
+        if (OnMatchStart != null) OnMatchStart();
         startDrawPhase();
     }
 
