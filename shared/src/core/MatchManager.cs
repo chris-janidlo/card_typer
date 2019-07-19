@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using CTShared.Networking;
@@ -22,7 +22,7 @@ public class MatchManager : Packet
 
     public int CardsCastedThisTurn => Player1.CardsCastedThisTurn + Player2.CardsCastedThisTurn;
 
-    internal readonly Random Rand;
+    internal readonly Random Rand = new Random();
 
     bool started;
     bool inDrawPhase, inPreTypingPhase, inTypingPhase;
