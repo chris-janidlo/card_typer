@@ -111,7 +111,6 @@ public class MatchManager : Packet
 
     internal override void Deserialize (NetDataReader reader)
     {
-        // TODO: get random state
         // TODO: get event state
 
         TypingTimer = reader.GetFloat();
@@ -122,7 +121,6 @@ public class MatchManager : Packet
 
     internal override void Serialize (NetDataWriter writer)
     {
-        // TODO: set random state
         // TODO: set event state
 
         writer.Put(TypingTimer);
