@@ -7,7 +7,7 @@ namespace CTShared.Networking
 
 public class ErrorMessagePacket : Packet
 {
-	public string Message { get; set; }
+	public string Message { get; private set; }
 
 	public ErrorMessagePacket (string message)
 	{
@@ -30,14 +30,14 @@ public class ErrorMessagePacket : Packet
 
 public class ClientDeckRegistrationPacket : Packet
 {
-	public string DeckText { get; set; }
+	public string DeckText { get; private set; }
 
 	public ClientDeckRegistrationPacket (string text)
 	{
 		DeckText = text;
 	}
 
-	internal ClientDeckRegistrationPacket() {}
+	internal ClientDeckRegistrationPacket () {}
 
 	internal override void Serialize (NetDataWriter writer)
 	{
