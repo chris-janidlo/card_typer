@@ -28,20 +28,6 @@ public class ErrorMessagePacket : Packet
 }
 
 
-public class ServerReadyToReceiveDeckPacket : Packet
-{
-	internal override void Serialize (NetDataWriter writer)
-	{
-		// packet has no data
-	}
-
-	internal override void Deserialize (NetDataReader reader)
-	{
-		// packet has no data
-	}
-}
-
-
 public class ClientDeckRegistrationPacket : Packet
 {
 	public string DeckText { get; set; }
@@ -63,4 +49,8 @@ public class ClientDeckRegistrationPacket : Packet
 		DeckText = reader.GetString();
 	}
 }
+
+public class ServerReadyToReceiveDeckSignalPacket : SignalPacket {}
+public class Player1SignalPacket : SignalPacket {}
+public class Player2SignalPacket : SignalPacket {}
 }

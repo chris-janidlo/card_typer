@@ -44,6 +44,13 @@ public class Program
         while (true)
         {
             server.PollEvents();
+
+            // TODO: give this an actual delta time
+            if (manager != null)
+            {
+                manager.Tick(15);
+            }
+
             Thread.Sleep(15);
         }
     }
@@ -99,7 +106,7 @@ public class Program
         }
         Console.WriteLine(nicePeerString(peer) + " has connected");
 
-        PacketProcessor.Send(peer, new ServerReadyToReceiveDeckPacket(), DeliveryMethod.ReliableOrdered);
+        PacketProcessor.Send<ServerReadyToReceiveDeckSignalPacket>(peer, DeliveryMethod.ReliableOrdered);
 
         Console.WriteLine("now waiting for their deck...");
     }
@@ -165,13 +172,23 @@ public class Program
             player2Peer.Disconnect();
         }
 
-        // TODO: tell players whether they're player 1 or 2
+        manager.Start();
+
         sendToBoth(manager, DeliveryMethod.ReliableOrdered);
+
+        PacketProcessor.Send<Player1SignalPacket>(player1Peer, DeliveryMethod.ReliableOrdered);
+        PacketProcessor.Send<Player2SignalPacket>(player2Peer, DeliveryMethod.ReliableOrdered);
     }
 
     void sendToBoth<T> (T packet, DeliveryMethod deliveryMethod) where T : Packet
     {
         PacketProcessor.Send(player1Peer, packet, deliveryMethod);
         PacketProcessor.Send(player2Peer, packet, deliveryMethod);
+    }
+
+    void sendToBoth<T> (DeliveryMethod deliveryMethod) where T : SignalPacket
+    {
+        PacketProcessor.Send<T>(player1Peer, deliveryMethod);
+        PacketProcessor.Send<T>(player2Peer, deliveryMethod);
     }
 }

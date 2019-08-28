@@ -25,6 +25,8 @@ public static class PacketProcessor
 	}
 
 	public delegate void PacketReceivedEvent<T> (T packet, NetPeer sender) where T : Packet;
+	// signals don't have data so the receive event implicitly tells you everything you need to know about the packet
+	public delegate void SignalReceivedEvent<T> (NetPeer sender) where T : SignalPacket;
 
 	delegate void callbackDelegate (NetPeer peer, NetDataReader reader);
 
@@ -55,6 +57,11 @@ public static class PacketProcessor
 		};
 	}
 
+	public static void Subscribe<T> (SignalReceivedEvent<T> onReceive) where T : SignalPacket
+	{
+		callbacks[getHash<T>()] = (peer, reader) => onReceive(peer);
+	}
+
 	public static void ReadAllPackets (NetPeer peer, NetPacketReader reader)
 	{
 		while (reader.AvailableBytes > 0)
@@ -75,6 +82,15 @@ public static class PacketProcessor
 		writer.Reset();
 		writer.Put(getHash<T>());
 		packet.Serialize(writer);
+		peer.Send(writer, deliveryMethod);
+	}
+
+	// dedicated send for signal packets; generates less garbage than regular Send with a new call
+	public static void Send<T> (NetPeer peer, DeliveryMethod deliveryMethod) where T : SignalPacket
+	{
+		writer.Reset();
+		writer.Put(getHash<T>());
+		// signal packets have no data
 		peer.Send(writer, deliveryMethod);
 	}
 

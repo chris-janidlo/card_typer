@@ -23,7 +23,7 @@ public class MatchConnector : MonoBehaviour
         listener.PeerDisconnectedEvent += handleDisconnect;
         listener.NetworkReceiveEvent += PacketProcessor.ReadAllPackets;
 
-        PacketProcessor.Subscribe<ServerReadyToReceiveDeckPacket>(handleServerReadyToReceiveDeck);
+        PacketProcessor.Subscribe<ServerReadyToReceiveDeckSignalPacket>(handleServerReadyToReceiveDeck);
         PacketProcessor.Subscribe<MatchManager>(handleManagerPacket);
 
         client.Start();
@@ -40,7 +40,7 @@ public class MatchConnector : MonoBehaviour
         client.Stop();
     }
 
-    void handleServerReadyToReceiveDeck (ServerReadyToReceiveDeckPacket packet, NetPeer peer)
+    void handleServerReadyToReceiveDeck (NetPeer peer)
     {
         PacketProcessor.Send(server, new ClientDeckRegistrationPacket(DeckAsset.text), DeliveryMethod.ReliableOrdered);
     }
