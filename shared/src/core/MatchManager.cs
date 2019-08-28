@@ -24,8 +24,11 @@ public class MatchManager : Packet
 
     internal readonly Random Rand = new Random();
 
+    public bool InDrawPhase { get; private set; }
+    public bool InPreTypingPhase { get; private set; }
+    public bool InTypingPhase { get; private set; }
+    
     bool started;
-    bool inDrawPhase, inPreTypingPhase, inTypingPhase;
     bool player1Ready, player2Ready;
 
     public MatchManager (string player1DeckText, string player2DeckText)
@@ -73,7 +76,7 @@ public class MatchManager : Packet
 
     public void Tick (float dt)
     {
-        if (inPreTypingPhase)
+        if (InPreTypingPhase)
         {
             CountdownTimer -= dt;
             if (CountdownTimer <= 0)
@@ -82,7 +85,7 @@ public class MatchManager : Packet
             }
         }
 
-        if (inTypingPhase)
+        if (InTypingPhase)
         {
             if (OnTypePhaseTick != null) OnTypePhaseTick(dt);
 
@@ -132,7 +135,7 @@ public class MatchManager : Packet
 
     void agentReady (Agent agent)
     {
-        if (!inDrawPhase) return;
+        if (!InDrawPhase) return;
 
         if (agent == Player1)
         {
@@ -155,7 +158,7 @@ public class MatchManager : Packet
 
     void startDrawPhase ()
     {
-        inDrawPhase = true;
+        InDrawPhase = true;
 
         Player1.DrawNewHand();
         Player2.DrawNewHand();
@@ -168,7 +171,7 @@ public class MatchManager : Packet
 
     void endDrawPhase ()
     {
-        inDrawPhase = false;
+        InDrawPhase = false;
 
         if (OnDrawPhaseEnd != null) OnDrawPhaseEnd();
 
@@ -178,7 +181,7 @@ public class MatchManager : Packet
     // countdown before true type phase
     void startPreTypePhase ()
     {
-        inPreTypingPhase = true;
+        InPreTypingPhase = true;
         CountdownTimer = TypingCountdownTime;
 
         if (OnPreTypePhaseStart != null) OnPreTypePhaseStart();
@@ -186,8 +189,8 @@ public class MatchManager : Packet
 
     void startTypePhase ()
     {
-        inPreTypingPhase = false;
-        inTypingPhase = true;
+        InPreTypingPhase = false;
+        InTypingPhase = true;
         TypingTimer = TypingTime;
 
         if (OnTypePhaseStart != null) OnTypePhaseStart();
@@ -195,7 +198,7 @@ public class MatchManager : Packet
 
     void endTypePhase ()
     {
-        inTypingPhase = false;
+        InTypingPhase = false;
 
         if (OnTypePhaseEnd != null) OnTypePhaseEnd();
 

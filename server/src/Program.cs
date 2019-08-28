@@ -49,6 +49,8 @@ public class Program
             if (manager != null)
             {
                 manager.Tick(15);
+
+                if (manager.InTypingPhase) sendToBoth(manager, DeliveryMethod.Sequenced);
             }
 
             Thread.Sleep(15);
