@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading;
 using LiteNetLib;
 using LiteNetLib.Utils;
@@ -32,6 +32,8 @@ public class Program
         listener.NetworkReceiveEvent += PacketProcessor.ReadAllPackets;
 
         PacketProcessor.Subscribe<ClientDeckRegistrationPacket>(handleClientDeck);
+
+        PacketProcessor.Subscribe<PlaySelectionPacket>(handlePlaySelection);
 
         Console.CancelKeyPress += closeServer;
 
@@ -155,6 +157,24 @@ public class Program
         {
             startMatch();
         }
+    }
+
+    void handlePlaySelection (PlaySelectionPacket packet, NetPeer peer)
+    {
+        if (!manager.InDrawPhase)
+        {
+            Console.WriteLine("unexpected play selection from " + nicePeerString(peer));
+            return;
+        }
+
+        bool is1 = peer == player1Peer;
+
+        Console.WriteLine("got play from player " + (is1 ? "1" : "2"));
+
+        var player = is1 ? manager.Player1 : manager.Player2;
+        player.SetPlay(packet.SelectionIndices);
+
+        PacketProcessor.Send(is1 ? player2Peer : player1Peer, packet, DeliveryMethod.ReliableOrdered);
     }
 
     string nicePeerString (NetPeer peer)

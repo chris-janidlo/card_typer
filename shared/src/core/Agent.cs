@@ -210,6 +210,11 @@ public class Agent : Packet
         if (OnPlaySet != null) OnPlaySet(play);
     }
 
+    public void SetPlay (List<int> indices)
+    {
+        SetPlay(indices.Select(i => Deck.Cards[i]).ToList());
+    }
+
     internal void SetHealth (int newValue)
     {
         IncrementHealth(newValue - Health);

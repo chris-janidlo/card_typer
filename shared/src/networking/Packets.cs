@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using LiteNetLib.Utils;
 
 namespace CTShared.Networking
@@ -47,6 +49,39 @@ public class ClientDeckRegistrationPacket : Packet
 	internal override void Deserialize (NetDataReader reader)
 	{
 		DeckText = reader.GetString();
+	}
+}
+
+
+public class PlaySelectionPacket : Packet
+{
+	public List<int> SelectionIndices { get; private set; }
+
+	public PlaySelectionPacket (List<int> indices)
+	{
+		SelectionIndices = indices;
+	}
+
+	internal PlaySelectionPacket () {}
+
+	internal override void Serialize (NetDataWriter writer)
+	{
+		writer.Put(SelectionIndices.Count);
+
+		foreach (var index in SelectionIndices)
+		{
+			writer.Put(index);
+		}
+	}
+
+	internal override void Deserialize (NetDataReader reader)
+	{
+		SelectionIndices = new List<int>(reader.GetInt());
+
+		for (int i = 0; i < SelectionIndices.Count; i++)
+		{
+			SelectionIndices.Add(reader.GetInt());
+		}
 	}
 }
 
