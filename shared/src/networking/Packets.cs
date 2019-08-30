@@ -66,21 +66,21 @@ public class PlaySelectionPacket : Packet
 
 	internal override void Serialize (NetDataWriter writer)
 	{
-		writer.Put(SelectionIndices.Count);
+		writer.Put((byte) SelectionIndices.Count);
 
 		foreach (var index in SelectionIndices)
 		{
-			writer.Put(index);
+			writer.Put((byte) index);
 		}
 	}
 
 	internal override void Deserialize (NetDataReader reader)
 	{
-		SelectionIndices = new List<int>(reader.GetInt());
+		SelectionIndices = new List<int>(reader.GetByte());
 
 		for (int i = 0; i < SelectionIndices.Count; i++)
 		{
-			SelectionIndices.Add(reader.GetInt());
+			SelectionIndices.Add(reader.GetByte());
 		}
 	}
 }
