@@ -33,14 +33,14 @@ public class Program
 
         PacketProcessor.Subscribe<ClientDeckRegistrationPacket>(handleClientDeck);
 
+        Console.CancelKeyPress += closeServer;
+
         server.Start(NetworkConstants.ServerPort);
         Console.WriteLine($"Server started on port {NetworkConstants.ServerPort}. Press ctrl-c to stop it.");
     }
 
     void serverLoop ()
     {
-        Console.CancelKeyPress += closeServer;
-
         while (true)
         {
             server.PollEvents();
