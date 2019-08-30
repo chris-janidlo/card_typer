@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 using LiteNetLib;
 using LiteNetLib.Utils;
@@ -132,6 +132,12 @@ public class Program
 
     void handleClientDeck (ClientDeckRegistrationPacket packet, NetPeer peer)
     {
+        if (manager != null)
+        {
+            Console.WriteLine("unexpected deck registration from " + nicePeerString(peer));
+            return;
+        }
+
         Console.Write("got deck from ");
 
         if (peer == player1Peer)
