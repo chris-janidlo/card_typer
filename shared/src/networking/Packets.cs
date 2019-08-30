@@ -85,6 +85,44 @@ public class PlaySelectionPacket : Packet
 	}
 }
 
+
+// one tick's worth of typing
+public class TypingFramePacket : Packet
+{
+	public List<KeyboardKey> KeysPressedThisFrame { get; private set; }
+	public bool Shift { get; private set; }
+
+	public TypingFramePacket (List<KeyboardKey> pressed, bool shift)
+	{
+		KeysPressedThisFrame = pressed;
+		Shift = shift;
+	}
+
+	internal override void Serialize (NetDataWriter writer)
+	{
+		writer.Put((byte) KeysPressedThisFrame.Count);
+
+		foreach (var press in KeysPressedThisFrame)
+		{
+			writer.Put((byte) press);
+		}
+
+		writer.Put(Shift);
+	}
+
+	internal override void Deserialize (NetDataReader reader)
+	{
+		KeysPressedThisFrame = new List<KeyboardKey>(reader.GetByte());
+
+		for (int i = 0; i < KeysPressedThisFrame.Count; i++)
+		{
+			KeysPressedThisFrame.Add((KeyboardKey) reader.GetByte());
+		}
+
+		Shift = reader.GetBool();
+	}
+}
+
 public class ServerReadyToReceiveDeckSignalPacket : SignalPacket {}
 public class Player1SignalPacket : SignalPacket {}
 public class Player2SignalPacket : SignalPacket {}

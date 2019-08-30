@@ -32,8 +32,8 @@ public class Program
         listener.NetworkReceiveEvent += PacketProcessor.ReadAllPackets;
 
         PacketProcessor.Subscribe<ClientDeckRegistrationPacket>(handleClientDeck);
-
         PacketProcessor.Subscribe<PlaySelectionPacket>(handlePlaySelection);
+        PacketProcessor.Subscribe<TypingFramePacket>(handleTyping);
 
         Console.CancelKeyPress += closeServer;
 
@@ -175,6 +175,22 @@ public class Program
         player.SetPlay(packet.SelectionIndices);
 
         PacketProcessor.Send(is1 ? player2Peer : player1Peer, packet, DeliveryMethod.ReliableOrdered);
+    }
+
+    void handleTyping (TypingFramePacket packet, NetPeer peer)
+    {
+        if (!manager.InTypingPhase)
+        {
+            Console.WriteLine("unexpected type packet from " + nicePeerString(peer));
+            return;
+        }
+
+        var player = peer == player1Peer ? manager.Player1 : manager.Player2;
+
+        foreach (var key in packet.KeysPressedThisFrame)
+        {
+            player.PressKey(key, packet.Shift);
+        }
     }
 
     string nicePeerString (NetPeer peer)
