@@ -57,6 +57,7 @@ public static class PacketProcessor
 		};
 	}
 
+	// this is the major reason we split packets into Signal and Data - if they're Signal, we can avoid creating any garbage at all here
 	public static void Subscribe<T> (SignalReceivedEvent<T> onReceive) where T : SignalPacket
 	{
 		callbacks[getHash<T>()] = (peer, reader) => onReceive(peer);
@@ -85,7 +86,6 @@ public static class PacketProcessor
 		peer.Send(writer, deliveryMethod);
 	}
 
-	// dedicated send for signal packets; generates less garbage than regular Send with a new call
 	public static void Send<T> (NetPeer peer, DeliveryMethod deliveryMethod) where T : SignalPacket
 	{
 		writer.Reset();
