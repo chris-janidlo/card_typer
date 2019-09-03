@@ -63,6 +63,16 @@ public static class PacketProcessor
 		callbacks[getHash<T>()] = (peer, reader) => onReceive(peer);
 	}
 
+	public static void SyncNetworkObject<T> (T networkObject, PacketReceivedEvent<T> additionalProcessing = null) where T : Packet
+	{
+		var onReceive = additionalProcessing ?? ((packet, sender) => {});
+
+		callbacks[getHash<T>()] = (peer, reader) => {
+			networkObject.Deserialize(reader);
+			onReceive(networkObject, peer);
+		};
+	}
+
 	public static void ReadAllPackets (NetPeer peer, NetPacketReader reader)
 	{
 		while (reader.AvailableBytes > 0)

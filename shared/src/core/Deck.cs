@@ -25,6 +25,8 @@ public class Deck : Packet
 
     public string BracketedText { get; private set; }
 
+    bool initialized;
+
     internal Deck (string bracketedText, Agent owner)
     {
         Owner = owner;
@@ -64,6 +66,8 @@ public class Deck : Packet
         }
 
         BracketedText = bracketedText;
+
+        initialized = true;
     }
 
     // for packet serialization
@@ -99,17 +103,27 @@ public class Deck : Packet
 
         int numCards = reader.GetByte();
 
-        _cards = new List<Card>();
+        if (!initialized) _cards = new List<Card>();
         drawPile = new List<Card>();
         hand = new List<Card>();
         discardPile = new List<Card>();
 
         for (int i = 0; i < numCards; i++)
         {
-            var card = Card.FromName(reader.GetString(), Owner);
-            card.Deserialize(reader); // get any internal state
+            Card card;
 
-            _cards.Add(card);
+            if (initialized)
+            {
+                reader.GetString(); // consume the string, throw away
+                card = Cards[i];
+            }
+            else
+            {
+                card = Card.FromName(reader.GetString(), Owner);
+                _cards.Add(card);
+            }
+
+            card.Deserialize(reader); // get any internal state
 
             switch ((CardStatus) reader.GetByte())
             {
@@ -129,6 +143,8 @@ public class Deck : Packet
                     throw new ParseException("packet contains byte that is not an expected CardStatus");
             }
         }
+
+        initialized = true;
     }
 
     internal override void Serialize (NetDataWriter writer)
